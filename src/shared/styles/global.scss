@@ -1,0 +1,95 @@
+@import "./variables.scss";
+@import "./mixins.scss";
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: $font-family-regular;
+  background-color: $prime-dark-color;
+  color: $prime-white-color;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+input,
+textarea {
+  font-family: inherit;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+// Typography classes
+.t32 {
+  @include t32;
+}
+
+.t24 {
+  @include t24;
+}
+
+.t18 {
+  @include t18;
+}
+
+.t16 {
+  @include t16;
+}
+
+.t14 {
+  @include t14;
+}
+
+.t12 {
+  @include t12;
+}
+
+.r24 {
+  @include r24;
+}
+
+.r18 {
+  @include r18;
+}
+
+.r16 {
+  @include r16;
+}
+
+.r14 {
+  @include r14;
+}
+
+.r12 {
+  @include r12;
+}
+
+.r8 {
+  @include r8;
+}
+
+// Container
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 $space-400;
+}

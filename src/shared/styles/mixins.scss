@@ -1,0 +1,123 @@
+@import "./variables.scss";
+
+// Typography mixins - Title
+@mixin t32 {
+  font-family: $font-family-title;
+  font-size: $font-size-t32;
+  line-height: $line-height-t32;
+  font-weight: $font-weight-t32;
+}
+
+@mixin t24 {
+  font-family: $font-family-title;
+  font-size: $font-size-t24;
+  line-height: $line-height-t24;
+  font-weight: $font-weight-t24;
+}
+
+@mixin t18 {
+  font-family: $font-family-title;
+  font-size: $font-size-t18;
+  line-height: $line-height-t18;
+  font-weight: $font-weight-t18;
+}
+
+@mixin t16 {
+  font-family: $font-family-title;
+  font-size: $font-size-t16;
+  line-height: $line-height-t16;
+  font-weight: $font-weight-t16;
+}
+
+@mixin t14 {
+  font-family: $font-family-title;
+  font-size: $font-size-t14;
+  line-height: $line-height-t14;
+  font-weight: $font-weight-t14;
+}
+
+@mixin t12 {
+  font-family: $font-family-title;
+  font-size: $font-size-t12;
+  line-height: $line-height-t12;
+  font-weight: $font-weight-t12;
+}
+
+// Typography mixins - Regular
+@mixin r24 {
+  font-family: $font-family-regular;
+  font-size: $font-size-r24;
+  line-height: $line-height-r24;
+  font-weight: $font-weight-r24;
+}
+
+@mixin r18 {
+  font-family: $font-family-regular;
+  font-size: $font-size-r18;
+  line-height: $line-height-r18;
+  font-weight: $font-weight-r18;
+}
+
+@mixin r16 {
+  font-family: $font-family-regular;
+  font-size: $font-size-r16;
+  line-height: $line-height-r16;
+  font-weight: $font-weight-r16;
+}
+
+@mixin r14 {
+  font-family: $font-family-regular;
+  font-size: $font-size-r14;
+  line-height: $line-height-r14;
+  font-weight: $font-weight-r14;
+}
+
+@mixin r12 {
+  font-family: $font-family-regular;
+  font-size: $font-size-r12;
+  line-height: $line-height-r12;
+  font-weight: $font-weight-r12;
+}
+
+@mixin r8 {
+  font-family: $font-family-regular;
+  font-size: $font-size-r8;
+  line-height: $line-height-r8;
+  font-weight: $font-weight-r8;
+}
+
+// Effect mixins
+@mixin card-shadow {
+  box-shadow: $shadow-card-main;
+  backdrop-filter: blur($blur-card-main);
+}
+
+@mixin button-classic-shadow {
+  box-shadow: $shadow-button-classic;
+}
+
+@mixin button-snackbar-shadow {
+  box-shadow: $shadow-button-snackbar;
+}
+
+@mixin button-press-shadow {
+  box-shadow: $shadow-button-press;
+}
+
+// Flex mixins
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+@mixin flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

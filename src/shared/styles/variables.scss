@@ -1,0 +1,100 @@
+// Colors
+$prime-accent-color: #aff940;
+$prime-dark-color: #23222a;
+$prime-white-color: #ffffff;
+$sec-accent-color: #9bd83f;
+$sec-white-color: #f1f1f1;
+$sec-dark-color: #393940;
+$button-glass-color: rgba(57, 57, 64, 0.25);
+
+// Text and icons
+$text-prime-dark-color: #212c3a;
+$text-sec-dark-color: #575757;
+$text-prime-accent-color: #aff940;
+$text-prime-white-color: #ffffff;
+$text-sec-fill-color: #868686;
+
+// Border
+$sec-gray-color: #dadada;
+
+// Spacing
+$space-0: 0;
+$space-50: 2px;
+$space-100: 4px;
+$space-150: 6px;
+$space-200: 8px;
+$space-300: 12px;
+$space-400: 16px;
+$space-600: 24px;
+$space-800: 32px;
+$space-1000: 48px;
+$space-1200: 64px;
+$space-negative-50: -2px;
+$space-negative-100: -4px;
+$space-negative-200: -12px;
+$space-negative-400: -16px;
+$space-negative-600: -24px;
+
+// Typography
+$font-family-title: "SF Pro", sans-serif;
+$font-family-regular: "SF Pro", sans-serif;
+
+// Title styles
+$font-size-t32: 32px;
+$line-height-t32: 102%;
+$font-weight-t32: 700; // Bold
+
+$font-size-t24: 24px;
+$line-height-t24: auto;
+$font-weight-t24: 600; // Semibold
+
+$font-size-t18: 18px;
+$line-height-t18: 102%;
+$font-weight-t18: 700; // Bold
+
+$font-size-t16: 16px;
+$line-height-t16: auto;
+$font-weight-t16: 600; // Semibold
+
+$font-size-t14: 14px;
+$line-height-t14: 16px;
+$font-weight-t14: 600; // Semibold
+
+$font-size-t12: 12px;
+$line-height-t12: auto;
+$font-weight-t12: 600; // Semibold
+
+// Regular styles
+$font-size-r24: 24px;
+$line-height-r24: 18px;
+$font-weight-r24: 400; // Regular
+
+$font-size-r18: 18px;
+$line-height-r18: 18px;
+$font-weight-r18: 400; // Regular
+
+$font-size-r16: 16px;
+$line-height-r16: 18px;
+$font-weight-r16: 400; // Regular
+
+$font-size-r14: 14px;
+$line-height-r14: 16px;
+$font-weight-r14: 400; // Regular
+
+$font-size-r12: 12px;
+$line-height-r12: 15px;
+$font-weight-r12: 400; // Regular
+
+$font-size-r8: 8px;
+$line-height-r8: 12px;
+$font-weight-r8: 400; // Regular
+
+// Effects
+$shadow-card-main: 0 4px 12px rgba(0, 0, 0, 0.25),
+  inset 0 -1px 4px rgba(255, 255, 255, 0.25);
+$blur-card-main: 41.5px;
+
+$shadow-button-classic: 0 4px 4px rgba(255, 255, 255, 0.25);
+$shadow-button-snackbar: inset 0 5.33px 5.33px rgba(255, 255, 255, 0.25),
+  0 -2.67px 5.33px rgba(0, 0, 0, 0.1);
+$shadow-button-press: inset 0 -4px 12px rgba(38, 37, 45, 0.1);

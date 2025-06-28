@@ -1,0 +1,84 @@
+@import "@shared/styles/variables.scss";
+@import "@shared/styles/mixins.scss";
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: $space-100;
+  width: 100%;
+}
+
+.label {
+  @include r14;
+  color: $text-prime-white-color;
+  margin-bottom: $space-100;
+}
+
+.inputWrapper {
+  display: flex;
+  align-items: center;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  position: relative;
+  width: 100%;
+
+  &:focus-within {
+    border-color: $prime-accent-color;
+  }
+}
+
+.outlined {
+  border: 1px solid $sec-gray-color;
+  background-color: transparent;
+
+  &:focus-within {
+    border-color: $prime-accent-color;
+  }
+}
+
+.filled {
+  border: none;
+  background-color: $sec-dark-color;
+
+  &:focus-within {
+    background-color: rgba($sec-dark-color, 0.8);
+  }
+}
+
+.input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: $space-300;
+  color: $text-prime-white-color;
+  @include r16;
+  width: 100%;
+
+  &::placeholder {
+    color: $text-sec-fill-color;
+  }
+}
+
+.startIcon,
+.endIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 $space-300;
+  color: $text-sec-fill-color;
+}
+
+.error {
+  border-color: #ff4d4f !important;
+
+  &:focus-within {
+    border-color: #ff4d4f !important;
+  }
+}
+
+.errorText {
+  @include r12;
+  color: #ff4d4f;
+  margin-top: $space-100;
+}

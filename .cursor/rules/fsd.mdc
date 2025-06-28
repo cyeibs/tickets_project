@@ -1,0 +1,82 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+Feature-Sliced Design (FSD) is an architectural methodology for scaffolding front-end applications. Simply put, it's a compilation of rules and conventions on organizing code. The main purpose of this methodology is to make the project more understandable and stable in the face of ever-changing business requirements.
+
+Layers are standardized across all FSD projects. You don't have to use all of the layers, but their names are important. There are currently seven of them (from top to bottom):
+
+App — everything that makes the app run — routing, entrypoints, global styles, providers.
+Pages — full pages or large parts of a page in nested routing.
+Widgets — large self-contained chunks of functionality or UI, usually delivering an entire use case.
+Features — reused implementations of entire product features, i.e. actions that bring business value to the user.
+Entities — business entities that the project works with, like user or product.
+Shared — reusable functionality, especially when it's detached from the specifics of the project/business, though not necessarily.
+warning
+
+Layers App and Shared, unlike other layers, do not have slices and are divided into segments directly.
+
+However, all other layers — Entities, Features, Widgets, and Pages, retain the structure in which you must first create slices, inside which you create the segments.
+
+The trick with layers is that modules on one layer can only know about and import from modules from the layers strictly below.
+
+Slices
+Next up are slices, which partition the code by business domain. You're free to choose any names for them, and create as many as you wish. Slices make your codebase easier to navigate by keeping logically related modules close together.
+
+Slices cannot use other slices on the same layer, and that helps with high cohesion and low coupling.
+
+Segments
+Slices, as well as layers App and Shared, consist of segments, and segments group your code by its purpose. Segment names are not constrained by the standard, but there are several conventional names for the most common purposes:
+
+ui — everything related to UI display: UI components, date formatters, styles, etc.
+api — backend interactions: request functions, data types, mappers, etc.
+model — the data model: schemas, interfaces, stores, and business logic.
+lib — library code that other modules on this slice need.
+config — configuration files and feature flags.
+Usually these segments are enough for most layers, you would only create your own segments in Shared or App, but this is not a rule.
+
+Reuse generic code
+Most pages are very different in intent, but certain things stay the same across the entire app — for example, the UI kit that conforms to the design language, or the convention on the backend that everything is done with a REST API with the same authentication method. Since slices are meant to be isolated, code reuse is facilitated by a lower layer, Shared.
+
+Shared is different from other layers in the sense that it contains segments, not slices. In this way, the Shared layer can be thought of as a hybrid between a layer and a slice.
+
+Usually, the code in Shared is not planned ahead of time, but rather extracted during development, because only during development does it become clear which parts of code are actually shared. However, it’s still helpful to keep a mental note of what kind of code naturally belongs in Shared:
+
+📂 ui/ — the UI kit, pure appearance, no business logic. For example, buttons, modal dialogs, form inputs.
+📂 api/ — convenience wrappers around request making primitives (like fetch() on the Web) and, optionally, functions for triggering particular requests according to the backend specification.
+📂 config/ — parsing environment variables
+📂 i18n/ — configuration of language support
+📂 router/ — routing primitives and route constants
+Those are just a few examples of segment names in Shared, but you can omit any of them or create your own. The only important thing to remember when creating new segments is that segment names should describe purpose (the why), not essence (the what). Names like “components”, “hooks”, “modals” should not be used because they describe what these files are, but don’t help to navigate the code inside. This requires people on the team to dig through every file in such folders and also keeps unrelated code close, which leads to broad areas of code being affected by refactoring and thus makes code review and testing harder.
+
+Define a strict public API
+In the context of Feature-Sliced Design, the term public API refers to a slice or segment declaring what can be imported from it by other modules in the project. For example, in JavaScript that can be an index.js file re-exporting objects from other files in the slice. This enables freedom in refactoring code inside a slice as long as the contract with the outside world (i.e. the public API) stays the same.
+
+For the Shared layer that has no slices, it’s usually more convenient to define a separate public API for each segment as opposed to defining one single index of everything in Shared. This keeps imports from Shared naturally organized by intent. For other layers that have slices, the opposite is true — it’s usually more practical to define one index per slice and let the slice decide its own set of segments that is unknown to the outside world because other layers usually have a lot less exports.
+
+Our slices/segments will appear to each other as follows:
+
+📂 pages/
+  📂 feed/
+    📄 index
+  📂 sign-in/
+    📄 index
+  📂 article-read/
+    📄 index
+  📁 …
+📂 shared/
+  📂 ui/
+    📄 index
+  📂 api/
+    📄 index
+  📁 …
+
+Whatever is inside folders like pages/feed or shared/ui is only known to those folders, and other files should not rely on the internal structure of these folders.
+
+Large reused blocks in the UI
+Earlier we made a note to revisit the header that appears on every page. Rebuilding it from scratch on every page would be impractical, so it’s only natural to want to reuse it. We already have Shared to facilitate code reuse, however, there’s a caveat to putting large blocks of UI in Shared — the Shared layer is not supposed to know about any of the layers above.
+
+Between Shared and Pages there are three other layers: Entities, Features, and Widgets. Some projects may have something in those layers that they need in a large reusable block, and that means we can’t put that reusable block in Shared, or else it would be importing from upper layers, which is prohibited. That’s where the Widgets layer comes in. It is located above Shared, Entities, and Features, so it can use them all.
+
+In our case, the header is very simple — it’s a static logo and top-level navigation. The navigation needs to make a request to the API to determine if the user is currently logged in or not, but that can be handled by a simple import from the api segment. Therefore, we will keep our header in Shared.
