@@ -10,38 +10,30 @@
 
 .label {
   @include r14;
-  color: $text-prime-white-color;
+  color: var(--Fill-prime-white-color, rgba(255, 255, 255, 1));
   margin-bottom: $space-100;
 }
 
 .inputWrapper {
   display: flex;
   align-items: center;
-  border-radius: 8px;
+  border-radius: 20px;
   transition: all 0.2s ease;
   position: relative;
   width: 100%;
+  padding: $space-200 $space-400;
+  gap: 4px;
+  
+  background: rgba(255, 255, 255, 1);
+  border: 1px solid rgba(202, 205, 208, 1);
 
-  &:focus-within {
-    border-color: $prime-accent-color;
+  &:hover:not(.disabled):not(:focus-within) {
+    border: 1px solid rgba(166, 171, 176, 1);
   }
-}
 
-.outlined {
-  border: 1px solid $sec-gray-color;
-  background-color: transparent;
-
-  &:focus-within {
-    border-color: $prime-accent-color;
-  }
-}
-
-.filled {
-  border: none;
-  background-color: $sec-dark-color;
-
-  &:focus-within {
-    background-color: rgba($sec-dark-color, 0.8);
+  &:focus-within:not(.error) {
+    border: 1px solid rgba(166, 171, 176, 1);
+    box-shadow: 0 0 0 3px rgba(16, 178, 81, 0.3);
   }
 }
 
@@ -50,35 +42,60 @@
   background: transparent;
   border: none;
   outline: none;
-  padding: $space-300;
-  color: $text-prime-white-color;
-  @include r16;
+  color: #212C3A;
+  @include r14;
+  padding: $space-50 $space-100;
+
   width: 100%;
 
   &::placeholder {
-    color: $text-sec-fill-color;
+    @include r14;
+    color: #626974;
   }
 }
 
-.startIcon,
-.endIcon {
+.prefix,
+.suffix {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 $space-300;
-  color: $text-sec-fill-color;
+  color: #626974;
+}
+
+.clearButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 4px;
 }
 
 .error {
-  border-color: #ff4d4f !important;
+  border: 1px solid rgba(224, 83, 83, 1) !important;
 
   &:focus-within {
-    border-color: #ff4d4f !important;
+    box-shadow: 0 0 0 2px rgba(224, 83, 83, 0.1) !important;
   }
 }
 
 .errorText {
   @include r12;
-  color: #ff4d4f;
+  color: rgba(224, 83, 83, 1);
   margin-top: $space-100;
 }
+
+.hint {
+  @include r12;
+  color: #626974;
+  margin-top: $space-100;
+}
+
+.disabled {
+  background: rgba(233, 234, 236, 1);
+  border: 1px solid rgba(202, 205, 208, 1);
+  pointer-events: none;
+
+  .input {
+    opacity: 0.7;
+  }
+}
+

@@ -10,3 +10,4 @@ export * from './arrow-left';
 export * from './edit';
 export * from './logo';
 export * from './phone';
+export * from './cross';

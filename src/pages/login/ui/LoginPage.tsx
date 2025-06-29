@@ -1,8 +1,11 @@
 import { useAuth } from '@features/auth';
-import { Button, Header, PhoneInput } from '@shared/ui';
+import { Header } from '@shared/ui';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './LoginPage.module.scss';
+import { PhoneStep } from './PhoneStep';
+import { PasswordStep } from './PasswordStep';
+import { NameStep } from './NameStep';
 
 export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
@@ -10,9 +13,11 @@ export const LoginPage: React.FC = () => {
 
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [phoneExists, setPhoneExists] = useState<boolean | null>(null);
+  const [step, setStep] = useState<'phone' | 'password' | 'name'>('phone');
 
   const handlePhoneChange = (value: string) => {
     setPhone(value);
@@ -23,6 +28,11 @@ export const LoginPage: React.FC = () => {
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
+    setError(null);
+  };
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setName(e.target.value);
     setError(null);
   };
 
@@ -37,15 +47,14 @@ export const LoginPage: React.FC = () => {
       const { exists } = await checkPhone(phone);
       setPhoneExists(exists);
       setIsLoading(false);
+      setStep('password');
     } catch (err) {
       setError('Произошла ошибка. Пожалуйста, попробуйте снова.');
       setIsLoading(false);
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
+  const handlePasswordContinue = async () => {
     if (!password) {
       setError('Пожалуйста, введите пароль');
       return;
@@ -57,17 +66,46 @@ export const LoginPage: React.FC = () => {
       if (phoneExists) {
         // Login
         await login(phone, password);
+        setIsLoading(false);
+        navigate('/main');
       } else {
-        // Register
-        await register(phone, password);
+        // If registration, go to name step
+        setIsLoading(false);
+        setStep('name');
       }
+    } catch (err) {
+      setError('Произошла ошибка. Пожалуйста, попробуйте снова.');
+      setIsLoading(false);
+    }
+  };
 
+  const handleSave = async () => {
+    if (!name.trim()) {
+      setError('Пожалуйста, введите ваше имя');
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      // Register with name
+      await register(phone, password);
       setIsLoading(false);
       navigate('/main');
     } catch (err) {
       setError('Произошла ошибка. Пожалуйста, попробуйте снова.');
       setIsLoading(false);
     }
+  };
+
+  const handleBackToPhone = () => {
+    setStep('phone');
+    setPassword('');
+    setError(null);
+  };
+
+  const handleBackToPassword = () => {
+    setStep('password');
+    setError(null);
   };
 
   return (
@@ -81,17 +119,44 @@ export const LoginPage: React.FC = () => {
 
       <div className={styles.content}>
         <div className={styles.form}>
-          <div className={styles.imageContainer}>
-            <img src={'/login-image.png'} alt="logo" />
-          </div>
+          {step !== 'name' && (
+            <div className={styles.imageContainer}>
+              <img src={'/login-image.png'} alt="logo" />
+            </div>
+          )}
 
-          <PhoneInput
-            value={phone}
-            onChange={handlePhoneChange}
-            error={error || undefined}
-          />
+          {step === 'phone' && (
+            <PhoneStep
+              phone={phone}
+              error={error}
+              isLoading={isLoading}
+              onPhoneChange={handlePhoneChange}
+              onContinue={handleCheckPhone}
+            />
+          )}
 
-          <Button>{isLoading ? 'Проверка...' : 'Продолжить'}</Button>
+          {step === 'password' && (
+            <PasswordStep
+              phoneExists={phoneExists}
+              password={password}
+              error={error}
+              isLoading={isLoading}
+              onPasswordChange={handlePasswordChange}
+              onContinue={handlePasswordContinue}
+              onBack={handleBackToPhone}
+            />
+          )}
+
+          {step === 'name' && (
+            <NameStep
+              name={name}
+              error={error}
+              isLoading={isLoading}
+              onNameChange={handleNameChange}
+              onSave={handleSave}
+              onCancel={handleBackToPassword}
+            />
+          )}
         </div>
       </div>
     </div>

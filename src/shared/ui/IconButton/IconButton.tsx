@@ -18,7 +18,7 @@ interface IconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 export const IconButton: React.FC<IconButtonProps> = ({
   icon,
   variant = 'primary',
-  size = 'medium',
+  size,
   iconSize,
   iconColor,
   className,
