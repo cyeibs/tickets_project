@@ -1,0 +1,53 @@
+@import "@shared/styles/variables.scss";
+@import "@shared/styles/mixins.scss";
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: $space-300;
+  padding-top: $space-600;
+  padding-right: $space-600;
+  padding-bottom: $space-400;
+  padding-left: $space-600;
+  background-color: $prime-accent-color;
+  border-radius: 0 0 $space-600 $space-600;
+}
+
+.topRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.leftButton {
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.logoContainer {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.rightButton {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.bottomRow {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.pageName {
+  @include r16;
+  color: $prime-dark-color;
+  text-align: center;
+} 

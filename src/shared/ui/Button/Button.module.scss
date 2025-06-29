@@ -1,0 +1,36 @@
+@import "../../styles/variables.scss";
+@import "../../styles/mixins.scss";
+
+.button {
+  @include t14;
+  @include button-classic-shadow;
+  padding: $space-300 $space-600;
+  border-radius: 99px;
+  border: none;
+  cursor: pointer;
+  background-color: $prime-white-color;
+  color: $text-prime-dark-color;
+  transition: background-color 0.2s ease;
+  
+  &:hover {
+    background-color: $sec-white-color;
+    color: $text-prime-dark-color;
+  }
+  
+  &.accent {
+    background-color: $prime-accent-color;
+    color: $text-prime-dark-color;
+    
+    &:hover {
+      background-color: $sec-accent-color;
+      color: $text-prime-dark-color;
+    }
+  }
+  
+  &.disabled {
+    background-color: $sec-white-color;
+    color: $text-sec-dark-color;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+} 

@@ -94,7 +94,9 @@ $shadow-card-main: 0 4px 12px rgba(0, 0, 0, 0.25),
   inset 0 -1px 4px rgba(255, 255, 255, 0.25);
 $blur-card-main: 41.5px;
 
-$shadow-button-classic: 0 4px 4px rgba(255, 255, 255, 0.25);
+$shadow-button-classic: 0 4px 4px rgba(255, 255, 255, 0.25) inset;
 $shadow-button-snackbar: inset 0 5.33px 5.33px rgba(255, 255, 255, 0.25),
   0 -2.67px 5.33px rgba(0, 0, 0, 0.1);
 $shadow-button-press: inset 0 -4px 12px rgba(38, 37, 45, 0.1);
+
+$shadow-glass: 0px 1px 4px 0px rgba(255, 255, 255, 0.25) inset, 0px 4px 12px 0px rgba(0, 0, 0, 0.25);

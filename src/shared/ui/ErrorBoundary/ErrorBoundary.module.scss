@@ -1,0 +1,48 @@
+@import '@shared/styles/variables.scss';
+@import '@shared/styles/mixins.scss';
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  padding: $space-600;
+  background-color: $prime-dark-color;
+  text-align: center;
+}
+
+.title {
+  @include t24;
+  color: $prime-white-color;
+  margin-bottom: $space-400;
+}
+
+.message {
+  @include r16;
+  color: $sec-white-color;
+  margin-bottom: $space-800;
+  max-width: 400px;
+}
+
+.button {
+  background-color: $prime-accent-color;
+  color: $text-prime-dark-color;
+  border: none;
+  border-radius: 8px;
+  padding: $space-300 $space-600;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  @include button-classic-shadow;
+  @include t14;
+
+  &:hover {
+    opacity: 0.9;
+  }
+
+  &:active {
+    @include button-press-shadow;
+    transform: scale(0.98);
+  }
+} 
