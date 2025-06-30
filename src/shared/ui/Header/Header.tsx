@@ -57,9 +57,7 @@ export const Header: React.FC<HeaderProps> = ({
           )}
         </div>
 
-        <div className={styles.logoContainer}>
-          {showLogo && <Logo size={32} color="#AFF940" />}
-        </div>
+        <div className={styles.logoContainer}>{showLogo && <Logo />}</div>
 
         <div className={styles.rightButton}>
           {showRightButton && (

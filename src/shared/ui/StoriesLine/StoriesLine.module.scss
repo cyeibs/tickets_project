@@ -1,0 +1,45 @@
+@import "../../styles/variables.scss";
+@import "../../styles/mixins.scss";
+
+.container {
+  width: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: $space-300;
+  padding: $space-400 0;
+}
+
+.title {
+  @include t16;
+  padding: 0 $space-400;
+}
+
+.scrollContainer {
+  display: flex;
+  gap: $space-300;
+  padding: 0 $space-400;
+  overflow-x: auto;
+  cursor: grab;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  list-style: none;
+  
+  &:active {
+    cursor: grabbing;
+  }
+  
+  &::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
+}
+
+.storyItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $space-200;
+  min-width: fit-content;
+  padding: 0;
+  margin: 0;
+} 

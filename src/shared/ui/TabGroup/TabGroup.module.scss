@@ -1,0 +1,22 @@
+@import "../../styles/variables.scss";
+@import "../../styles/mixins.scss";
+
+.container {
+  display: flex;
+  flex-direction: column;  
+  gap: $space-200;
+}
+
+.title {
+  @include t16;
+  margin: 0;
+}
+
+.tabGroup {
+  display: flex;
+  justify-content: space-between;
+  border-radius: 99px;
+  padding: $space-100;
+  background-color: $prime-white-color;
+  gap: 0;
+} 

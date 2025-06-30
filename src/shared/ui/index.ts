@@ -5,3 +5,7 @@ export * from './Loader';
 export * from './ErrorBoundary';
 export * from './PhoneInput';
 export * from './Button';
+export * from './Avatar';
+export * from './StoriesLine';
+export * from './Tab';
+export * from './TabGroup';
