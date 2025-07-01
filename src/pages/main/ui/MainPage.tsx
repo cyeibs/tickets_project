@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '@features/auth';
 import { StoriesWidget } from '@widgets/stories';
 import styles from './MainPage.module.scss';
-import { Header, Tab, TabGroup } from '@/shared/ui';
+import { EventCard, Header, Tab, TabGroup } from '@/shared/ui';
 
 export const MainPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'poster' | 'swiper'>('poster');
@@ -13,7 +13,14 @@ export const MainPage: React.FC = () => {
 
       <StoriesWidget />
 
-      <div style={{ padding: '0 16px' }}>
+      <div
+        style={{
+          padding: '0 16px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '24px',
+        }}
+      >
         <TabGroup title="События">
           <Tab
             accent={activeTab === 'poster'}
@@ -28,6 +35,58 @@ export const MainPage: React.FC = () => {
             Свайпер
           </Tab>
         </TabGroup>
+
+        <EventCard
+          title="Путешествие в Оркестрбург: знакомство с ударными"
+          date="12 июня в 12:00"
+          location="Парк 300-летия Петербурга"
+          price="от 1500₽"
+          imageUrl="/avatars/1.webp"
+        />
+
+        <EventCard
+          title="Путешествие в Оркестрбург: знакомство с ударными"
+          date="12 июня в 12:00"
+          location="Парк 300-летия Петербурга"
+          price="от 1500₽"
+          imageUrl="/avatars/1.webp"
+          short
+        />
+
+        <EventCard
+          title="Путешествие в Оркестрбург: знакомство с ударными"
+          date="12 июня в 12:00"
+          location="Парк 300-летия Петербурга"
+          price="от 1500₽"
+          image={false}
+        />
+
+        <EventCard
+          title="Путешествие в Оркестрбург: знакомство с ударными"
+          date="12 июня в 12:00"
+          location="Парк 300-летия Петербурга"
+          price="от 1500₽"
+          image={false}
+          short
+        />
+
+        <EventCard
+          title="Путешествие в Оркестрбург: знакомство с ударными"
+          date="12 июня в 12:00"
+          location="Парк 300-летия Петербурга"
+          price="от 1500₽"
+          imageUrl="/avatars/1.webp"
+          forSearch
+        />
+
+        <EventCard
+          title="Путешествие в Оркестрбург: знакомство с ударными"
+          date="12 июня в 12:00"
+          location="Парк 300-летия Петербурга"
+          price="от 1500₽"
+          image={false}
+          forSearch
+        />
       </div>
     </div>
   );

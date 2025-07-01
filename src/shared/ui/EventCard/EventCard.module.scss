@@ -1,0 +1,142 @@
+@import "@shared/styles/variables.scss";
+@import "@shared/styles/mixins.scss";
+
+.eventCard {
+  display: flex;
+  border-radius: $space-800;
+  overflow: hidden;
+  background-color: $prime-dark-color;
+  box-shadow: $shadow-card-main;
+  position: relative;
+
+  &.withImage {
+    .content {
+      position: absolute;
+      width: 54%;
+      gap: $space-600;
+      height: 100%;
+    }
+
+  }
+
+
+  &.noImage {
+    min-height: 144px;
+    .content {
+      position: relative;
+      width: 100%;
+      gap: $space-300;
+      height: 100%;
+    }
+  }
+
+  &.withMinHeight {
+    min-height: 340px;
+    .content {
+      position: absolute;
+      height: 100%;
+    }
+  }
+
+  &.withSearch  {
+    width: 50%;
+
+    .image{
+      width: 100%;
+    }
+
+    .content {
+      width: 100%;
+      height: 70%;
+      bottom: 0;
+    }
+    
+    &.noImage {
+      min-height: 144px;
+      width: 100%;
+      
+      .content {
+        height: 100%;
+      }
+    }
+  }
+}
+
+.image {
+  width: 55%;
+  object-fit: cover;
+}
+
+.content {
+  @include flex-column;
+
+  right: 0;
+  z-index: 1;
+  border-radius: $space-800;
+  background-color: #BD99FF;
+  padding: $space-400 $space-400 $space-400 $space-400;
+}
+
+.title {
+  @include t18;
+  color: $text-prime-dark-color;
+  margin: 0;
+}
+
+.info {
+  @include r12;
+  display: flex;
+  color: $text-prime-dark-color;
+  flex-direction: column;
+  gap: $space-200;
+}
+
+.infoWrapper {
+  display: flex;
+  align-items: flex-start;
+  gap: $space-200;
+}
+
+
+.infoText {
+  display: inline-block;
+}
+
+.actionsWrapper {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: $space-300;
+}
+
+.actionsLine{
+  display: flex;
+  justify-content: space-between;
+  padding: 0 $space-400 0 $space-400;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-300;
+  border-radius: 999px;
+  padding: $space-200 $space-400 $space-200 $space-400;
+  // background-color: $sec-white-color;
+  margin-top: auto;
+
+
+  backdrop-filter: blur($blur-card-main);
+  box-shadow: 0px 1px 4px 0px rgba(255, 255, 255, 0.25) inset,
+              0px 4px 12px 0px rgba(0, 0, 0, 0.25);
+  
+}
+
+.button {
+  width: 100%;
+}
+
