@@ -2,10 +2,24 @@ import React, { useState } from 'react';
 import { useAuth } from '@features/auth';
 import { StoriesWidget } from '@widgets/stories';
 import styles from './MainPage.module.scss';
-import { EventCard, Header, Tab, TabGroup } from '@/shared/ui';
+import {
+  EventCard,
+  Header,
+  Tab,
+  TabGroup,
+  Snackbar,
+  SnackbarItem,
+} from '@/shared/ui';
+import type { SnackbarItemType } from '@/shared/ui/Snackbar/SnackbarItem';
 
 export const MainPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'poster' | 'swiper'>('poster');
+  const [activeNavItem, setActiveNavItem] = useState<SnackbarItemType>('home');
+  const { logout } = useAuth();
+
+  const handleNavItemClick = (item: SnackbarItemType) => {
+    setActiveNavItem(item);
+  };
 
   return (
     <div className={styles.container}>
@@ -87,6 +101,39 @@ export const MainPage: React.FC = () => {
           image={false}
           forSearch
         />
+      </div>
+
+      <div className={styles.snackbarContainer}>
+        <Snackbar>
+          <SnackbarItem
+            type="home"
+            isActive={activeNavItem === 'home'}
+            onClick={() => handleNavItemClick('home')}
+          />
+          <SnackbarItem
+            type="search"
+            isActive={activeNavItem === 'search'}
+            onClick={() => handleNavItemClick('search')}
+          />
+          {/* <SnackbarItem
+            type="add"
+            isActive={activeNavItem === 'add'}
+            onClick={() => handleNavItemClick('add')}
+          /> */}
+          <SnackbarItem
+            type="ticket"
+            isActive={activeNavItem === 'ticket'}
+            onClick={() => handleNavItemClick('ticket')}
+          />
+          <SnackbarItem
+            type="profile"
+            isActive={activeNavItem === 'profile'}
+            onClick={() => {
+              handleNavItemClick('profile');
+              logout();
+            }}
+          />
+        </Snackbar>
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from '@shared/ui/Button';
 import { IconButton } from '@shared/ui/IconButton';
-import styles from './EventCard.module.scss';
+import styles from './EventSwiperCard.module.scss';
 import {
   ArrowExport,
   CalendarIcon,

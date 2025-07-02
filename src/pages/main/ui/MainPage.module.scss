@@ -8,6 +8,7 @@
   // padding: $space-600;
   min-height: 100vh;
   background-color: $prime-dark-color;
+  position: relative;
 }
 
 .title {
@@ -47,4 +48,14 @@
   &:active {
     transform: scale(0.98);
   }
+}
+
+.snackbarContainer {
+  position: fixed;
+  bottom: 24px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  z-index: 100;
 }

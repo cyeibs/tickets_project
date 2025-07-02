@@ -6,6 +6,7 @@ export * from './Header';
 export * from './IconButton';
 export * from './Loader';
 export * from './PhoneInput';
+export * from './Snackbar';
 export * from './StoriesLine';
 export * from './Tab';
 export * from './TabGroup';
