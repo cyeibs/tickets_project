@@ -18,18 +18,23 @@ export type SnackbarItemType = 'home' | 'search' | 'add' | 'ticket' | 'profile';
 interface SnackbarItemProps {
   type: SnackbarItemType;
   isActive: boolean;
+  activeItem: SnackbarItemType;
   onClick: () => void;
 }
 
 export const SnackbarItem: React.FC<SnackbarItemProps> = ({
   type,
   isActive,
+  activeItem,
   onClick,
 }) => {
+  const shouldAddBeEnlarged = type === 'add' && activeItem === 'home';
+
   const renderIcon = () => {
     const iconColor = '#FFFFFF';
     const iconColorBold = '#212C3A';
     const iconSize = 32;
+    const iconColorAdd = shouldAddBeEnlarged ? '#212C3A' : '#FFFFFF';
 
     switch (type) {
       case 'home':
@@ -48,7 +53,7 @@ export const SnackbarItem: React.FC<SnackbarItemProps> = ({
         return isActive ? (
           <AddCircleBold size={iconSize} color={iconColorBold} />
         ) : (
-          <AddCircle size={iconSize} color={iconColor} />
+          <AddCircle size={iconSize} color={iconColorAdd} />
         );
       case 'ticket':
         return isActive ? (
@@ -67,9 +72,31 @@ export const SnackbarItem: React.FC<SnackbarItemProps> = ({
     }
   };
 
+  const getPositionClass = () => {
+    switch (type) {
+      case 'home':
+        return styles.homeItem;
+      case 'search':
+        return styles.searchItem;
+      case 'add':
+        return styles.addItem;
+      case 'ticket':
+        return styles.ticketItem;
+      case 'profile':
+        return styles.profileItem;
+      default:
+        return '';
+    }
+  };
+
   return (
     <button
-      className={`${styles.item} ${isActive ? styles.activeItem : ''}`}
+      className={`
+        ${styles.item} 
+        ${getPositionClass()} 
+        ${isActive ? styles.activeItem : ''} 
+        ${shouldAddBeEnlarged ? styles.addEnlarged : ''}
+      `}
       onClick={onClick}
       aria-label={`${type} navigation`}
       type="button"

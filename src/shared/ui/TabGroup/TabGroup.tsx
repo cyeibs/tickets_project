@@ -1,4 +1,5 @@
 import type { FC, ReactNode } from 'react';
+import { AnimatePresence } from 'framer-motion';
 import styles from './TabGroup.module.scss';
 
 export interface TabGroupProps {
@@ -19,7 +20,9 @@ export const TabGroup: FC<TabGroupProps> = ({
   return (
     <div className={containerClasses}>
       {title && <h3 className={styles.title}>{title}</h3>}
-      <div className={styles.tabGroup}>{children}</div>
+      <div className={styles.tabGroup}>
+        <AnimatePresence>{children}</AnimatePresence>
+      </div>
     </div>
   );
 };

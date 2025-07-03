@@ -108,26 +108,31 @@ export const MainPage: React.FC = () => {
           <SnackbarItem
             type="home"
             isActive={activeNavItem === 'home'}
+            activeItem={activeNavItem}
             onClick={() => handleNavItemClick('home')}
           />
           <SnackbarItem
             type="search"
             isActive={activeNavItem === 'search'}
+            activeItem={activeNavItem}
             onClick={() => handleNavItemClick('search')}
           />
-          {/* <SnackbarItem
+          <SnackbarItem
             type="add"
             isActive={activeNavItem === 'add'}
+            activeItem={activeNavItem}
             onClick={() => handleNavItemClick('add')}
-          /> */}
+          />
           <SnackbarItem
             type="ticket"
             isActive={activeNavItem === 'ticket'}
+            activeItem={activeNavItem}
             onClick={() => handleNavItemClick('ticket')}
           />
           <SnackbarItem
             type="profile"
             isActive={activeNavItem === 'profile'}
+            activeItem={activeNavItem}
             onClick={() => {
               handleNavItemClick('profile');
               logout();

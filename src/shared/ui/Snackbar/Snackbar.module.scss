@@ -2,8 +2,11 @@
 @import "../../styles/mixins.scss";
 
 .container {
+  position: relative;
   display: flex;
-  gap: $space-600;
+  justify-content: space-between;
+  width: 320px;
+  height: 56px;
   border-radius: 999px;
   padding: $space-100 $space-200 $space-100 $space-200;
   background-color: #000000;
@@ -20,6 +23,8 @@
   cursor: pointer;
   width: 48px;
   height: 48px;
+  position: absolute;
+  transition: all 0.3s ease;
 }
 
 .activeItem {
@@ -28,6 +33,46 @@
   background-color: $prime-accent-color;
   box-shadow: 0px 2.67px 5.33px 0px rgba(0, 0, 0, 0.1),
               0px 5.33px 5.33px 0px rgba(255, 255, 255, 0.25) inset;
+}
+
+.homeItem {
+  left: 8px;
+  bottom: 4px;
+}
+
+.searchItem {
+  left: 70px;
+  bottom: 4px;
+}
+
+.addItem {
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  padding: $space-200;
+  transition: width 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), 
+              height 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), 
+              bottom 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  bottom: 4px;
+}
+
+.addEnlarged {
+  width: 56px;
+  height: 56px;
+  bottom: 14px;
+  background-color: $prime-accent-color;
+  box-shadow: 0px 2.67px 5.33px 0px rgba(0, 0, 0, 0.1),
+              0px 5.33px 5.33px 0px rgba(255, 255, 255, 0.25) inset;
+}
+
+.ticketItem {
+  right: 70px;
+  bottom: 4px;
+}
+
+.profileItem {
+  right: 8px;
+  bottom: 4px;
 }
 
 .title {

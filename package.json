@@ -18,6 +18,7 @@
     "axios": "^1.10.0",
     "classnames": "^2.5.1",
     "compose-function": "^3.0.3",
+    "framer-motion": "^12.23.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "7"

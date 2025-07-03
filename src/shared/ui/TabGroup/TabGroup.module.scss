@@ -19,4 +19,9 @@
   padding: $space-100;
   background-color: $prime-white-color;
   gap: 0;
+  position: relative;
+  overflow: hidden;
+  
+  /* Prevent default mobile tap highlight */
+  -webkit-tap-highlight-color: transparent;
 } 
