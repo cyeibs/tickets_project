@@ -113,16 +113,13 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
           />
 
           {showClear && (
-            <div className={styles.clearButton}>
-              <IconButton
-                icon={CrossIcon}
-                iconSize={16}
-                variant="transparent"
-                onClick={handleClear}
-                type="button"
-                aria-label="Clear input"
-              />
-            </div>
+            <button
+              type="button"
+              className={styles.clearButton}
+              onClick={handleClear}
+            >
+              <CrossIcon />
+            </button>
           )}
 
           {suffixElement && (

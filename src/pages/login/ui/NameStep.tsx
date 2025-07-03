@@ -23,7 +23,7 @@ export const NameStep: React.FC<NameStepProps> = ({
     <>
       <TextField
         label="ФИО"
-        placeholder="Введите ваше полное имя"
+        placeholder="Женя Антонова"
         value={name}
         onChange={onNameChange}
         error={error || undefined}

@@ -8,20 +8,23 @@
   background-color: $prime-dark-color;
   box-shadow: $shadow-card-main;
   position: relative;
+  width: 100%;
+  height: calc(100vh - 120px - 32px - 56px - 80px);
+  touch-action: none;
+  user-select: none;
 
   &.withImage {
     .content {
       position: absolute;
-      width: 54%;
+      width: 100%;
+      height: 50%;
+      bottom: 0;
       gap: $space-600;
-      height: 100%;
     }
-
   }
 
-
   &.noImage {
-    min-height: 144px;
+    // min-height: 144px;
     .content {
       position: relative;
       width: 100%;
@@ -29,47 +32,23 @@
       height: 100%;
     }
   }
-
-  &.withMinHeight {
-    min-height: 340px;
-    .content {
-      position: absolute;
-      height: 100%;
-    }
-  }
-
-  &.withSearch  {
-    width: 50%;
-
-    .image{
-      width: 100%;
-    }
-
-    .content {
-      width: 100%;
-      height: 70%;
-      bottom: 0;
-    }
-    
-    &.noImage {
-      min-height: 144px;
-      width: 100%;
-      
-      .content {
-        height: 100%;
-      }
-    }
-  }
 }
 
 .image {
-  width: 55%;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
+  pointer-events: none;
+  user-drag: none;
+  -webkit-user-drag: none;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
 }
 
 .content {
   @include flex-column;
-
   right: 0;
   z-index: 1;
   border-radius: $space-800;
@@ -96,7 +75,6 @@
   align-items: flex-start;
   gap: $space-200;
 }
-
 
 .infoText {
   display: inline-block;
@@ -126,14 +104,10 @@
   gap: $space-300;
   border-radius: 999px;
   padding: $space-200 $space-400 $space-200 $space-400;
-  // background-color: $sec-white-color;
   margin-top: auto;
-
-
   backdrop-filter: blur($blur-card-main);
   box-shadow: 0px 1px 4px 0px rgba(255, 255, 255, 0.25) inset,
               0px 4px 12px 0px rgba(0, 0, 0, 0.25);
-  
 }
 
 .button {

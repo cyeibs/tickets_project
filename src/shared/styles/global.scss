@@ -7,6 +7,24 @@
   box-sizing: border-box;
 }
 
+html,
+body {
+  overflow: hidden;
+  height: 100%;
+}
+
+// Prevent accidental mini app closing on swipe
+#root {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: calc(100% + 1px); // This extra pixel makes the content scrollable
+}
+
 body {
   font-family: $font-family-regular;
   background-color: $prime-dark-color;

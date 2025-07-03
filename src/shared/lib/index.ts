@@ -1,0 +1,1 @@
+export { preventTelegramSwipeClose } from './preventTelegramSwipeClose';

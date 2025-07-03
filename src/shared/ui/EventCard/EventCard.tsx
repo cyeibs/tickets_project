@@ -83,7 +83,13 @@ export const EventCard: React.FC<EventCardProps> = ({
           {!forSearch && (
             <div className={styles.actionsLine}>
               <IconButton
-                icon={<img src={'/avatars/1.webp'} alt="avatar" />}
+                icon={
+                  <img
+                    src={'/avatars/1.webp'}
+                    alt="avatar"
+                    className={styles.avatar}
+                  />
+                }
                 onClick={onIconClick}
                 iconColor="#151515"
                 iconSize={24}

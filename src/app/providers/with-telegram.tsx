@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import WebApp from '@twa-dev/sdk';
+import { preventTelegramSwipeClose } from '../../shared/lib/preventTelegramSwipeClose';
 
 export const withTelegram = (component: () => React.ReactNode) => () => {
   useEffect(() => {
@@ -12,9 +13,17 @@ export const withTelegram = (component: () => React.ReactNode) => () => {
       WebApp.expand();
     }
 
-    // Set up the main button if needed
-    // WebApp.MainButton.setText('CONTINUE');
-    // WebApp.MainButton.show();
+    // Prevent accidental closing on swipe
+    // This is available in Telegram WebApp version 7.7+
+    if (WebApp.disableVerticalSwipes) {
+      WebApp.disableVerticalSwipes();
+    }
+
+    // Add closing confirmation to prevent accidental app closures
+    WebApp.enableClosingConfirmation();
+
+    // Apply additional prevention for swipe close (works on older versions too)
+    const cleanupPreventSwipeClose = preventTelegramSwipeClose();
 
     // Set header color
     WebApp.setHeaderColor('#23222A');
@@ -22,7 +31,8 @@ export const withTelegram = (component: () => React.ReactNode) => () => {
     WebApp.setBackgroundColor('#23222A');
 
     return () => {
-      // Clean up if needed
+      // Clean up event listeners
+      cleanupPreventSwipeClose();
     };
   }, []);
 

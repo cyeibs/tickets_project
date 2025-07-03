@@ -15,13 +15,12 @@ export interface EventSwiperCardProps {
   date?: string;
   location?: string;
   imageUrl?: string;
-  short?: boolean;
   image?: boolean;
-  forSearch?: boolean;
   onButtonClick?: () => void;
   onIconClick?: () => void;
   className?: string;
   price?: string;
+  isFront?: boolean;
 }
 
 export const EventSwiperCard: React.FC<EventSwiperCardProps> = ({
@@ -29,19 +28,15 @@ export const EventSwiperCard: React.FC<EventSwiperCardProps> = ({
   date,
   location,
   imageUrl,
-  short = false,
   image = true,
-  forSearch = false,
   onButtonClick,
-  onIconClick,
   className = '',
   price,
+  isFront,
 }) => {
   const cardClasses = [
     styles.eventCard,
     image ? styles.withImage : styles.noImage,
-    !short ? styles.withMinHeight : '',
-    forSearch ? styles.withSearch : '',
     className,
   ]
     .filter(Boolean)
@@ -50,12 +45,18 @@ export const EventSwiperCard: React.FC<EventSwiperCardProps> = ({
   return (
     <div className={cardClasses}>
       {image && imageUrl && (
-        <img src={imageUrl} alt={title} className={styles.image} />
+        <img
+          src={imageUrl}
+          alt={title}
+          className={styles.image}
+          draggable="false"
+          style={{ pointerEvents: 'none' }}
+        />
       )}
       <div className={styles.content}>
         <h3 className={styles.title}>{title}</h3>
 
-        {!forSearch && (date || location || price) && (
+        {(date || location || price) && (
           <div className={styles.info}>
             {date && (
               <span className={styles.infoWrapper}>
@@ -78,36 +79,12 @@ export const EventSwiperCard: React.FC<EventSwiperCardProps> = ({
           </div>
         )}
       </div>
-      {!short && (
+      {isFront && (
         <div className={styles.actionsWrapper}>
-          {!forSearch && (
-            <div className={styles.actionsLine}>
-              <IconButton
-                icon={<img src={'/avatars/1.webp'} alt="avatar" />}
-                onClick={onIconClick}
-                iconColor="#151515"
-                iconSize={24}
-              />
-              <IconButton
-                icon={Heart}
-                onClick={onIconClick}
-                iconColor="#151515"
-                iconSize={24}
-              />
-            </div>
-          )}
           <div className={styles.actions}>
             <Button accent onClick={onButtonClick} className={styles.button}>
               К событию
             </Button>
-            {!forSearch && (
-              <IconButton
-                icon={ArrowExport}
-                onClick={onIconClick}
-                iconColor="#151515"
-                iconSize={24}
-              />
-            )}
           </div>
         </div>
       )}

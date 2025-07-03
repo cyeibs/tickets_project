@@ -67,6 +67,10 @@
   object-fit: cover;
 }
 
+.avatar {
+  border-radius: 999px;
+}
+
 .content {
   @include flex-column;
 
