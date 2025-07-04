@@ -24,7 +24,7 @@ export const SplashPage: React.FC = () => {
   return (
     <div className={styles.container}>
       <div className={styles.logoWrapper}>
-        <img src="/splash-logo.png" alt="LupApp Logo" className={styles.logo} />
+        <img src="/splash-logo.png" alt="ЛУП Logo" className={styles.logo} />
       </div>
     </div>
   );

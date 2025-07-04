@@ -50,7 +50,7 @@ export const Header: React.FC<HeaderProps> = ({
           {showLeftButton && (
             <IconButton
               icon={ArrowLeft}
-              variant="transparent"
+              variant="minimal"
               iconColor="#FFFFFF"
               onClick={onLeftButtonClick}
             />
@@ -63,7 +63,7 @@ export const Header: React.FC<HeaderProps> = ({
           {showRightButton && (
             <IconButton
               icon={Edit}
-              variant="transparent"
+              variant="minimal"
               iconColor="#FFFFFF"
               onClick={onRightButtonClick}
             />
