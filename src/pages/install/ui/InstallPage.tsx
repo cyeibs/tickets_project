@@ -1,6 +1,6 @@
-import { Header } from '@shared/ui/Header';
-import React from 'react';
-import styles from './InstallPage.module.scss';
+import { Header } from "@shared/ui/Header";
+import React from "react";
+import styles from "./InstallPage.module.scss";
 
 export const InstallPage: React.FC = () => {
   return (
@@ -20,7 +20,7 @@ export const InstallPage: React.FC = () => {
           <ol className={styles.steps}>
             <li>Откройте сайт в браузере Safari</li>
             <li>
-              Нажмите на кнопку «Поделиться»{' '}
+              Нажмите на кнопку «Поделиться»{" "}
               <span className={styles.icon}>⎙</span> внизу экрана
             </li>
             <li>Прокрутите вниз и выберите «На экран «Домой»»</li>

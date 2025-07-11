@@ -2,11 +2,11 @@
 
 const CACHE = "lupapp-v1";
 const precacheFiles = [
-  "/",
-  "./index.html",
-  "./manifest.json",
-  "./icon.png",
-  "./login-image.png",
+  "/tickets_project/",
+  "/tickets_project/index.html",
+  "/tickets_project/manifest.json",
+  "/tickets_project/icon.png",
+  "/tickets_project/login-image.png",
 ];
 
 // Install Service Worker
@@ -81,7 +81,7 @@ self.addEventListener("fetch", function (event) {
             error
           );
           // You could return a custom offline page here
-          return caches.match("/");
+          return caches.match("/tickets_project/");
         });
     })
   );

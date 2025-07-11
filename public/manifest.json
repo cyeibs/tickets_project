@@ -2,19 +2,19 @@
   "name": "ЛУП",
   "short_name": "ЛУП",
   "description": "ЛУП - мобильное приложение для мероприятий",
-  "start_url": "/",
+  "start_url": "/tickets_project/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#000000",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "./icon.png",
+      "src": "/tickets_project/icon.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "./icon.png",
+      "src": "/tickets_project/icon.png",
       "sizes": "512x512",
       "type": "image/png"
     }
