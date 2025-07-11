@@ -56,77 +56,91 @@ const WrappedSplashPage = withMobileRedirect(SplashPage);
 const WrappedLoginPage = withMobileRedirect(LoginPage);
 const WrappedRegisterPage = withMobileRedirect(RegisterPage);
 
-export const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <WrappedSplashPage />,
-    errorElement: <ErrorBoundary />,
-  },
-  {
-    path: "/login",
-    element: <WrappedLoginPage />,
-    errorElement: <ErrorBoundary />,
-  },
-  {
-    path: "/register",
-    element: <WrappedRegisterPage />,
-    errorElement: <ErrorBoundary />,
-  },
-  {
-    path: "/install",
-    element: <InstallPage />,
-    errorElement: <ErrorBoundary />,
-  },
-  {
-    // Layout routes for pages that need header and snackbar
-    path: "/",
-    element: <MainLayout />,
-    errorElement: <ErrorBoundary />,
-    children: [
-      {
-        path: "main",
-        element: <MainPage />,
-      },
-      {
-        path: "search",
-        element: <SearchPage />,
-        // Override default header props for search page
-        handle: {
-          headerProps: {
-            showLogo: false,
-            showLeftButton: false,
-            showRightButton: false,
-            showSearchInput: true,
-            showFilterButton: true,
+// Get the basename from the environment or use the default for GitHub Pages
+const getBasename = () => {
+  // For GitHub Pages deployment
+  if (import.meta.env.PROD) {
+    return "/tickets_project";
+  }
+  return "/";
+};
+
+export const router = createBrowserRouter(
+  [
+    {
+      path: "/",
+      element: <WrappedSplashPage />,
+      errorElement: <ErrorBoundary />,
+    },
+    {
+      path: "/login",
+      element: <WrappedLoginPage />,
+      errorElement: <ErrorBoundary />,
+    },
+    {
+      path: "/register",
+      element: <WrappedRegisterPage />,
+      errorElement: <ErrorBoundary />,
+    },
+    {
+      path: "/install",
+      element: <InstallPage />,
+      errorElement: <ErrorBoundary />,
+    },
+    {
+      // Layout routes for pages that need header and snackbar
+      path: "/",
+      element: <MainLayout />,
+      errorElement: <ErrorBoundary />,
+      children: [
+        {
+          path: "main",
+          element: <MainPage />,
+        },
+        {
+          path: "search",
+          element: <SearchPage />,
+          // Override default header props for search page
+          handle: {
+            headerProps: {
+              showLogo: false,
+              showLeftButton: false,
+              showRightButton: false,
+              showSearchInput: true,
+              showFilterButton: true,
+            },
           },
         },
-      },
-      {
-        path: "ticket",
-        element: <TicketsPage />,
-        // Custom header props for tickets page
-        handle: {
-          headerProps: {
-            showLogo: false,
-            showLeftButton: false,
-            showRightButton: false,
-            pageName: "Билеты",
+        {
+          path: "ticket",
+          element: <TicketsPage />,
+          // Custom header props for tickets page
+          handle: {
+            headerProps: {
+              showLogo: false,
+              showLeftButton: false,
+              showRightButton: false,
+              pageName: "Билеты",
+            },
           },
         },
-      },
-      {
-        path: "profile",
-        element: <div>Profile Page (to be implemented)</div>,
-      },
-      {
-        path: "add",
-        element: <div>Add Event Page (to be implemented)</div>,
-      },
-    ],
-  },
+        {
+          path: "profile",
+          element: <div>Profile Page (to be implemented)</div>,
+        },
+        {
+          path: "add",
+          element: <div>Add Event Page (to be implemented)</div>,
+        },
+      ],
+    },
+    {
+      path: "*",
+      element: <Navigate to="/" replace />,
+      errorElement: <ErrorBoundary />,
+    },
+  ],
   {
-    path: "*",
-    element: <Navigate to="/" replace />,
-    errorElement: <ErrorBoundary />,
-  },
-]);
+    basename: getBasename(),
+  }
+);
