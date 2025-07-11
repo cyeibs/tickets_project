@@ -103,7 +103,7 @@ const SwipeCard: React.FC<SwipeCardProps> = ({
         location={location}
         price={price}
         imageUrl={imageUrl}
-        image={true}
+        image={!!imageUrl}
         isFront={isFront}
       />
     </motion.div>
