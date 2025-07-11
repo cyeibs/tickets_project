@@ -1,0 +1,80 @@
+@import "@shared/styles/variables.scss";
+@import "@shared/styles/mixins.scss";
+
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: $prime-dark-color;
+  position: relative;
+}
+
+.title {
+  @include t24;
+  color: $prime-white-color;
+  margin-bottom: $space-600;
+}
+
+.snackbarContainer {
+  position: fixed;
+  bottom: 24px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  z-index: 100;
+}
+
+.storiesContainer {
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.visible {
+  max-height: 120px;
+  opacity: 1;
+  margin: $space-400 0;
+}
+
+.hidden {
+  max-height: 0;
+  opacity: 0;
+  margin: 0;
+}
+
+.eventsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-400;
+  padding: $space-400 $space-400 0 $space-400;
+
+  > div {
+    &[class*="withImage"] {
+      width: calc(50% - #{$space-400 / 2});
+
+      .image {
+        width: 100%;
+        height: 140px;
+        object-fit: cover;
+      }
+
+      .content {
+        width: 100%;
+        height: auto;
+        position: relative;
+        bottom: 0;
+      }
+    }
+
+    &[class*="noImage"] {
+      width: 100%;
+    }
+  }
+
+  &.swiperMode {
+    flex: 1;
+    padding-bottom: calc(
+      56px + 40px + 24px
+    ); /* Учитываем высоту снэкбара + отступ 40px + нижний отступ страницы */
+  }
+}

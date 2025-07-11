@@ -1,7 +1,8 @@
-import React from 'react';
-import { IconButton } from '../IconButton';
-import { ArrowLeft, Edit, Logo } from '@shared/assets/icons';
-import styles from './Header.module.scss';
+import React from "react";
+import { IconButton } from "../IconButton";
+import { ArrowLeft, Edit, Logo, FilterIcon } from "@shared/assets/icons";
+import styles from "./Header.module.scss";
+import { SearchInput } from "../SearchInput";
 
 interface HeaderProps {
   /**
@@ -25,6 +26,16 @@ interface HeaderProps {
   showRightButton?: boolean;
 
   /**
+   * Показывать ли поле поиска
+   */
+  showSearchInput?: boolean;
+
+  /**
+   * Показывать ли кнопку фильтра
+   */
+  showFilterButton?: boolean;
+
+  /**
    * Обработчик нажатия на левую кнопку
    */
   onLeftButtonClick?: () => void;
@@ -33,6 +44,16 @@ interface HeaderProps {
    * Обработчик нажатия на правую кнопку
    */
   onRightButtonClick?: () => void;
+
+  /**
+   * Обработчик нажатия на кнопку фильтра
+   */
+  onFilterButtonClick?: () => void;
+
+  /**
+   * Обработчик изменения значения в поле поиска
+   */
+  onSearchChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -40,8 +61,12 @@ export const Header: React.FC<HeaderProps> = ({
   showLeftButton = true,
   showLogo = true,
   showRightButton = true,
+  showSearchInput = false,
+  showFilterButton = false,
   onLeftButtonClick,
   onRightButtonClick,
+  onFilterButtonClick,
+  onSearchChange,
 }) => {
   return (
     <header className={styles.header}>
@@ -70,6 +95,23 @@ export const Header: React.FC<HeaderProps> = ({
           )}
         </div>
       </div>
+
+      {(showSearchInput || showFilterButton) && (
+        <div className={styles.searchRow}>
+          {showSearchInput && (
+            <div className={styles.searchInputContainer}>
+              <SearchInput onChange={onSearchChange} />
+            </div>
+          )}
+          {showFilterButton && (
+            <IconButton
+              icon={FilterIcon}
+              variant="basic"
+              onClick={onFilterButtonClick}
+            />
+          )}
+        </div>
+      )}
 
       {pageName && (
         <div className={styles.bottomRow}>

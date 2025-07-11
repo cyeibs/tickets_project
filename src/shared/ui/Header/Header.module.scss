@@ -39,6 +39,17 @@
   justify-content: flex-end;
 }
 
+.searchRow {
+  display: flex;
+  align-items: center;
+  gap: $space-200; // 8px gap as requested
+  width: 100%;
+}
+
+.searchInputContainer {
+  flex: 1;
+}
+
 .bottomRow {
   display: flex;
   justify-content: center;
@@ -50,4 +61,4 @@
   @include r16;
   color: $prime-dark-color;
   text-align: center;
-} 
+}

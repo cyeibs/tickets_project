@@ -1,5 +1,5 @@
-import React from 'react';
-import styles from './Snackbar.module.scss';
+import React from "react";
+import styles from "./Snackbar.module.scss";
 import {
   HomeIcon,
   HomeIconBold,
@@ -11,9 +11,9 @@ import {
   TicketIconBold,
   ProfileIcon,
   ProfileIconBold,
-} from '@/shared/assets/icons';
+} from "@/shared/assets/icons";
 
-export type SnackbarItemType = 'home' | 'search' | 'add' | 'ticket' | 'profile';
+export type SnackbarItemType = "main" | "search" | "add" | "ticket" | "profile";
 
 interface SnackbarItemProps {
   type: SnackbarItemType;
@@ -28,40 +28,40 @@ export const SnackbarItem: React.FC<SnackbarItemProps> = ({
   activeItem,
   onClick,
 }) => {
-  const shouldAddBeEnlarged = type === 'add' && activeItem === 'home';
+  const shouldAddBeEnlarged = type === "add" && activeItem === "main";
 
   const renderIcon = () => {
-    const iconColor = '#FFFFFF';
-    const iconColorBold = '#212C3A';
+    const iconColor = "#FFFFFF";
+    const iconColorBold = "#212C3A";
     const iconSize = 32;
-    const iconColorAdd = shouldAddBeEnlarged ? '#212C3A' : '#FFFFFF';
+    const iconColorAdd = shouldAddBeEnlarged ? "#212C3A" : "#FFFFFF";
 
     switch (type) {
-      case 'home':
+      case "main":
         return isActive ? (
           <HomeIconBold size={iconSize} color={iconColorBold} />
         ) : (
           <HomeIcon size={iconSize} color={iconColor} />
         );
-      case 'search':
+      case "search":
         return isActive ? (
           <SearchIconBold size={iconSize} color={iconColorBold} />
         ) : (
           <SearchIcon size={iconSize} color={iconColor} />
         );
-      case 'add':
+      case "add":
         return isActive ? (
           <AddCircleBold size={iconSize} color={iconColorBold} />
         ) : (
           <AddCircle size={iconSize} color={iconColorAdd} />
         );
-      case 'ticket':
+      case "ticket":
         return isActive ? (
           <TicketIconBold size={iconSize} color={iconColorBold} />
         ) : (
           <TicketIcon size={iconSize} color={iconColor} />
         );
-      case 'profile':
+      case "profile":
         return isActive ? (
           <ProfileIconBold size={iconSize} color={iconColorBold} />
         ) : (
@@ -74,18 +74,18 @@ export const SnackbarItem: React.FC<SnackbarItemProps> = ({
 
   const getPositionClass = () => {
     switch (type) {
-      case 'home':
+      case "main":
         return styles.homeItem;
-      case 'search':
+      case "search":
         return styles.searchItem;
-      case 'add':
+      case "add":
         return styles.addItem;
-      case 'ticket':
+      case "ticket":
         return styles.ticketItem;
-      case 'profile':
+      case "profile":
         return styles.profileItem;
       default:
-        return '';
+        return "";
     }
   };
 
@@ -94,8 +94,8 @@ export const SnackbarItem: React.FC<SnackbarItemProps> = ({
       className={`
         ${styles.item} 
         ${getPositionClass()} 
-        ${isActive ? styles.activeItem : ''} 
-        ${shouldAddBeEnlarged ? styles.addEnlarged : ''}
+        ${isActive ? styles.activeItem : ""} 
+        ${shouldAddBeEnlarged ? styles.addEnlarged : ""}
       `}
       onClick={onClick}
       aria-label={`${type} navigation`}

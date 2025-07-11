@@ -1,23 +1,13 @@
-import {
-  EventCard,
-  Header,
-  Snackbar,
-  SnackbarItem,
-  Tab,
-  TabGroup,
-} from "@/shared/ui";
+import { EventCard, Header, Snackbar, SnackbarItem } from "@/shared/ui";
 import type { SnackbarItemType } from "@/shared/ui/Snackbar/SnackbarItem";
-import { SwipeCards } from "@/widgets/events";
-import type { EventCardType } from "@/widgets/events/ui/SwipeCards";
 import { useAuth } from "@features/auth";
-import { StoriesWidget } from "@widgets/stories";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import styles from "./MainPage.module.scss";
+import styles from "./SearchPage.module.scss";
 
-export const MainPage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<"poster" | "swiper">("poster");
-  const [activeNavItem, setActiveNavItem] = useState<SnackbarItemType>("main");
+export const SearchPage: React.FC = () => {
+  const [activeNavItem, setActiveNavItem] =
+    useState<SnackbarItemType>("search");
   const { logout } = useAuth();
   const navigate = useNavigate();
 
@@ -50,7 +40,6 @@ export const MainPage: React.FC = () => {
       date: "18 июня в 15:00",
       location: "Творческая студия «Палитра»",
       price: "от 1200₽",
-      imageUrl: "/avatars/1.webp",
     },
     {
       id: 4,
@@ -68,66 +57,38 @@ export const MainPage: React.FC = () => {
       price: "от 700₽",
       imageUrl: "/avatars/1.webp",
     },
+    {
+      id: 6,
+      title: "Выставка современного искусства",
+      date: "25 июня в 10:00",
+      location: "Эрарта",
+      price: "от 700₽",
+    },
   ];
-
-  // Convert events to EventCardType for SwipeCards
-  const eventCards: EventCardType[] = events.map((event) => ({
-    id: event.id,
-    title: event.title,
-    date: event.date,
-    location: event.location,
-    price: event.price,
-    imageUrl: event.imageUrl,
-  }));
 
   return (
     <div className={styles.container}>
-      <Header showLogo showLeftButton={false} showRightButton={false} />
+      <Header
+        showLogo
+        showLeftButton={false}
+        showRightButton={false}
+        showSearchInput
+        showFilterButton
+      />
 
-      <div
-        className={`${styles.storiesContainer} ${
-          activeTab === "poster" ? styles.visible : styles.hidden
-        }`}
-      >
-        <StoriesWidget />
-      </div>
-
-      <div
-        className={`${styles.eventsContainer} ${
-          activeTab === "swiper" ? styles.swiperMode : ""
-        }`}
-      >
-        <TabGroup title="События">
-          <Tab
-            accent={activeTab === "poster"}
-            onClick={() => setActiveTab("poster")}
-          >
-            Афишой
-          </Tab>
-          <Tab
-            accent={activeTab === "swiper"}
-            onClick={() => setActiveTab("swiper")}
-          >
-            Свайпер
-          </Tab>
-        </TabGroup>
-
-        {activeTab === "poster" ? (
-          // Render 5 EventCard components when "poster" tab is active
-          events.map((event) => (
-            <EventCard
-              key={event.id}
-              title={event.title}
-              date={event.date}
-              location={event.location}
-              price={event.price}
-              imageUrl={event.imageUrl}
-            />
-          ))
-        ) : (
-          // Render SwipeCards component when "swiper" tab is active
-          <SwipeCards events={eventCards} />
-        )}
+      <div className={styles.eventsContainer}>
+        {events.map((event) => (
+          <EventCard
+            key={event.id}
+            title={event.title}
+            date={event.date}
+            location={event.location}
+            price={event.price}
+            image={!!event.imageUrl}
+            imageUrl={event.imageUrl}
+            forSearch
+          />
+        ))}
       </div>
 
       <div className={styles.snackbarContainer}>

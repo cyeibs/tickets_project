@@ -1,40 +1,41 @@
-import React, { useEffect } from 'react';
+import React, { useEffect } from "react";
 import {
   createBrowserRouter,
   Navigate,
   useNavigate,
   useLocation,
-} from 'react-router-dom';
-import { SplashPage } from '@pages/splash';
-import { LoginPage } from '@pages/login';
-import { RegisterPage } from '@pages/register';
-import { MainPage } from '@pages/main';
-import { InstallPage } from '@pages/install';
-import { ErrorBoundary } from '@shared/ui/ErrorBoundary';
-import { isMobileDevice, isTelegramApp, isStandaloneMode } from '@shared/lib';
+} from "react-router-dom";
+import { SplashPage } from "@pages/splash";
+import { LoginPage } from "@pages/login";
+import { RegisterPage } from "@pages/register";
+import { MainPage } from "@pages/main";
+import { InstallPage } from "@pages/install";
+import { SearchPage } from "@pages/search";
+import { ErrorBoundary } from "@shared/ui/ErrorBoundary";
+import { isMobileDevice, isTelegramApp, isStandaloneMode } from "@shared/lib";
 
 // Wrapper component to handle mobile redirect logic
 const MobileRedirectWrapper = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  useEffect(() => {
-    // Skip if we're already on the install page or the user has dismissed the redirect
-    if (
-      location.pathname === '/install' ||
-      localStorage.getItem('installRedirectDismissed')
-    ) {
-      return;
-    }
+  // useEffect(() => {
+  //   // Skip if we're already on the install page or the user has dismissed the redirect
+  //   if (
+  //     location.pathname === '/install' ||
+  //     localStorage.getItem('installRedirectDismissed')
+  //   ) {
+  //     return;
+  //   }
 
-    const shouldRedirect = isMobileDevice() && !isStandaloneMode();
+  //   const shouldRedirect = isMobileDevice() && !isStandaloneMode();
 
-    if (shouldRedirect) {
-      // Save the current path to redirect back after installation or dismissal
-      sessionStorage.setItem('redirectFromPath', location.pathname);
-      navigate('/install');
-    }
-  }, [navigate, location.pathname]);
+  //   if (shouldRedirect) {
+  //     // Save the current path to redirect back after installation or dismissal
+  //     sessionStorage.setItem('redirectFromPath', location.pathname);
+  //     navigate('/install');
+  //   }
+  // }, [navigate, location.pathname]);
 
   return <>{children}</>;
 };
@@ -53,35 +54,41 @@ const WrappedSplashPage = withMobileRedirect(SplashPage);
 const WrappedLoginPage = withMobileRedirect(LoginPage);
 const WrappedRegisterPage = withMobileRedirect(RegisterPage);
 const WrappedMainPage = withMobileRedirect(MainPage);
+const WrappedSearchPage = withMobileRedirect(SearchPage);
 
 export const router = createBrowserRouter([
   {
-    path: '/',
+    path: "/",
     element: <WrappedSplashPage />,
     errorElement: <ErrorBoundary />,
   },
   {
-    path: '/login',
+    path: "/login",
     element: <WrappedLoginPage />,
     errorElement: <ErrorBoundary />,
   },
   {
-    path: '/register',
+    path: "/register",
     element: <WrappedRegisterPage />,
     errorElement: <ErrorBoundary />,
   },
   {
-    path: '/main',
+    path: "/main",
     element: <WrappedMainPage />,
     errorElement: <ErrorBoundary />,
   },
   {
-    path: '/install',
+    path: "/install",
     element: <InstallPage />,
     errorElement: <ErrorBoundary />,
   },
   {
-    path: '*',
+    path: "/search",
+    element: <WrappedSearchPage />,
+    errorElement: <ErrorBoundary />,
+  },
+  {
+    path: "*",
     element: <Navigate to="/" replace />,
     errorElement: <ErrorBoundary />,
   },
