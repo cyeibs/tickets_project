@@ -13,6 +13,7 @@ export interface RouteHandle {
     showRightButton?: boolean;
     showSearchInput?: boolean;
     showFilterButton?: boolean;
+    pageName?: string;
   };
   showHeader?: boolean;
   showSnackbar?: boolean;
@@ -71,6 +72,7 @@ export const MainLayout: React.FC = () => {
           showRightButton={headerProps.showRightButton}
           showSearchInput={headerProps.showSearchInput}
           showFilterButton={headerProps.showFilterButton}
+          pageName={headerProps.pageName}
         />
       )}
 

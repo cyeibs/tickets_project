@@ -107,9 +107,10 @@ export const router = createBrowserRouter([
         // Custom header props for tickets page
         handle: {
           headerProps: {
-            showLogo: true,
-            showLeftButton: true,
-            showRightButton: true,
+            showLogo: false,
+            showLeftButton: false,
+            showRightButton: false,
+            pageName: "Билеты",
           },
         },
       },
