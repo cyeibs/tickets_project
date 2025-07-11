@@ -1,30 +1,12 @@
-import {
-  EventCard,
-  Header,
-  Snackbar,
-  SnackbarItem,
-  Tab,
-  TabGroup,
-} from "@/shared/ui";
-import type { SnackbarItemType } from "@/shared/ui/Snackbar/SnackbarItem";
+import { EventCard, Tab, TabGroup } from "@/shared/ui";
 import { SwipeCards } from "@/widgets/events";
 import type { EventCardType } from "@/widgets/events/ui/SwipeCards";
-import { useAuth } from "@features/auth";
 import { StoriesWidget } from "@widgets/stories";
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import styles from "./MainPage.module.scss";
 
 export const MainPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"poster" | "swiper">("poster");
-  const [activeNavItem, setActiveNavItem] = useState<SnackbarItemType>("main");
-  const { logout } = useAuth();
-  const navigate = useNavigate();
-
-  const handleNavItemClick = (item: SnackbarItemType) => {
-    setActiveNavItem(item);
-    navigate(`/${item}`);
-  };
 
   // Sample event data (in a real app, this would come from an API)
   const events = [
@@ -82,8 +64,6 @@ export const MainPage: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <Header showLogo showLeftButton={false} showRightButton={false} />
-
       <div
         className={`${styles.storiesContainer} ${
           activeTab === "poster" ? styles.visible : styles.hidden
@@ -128,44 +108,6 @@ export const MainPage: React.FC = () => {
           // Render SwipeCards component when "swiper" tab is active
           <SwipeCards events={eventCards} />
         )}
-      </div>
-
-      <div className={styles.snackbarContainer}>
-        <Snackbar>
-          <SnackbarItem
-            type="main"
-            isActive={activeNavItem === "main"}
-            activeItem={activeNavItem}
-            onClick={() => handleNavItemClick("main")}
-          />
-          <SnackbarItem
-            type="search"
-            isActive={activeNavItem === "search"}
-            activeItem={activeNavItem}
-            onClick={() => handleNavItemClick("search")}
-          />
-          <SnackbarItem
-            type="add"
-            isActive={activeNavItem === "add"}
-            activeItem={activeNavItem}
-            onClick={() => handleNavItemClick("add")}
-          />
-          <SnackbarItem
-            type="ticket"
-            isActive={activeNavItem === "ticket"}
-            activeItem={activeNavItem}
-            onClick={() => handleNavItemClick("ticket")}
-          />
-          <SnackbarItem
-            type="profile"
-            isActive={activeNavItem === "profile"}
-            activeItem={activeNavItem}
-            onClick={() => {
-              handleNavItemClick("profile");
-              logout();
-            }}
-          />
-        </Snackbar>
       </div>
     </div>
   );

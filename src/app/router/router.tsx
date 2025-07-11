@@ -11,7 +11,9 @@ import { RegisterPage } from "@pages/register";
 import { MainPage } from "@pages/main";
 import { InstallPage } from "@pages/install";
 import { SearchPage } from "@pages/search";
+import { TicketsPage } from "@pages/tickets";
 import { ErrorBoundary } from "@shared/ui/ErrorBoundary";
+import { MainLayout } from "./layouts";
 import { isMobileDevice, isTelegramApp, isStandaloneMode } from "@shared/lib";
 
 // Wrapper component to handle mobile redirect logic
@@ -53,8 +55,6 @@ const withMobileRedirect = (Component: React.ComponentType) => {
 const WrappedSplashPage = withMobileRedirect(SplashPage);
 const WrappedLoginPage = withMobileRedirect(LoginPage);
 const WrappedRegisterPage = withMobileRedirect(RegisterPage);
-const WrappedMainPage = withMobileRedirect(MainPage);
-const WrappedSearchPage = withMobileRedirect(SearchPage);
 
 export const router = createBrowserRouter([
   {
@@ -73,19 +73,55 @@ export const router = createBrowserRouter([
     errorElement: <ErrorBoundary />,
   },
   {
-    path: "/main",
-    element: <WrappedMainPage />,
-    errorElement: <ErrorBoundary />,
-  },
-  {
     path: "/install",
     element: <InstallPage />,
     errorElement: <ErrorBoundary />,
   },
   {
-    path: "/search",
-    element: <WrappedSearchPage />,
+    // Layout routes for pages that need header and snackbar
+    path: "/",
+    element: <MainLayout />,
     errorElement: <ErrorBoundary />,
+    children: [
+      {
+        path: "main",
+        element: <MainPage />,
+      },
+      {
+        path: "search",
+        element: <SearchPage />,
+        // Override default header props for search page
+        handle: {
+          headerProps: {
+            showLogo: true,
+            showLeftButton: false,
+            showRightButton: false,
+            showSearchInput: true,
+            showFilterButton: true,
+          },
+        },
+      },
+      {
+        path: "ticket",
+        element: <TicketsPage />,
+        // Custom header props for tickets page
+        handle: {
+          headerProps: {
+            showLogo: true,
+            showLeftButton: true,
+            showRightButton: true,
+          },
+        },
+      },
+      {
+        path: "profile",
+        element: <div>Profile Page (to be implemented)</div>,
+      },
+      {
+        path: "add",
+        element: <div>Add Event Page (to be implemented)</div>,
+      },
+    ],
   },
   {
     path: "*",
