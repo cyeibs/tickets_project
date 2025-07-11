@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
-import type { Dispatch, SetStateAction } from 'react';
-import { motion, useMotionValue, useTransform } from 'framer-motion';
-import { EventSwiperCard } from '@/shared/ui/EventSwiperCard';
-import styles from './SwipeCards.module.scss';
+import React, { useState, useEffect, useRef } from "react";
+import type { Dispatch, SetStateAction } from "react";
+import { motion, useMotionValue, useTransform } from "framer-motion";
+import { EventSwiperCard } from "@/shared/ui/EventSwiperCard";
+import styles from "./SwipeCards.module.scss";
 
 export type EventCardType = {
   id: number;
@@ -10,7 +10,7 @@ export type EventCardType = {
   date: string;
   location: string;
   price: string;
-  imageUrl: string;
+  imageUrl?: string;
 };
 
 interface SwipeCardProps {
@@ -67,10 +67,10 @@ const SwipeCard: React.FC<SwipeCardProps> = ({
       }
     };
 
-    element.addEventListener('touchmove', handleTouchMove, { passive: false });
+    element.addEventListener("touchmove", handleTouchMove, { passive: false });
 
     return () => {
-      element.removeEventListener('touchmove', handleTouchMove);
+      element.removeEventListener("touchmove", handleTouchMove);
     };
   }, [isFront]);
 
@@ -84,12 +84,12 @@ const SwipeCard: React.FC<SwipeCardProps> = ({
         x,
         opacity,
         rotate,
-        transition: '0.125s transform',
+        transition: "0.125s transform",
       }}
       animate={{
         scale: isFront ? 1 : 0.98,
       }}
-      drag={isFront ? 'x' : false}
+      drag={isFront ? "x" : false}
       dragConstraints={{
         left: 0,
         right: 0,
@@ -124,13 +124,13 @@ export const SwipeCards: React.FC<{ events: EventCardType[] }> = ({
       e.preventDefault();
     };
 
-    container.addEventListener('touchstart', (e) => e.stopPropagation());
-    container.addEventListener('touchmove', preventDefaultTouch, {
+    container.addEventListener("touchstart", (e) => e.stopPropagation());
+    container.addEventListener("touchmove", preventDefaultTouch, {
       passive: false,
     });
 
     return () => {
-      container.removeEventListener('touchmove', preventDefaultTouch);
+      container.removeEventListener("touchmove", preventDefaultTouch);
     };
   }, []);
 

@@ -4,8 +4,9 @@
 .header {
   background-color: $prime-accent-color;
   border-radius: 0 0 $space-600 $space-600;
-  transition: height 0.3s ease-out;
-  will-change: height;
+  // transition: height 0.3s ease-out;
+  // will-change: height;
+  // height: auto;
   height: auto;
   overflow: hidden;
 }

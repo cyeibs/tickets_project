@@ -93,7 +93,7 @@ export const router = createBrowserRouter([
         // Override default header props for search page
         handle: {
           headerProps: {
-            showLogo: true,
+            showLogo: false,
             showLeftButton: false,
             showRightButton: false,
             showSearchInput: true,

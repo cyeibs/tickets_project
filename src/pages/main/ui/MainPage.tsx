@@ -32,7 +32,6 @@ export const MainPage: React.FC = () => {
       date: "18 июня в 15:00",
       location: "Творческая студия «Палитра»",
       price: "от 1200₽",
-      imageUrl: "/avatars/1.webp",
     },
     {
       id: 4,
@@ -48,7 +47,6 @@ export const MainPage: React.FC = () => {
       date: "25 июня в 10:00",
       location: "Эрарта",
       price: "от 700₽",
-      imageUrl: "/avatars/1.webp",
     },
   ];
 
@@ -102,6 +100,7 @@ export const MainPage: React.FC = () => {
               location={event.location}
               price={event.price}
               imageUrl={event.imageUrl}
+              image={!!event.imageUrl}
             />
           ))
         ) : (

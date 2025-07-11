@@ -90,7 +90,10 @@ export const Header: React.FC<HeaderProps> = ({
   const isTopRowVisible = showLeftButton || showLogo || showRightButton;
 
   return (
-    <header className={styles.header} style={{ height }}>
+    <header
+      className={styles.header}
+      // style={{ height }}
+    >
       <div ref={contentWrapperRef} className={styles.contentWrapper}>
         {isTopRowVisible && (
           <div className={styles.topRow}>
