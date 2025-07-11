@@ -18,8 +18,8 @@
       content="ЛУП - мобильное приложение для мероприятий"
     />
 
-    <link rel="manifest" href="./manifest.json" />
-    <link rel="apple-touch-icon" href="./icon.png" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/icon.png" />
 
     <title>ЛУП</title>
 
@@ -47,7 +47,31 @@
         }
       }
     </style>
-  <script defer src="/tickets_project/static/js/lib-axios.427fa76d.js"></script><script defer src="/tickets_project/static/js/lib-react.9314d36c.js"></script><script defer src="/tickets_project/static/js/lib-router.cb34cec3.js"></script><script defer src="/tickets_project/static/js/490.8d18ed28.js"></script><script defer src="/tickets_project/static/js/index.a3ff296b.js"></script><link href="/tickets_project/static/css/index.4c8d7939.css" rel="stylesheet"></head>
+
+    <!-- Start Single Page Apps for GitHub Pages -->
+    <script type="text/javascript">
+      // Single Page Apps for GitHub Pages
+      // MIT License
+      // https://github.com/rafgraph/spa-github-pages
+      (function (l) {
+        if (l.search[1] === "/") {
+          var decoded = l.search
+            .slice(1)
+            .split("&")
+            .map(function (s) {
+              return s.replace(/~and~/g, "&");
+            })
+            .join("?");
+          window.history.replaceState(
+            null,
+            null,
+            l.pathname.slice(0, -1) + decoded + l.hash
+          );
+        }
+      })(window.location);
+    </script>
+    <!-- End Single Page Apps for GitHub Pages -->
+  <script defer src="/tickets_project/static/js/lib-axios.427fa76d.js"></script><script defer src="/tickets_project/static/js/lib-react.9314d36c.js"></script><script defer src="/tickets_project/static/js/lib-router.cb34cec3.js"></script><script defer src="/tickets_project/static/js/490.8d18ed28.js"></script><script defer src="/tickets_project/static/js/index.a6a17850.js"></script><link href="/tickets_project/static/css/index.4c8d7939.css" rel="stylesheet"></head>
   <body>
     <div id="root"></div>
 
