@@ -15,7 +15,7 @@ export default defineConfig({
       exportLocalsConvention: "camelCase",
     },
     copy: [{ from: "public", to: "" }],
-    assetPrefix: "./",
+    assetPrefix: "/tickets_project/",
   },
   resolve: {
     alias: {
