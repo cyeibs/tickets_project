@@ -1,1 +1,88 @@
-let CACHE="lupapp-v1",precacheFiles=["/","/index.html","/manifest.json","/icon.png","/login-image.png"];self.addEventListener("install",function(e){console.log("Service Worker: Installing...."),e.waitUntil(caches.open(CACHE).then(function(e){return console.log("Service Worker: Caching App Shell at the moment..."),e.addAll(precacheFiles)}))}),self.addEventListener("activate",function(e){return console.log("Service Worker: Activating...."),e.waitUntil(caches.keys().then(function(e){return Promise.all(e.map(function(e){if(e!==CACHE)return console.log("Service Worker: Removing Old Cache",e),caches.delete(e)}))})),self.clients.claim()}),self.addEventListener("fetch",function(e){console.log("Service Worker: Fetch",e.request.url),e.respondWith(caches.match(e.request).then(function(n){return n?(console.log("Service Worker: Found in Cache",e.request.url),n):(console.log("Service Worker: Not in Cache, fetching from network",e.request.url),fetch(e.request).then(function(n){if(!n||200!==n.status||"basic"!==n.type)return n;let t=n.clone();return caches.open(CACHE).then(function(n){n.put(e.request,t)}),n}).catch(function(e){return console.log("Service Worker: Fetch failed; returning offline page instead.",e),caches.match("/")}))}))});
+// This is the service worker with the Cache-first network
+
+const CACHE = "lupapp-v1";
+const precacheFiles = [
+  "/",
+  "./index.html",
+  "./manifest.json",
+  "./icon.png",
+  "./login-image.png",
+];
+
+// Install Service Worker
+self.addEventListener("install", function (event) {
+  console.log("Service Worker: Installing....");
+
+  event.waitUntil(
+    caches.open(CACHE).then(function (cache) {
+      console.log("Service Worker: Caching App Shell at the moment...");
+      return cache.addAll(precacheFiles);
+    })
+  );
+});
+
+// Activate Service Worker
+self.addEventListener("activate", function (event) {
+  console.log("Service Worker: Activating....");
+
+  event.waitUntil(
+    caches.keys().then(function (cacheNames) {
+      return Promise.all(
+        cacheNames.map(function (oldCache) {
+          if (oldCache !== CACHE) {
+            console.log("Service Worker: Removing Old Cache", oldCache);
+            return caches.delete(oldCache);
+          }
+        })
+      );
+    })
+  );
+  return self.clients.claim();
+});
+
+// Fetch Event: Try cache first, then network
+self.addEventListener("fetch", function (event) {
+  console.log("Service Worker: Fetch", event.request.url);
+
+  event.respondWith(
+    caches.match(event.request).then(function (response) {
+      if (response) {
+        console.log("Service Worker: Found in Cache", event.request.url);
+        return response;
+      }
+
+      console.log(
+        "Service Worker: Not in Cache, fetching from network",
+        event.request.url
+      );
+      return fetch(event.request)
+        .then(function (response) {
+          // Check if we received a valid response
+          if (
+            !response ||
+            response.status !== 200 ||
+            response.type !== "basic"
+          ) {
+            return response;
+          }
+
+          // Clone the response as it's a stream and can only be consumed once
+          const responseToCache = response.clone();
+
+          caches.open(CACHE).then(function (cache) {
+            cache.put(event.request, responseToCache);
+          });
+
+          return response;
+        })
+        .catch(function (error) {
+          console.log(
+            "Service Worker: Fetch failed; returning offline page instead.",
+            error
+          );
+          // You could return a custom offline page here
+          return caches.match("/");
+        });
+    })
+  );
+});
