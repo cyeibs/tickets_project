@@ -1,30 +1,31 @@
-import { defineConfig } from '@rsbuild/core';
-import { pluginReact } from '@rsbuild/plugin-react';
-import { pluginSass } from '@rsbuild/plugin-sass';
+import { defineConfig } from "@rsbuild/core";
+import { pluginReact } from "@rsbuild/plugin-react";
+import { pluginSass } from "@rsbuild/plugin-sass";
 
 export default defineConfig({
   plugins: [pluginReact(), pluginSass()],
   html: {
-    template: './index.html',
+    template: "./index.html",
   },
   output: {
     cssModules: {
       // Enable CSS Modules for files with .module.scss extension
-      auto: (resource) => resource.includes('.module.'),
+      auto: (resource) => resource.includes(".module."),
       // Use camelCase for CSS class names
-      exportLocalsConvention: 'camelCase',
+      exportLocalsConvention: "camelCase",
     },
-    copy: [{ from: 'public', to: '' }],
+    copy: [{ from: "public", to: "" }],
+    assetPrefix: "./",
   },
   resolve: {
     alias: {
-      '@': './src',
-      '@app': './src/app',
-      '@pages': './src/pages',
-      '@widgets': './src/widgets',
-      '@features': './src/features',
-      '@entities': './src/entities',
-      '@shared': './src/shared',
+      "@": "./src",
+      "@app": "./src/app",
+      "@pages": "./src/pages",
+      "@widgets": "./src/widgets",
+      "@features": "./src/features",
+      "@entities": "./src/entities",
+      "@shared": "./src/shared",
     },
   },
 });
