@@ -4,17 +4,23 @@ import { pluginSass } from "@rsbuild/plugin-sass";
 
 export default defineConfig({
   plugins: [pluginReact(), pluginSass()],
+  server: {
+    base: "/tickets_project/",
+  },
   html: {
-    template: "./index.html",
+    template: "./public/index.html",
   },
   output: {
-    cssModules: {
-      // Enable CSS Modules for files with .module.scss extension
-      auto: (resource) => resource.includes(".module."),
-      // Use camelCase for CSS class names
-      exportLocalsConvention: "camelCase",
-    },
-    copy: [{ from: "public", to: "" }],
+    // distPath: {
+    //   root: "dist",
+    // },
+    // cssModules: {
+    //   // Enable CSS Modules for files with .module.scss extension
+    //   auto: (resource) => resource.includes(".module."),
+    //   // Use camelCase for CSS class names
+    //   exportLocalsConvention: "camelCase",
+    // },
+    // copy: [{ from: "public", to: "" }],
     assetPrefix: "/tickets_project/",
   },
   resolve: {

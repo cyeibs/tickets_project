@@ -1,59 +1,59 @@
 // This is the service worker with the Cache-first network
 
-const CACHE = 'lupapp-v1';
+const CACHE = "lupapp-v1";
 const precacheFiles = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/icon.png',
-  '/login-image.png',
+  "/",
+  "./index.html",
+  "./manifest.json",
+  "./icon.png",
+  "./login-image.png",
 ];
 
 // Install Service Worker
-self.addEventListener('install', function (event) {
-  console.log('Service Worker: Installing....');
+self.addEventListener("install", function (event) {
+  console.log("Service Worker: Installing....");
 
   event.waitUntil(
     caches.open(CACHE).then(function (cache) {
-      console.log('Service Worker: Caching App Shell at the moment...');
+      console.log("Service Worker: Caching App Shell at the moment...");
       return cache.addAll(precacheFiles);
-    }),
+    })
   );
 });
 
 // Activate Service Worker
-self.addEventListener('activate', function (event) {
-  console.log('Service Worker: Activating....');
+self.addEventListener("activate", function (event) {
+  console.log("Service Worker: Activating....");
 
   event.waitUntil(
     caches.keys().then(function (cacheNames) {
       return Promise.all(
         cacheNames.map(function (oldCache) {
           if (oldCache !== CACHE) {
-            console.log('Service Worker: Removing Old Cache', oldCache);
+            console.log("Service Worker: Removing Old Cache", oldCache);
             return caches.delete(oldCache);
           }
-        }),
+        })
       );
-    }),
+    })
   );
   return self.clients.claim();
 });
 
 // Fetch Event: Try cache first, then network
-self.addEventListener('fetch', function (event) {
-  console.log('Service Worker: Fetch', event.request.url);
+self.addEventListener("fetch", function (event) {
+  console.log("Service Worker: Fetch", event.request.url);
 
   event.respondWith(
     caches.match(event.request).then(function (response) {
       if (response) {
-        console.log('Service Worker: Found in Cache', event.request.url);
+        console.log("Service Worker: Found in Cache", event.request.url);
         return response;
       }
 
       console.log(
-        'Service Worker: Not in Cache, fetching from network',
-        event.request.url,
+        "Service Worker: Not in Cache, fetching from network",
+        event.request.url
       );
       return fetch(event.request)
         .then(function (response) {
@@ -61,7 +61,7 @@ self.addEventListener('fetch', function (event) {
           if (
             !response ||
             response.status !== 200 ||
-            response.type !== 'basic'
+            response.type !== "basic"
           ) {
             return response;
           }
@@ -77,12 +77,12 @@ self.addEventListener('fetch', function (event) {
         })
         .catch(function (error) {
           console.log(
-            'Service Worker: Fetch failed; returning offline page instead.',
-            error,
+            "Service Worker: Fetch failed; returning offline page instead.",
+            error
           );
           // You could return a custom offline page here
-          return caches.match('/');
+          return caches.match("/");
         });
-    }),
+    })
   );
 });

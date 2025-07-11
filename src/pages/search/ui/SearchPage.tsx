@@ -11,7 +11,7 @@ export const SearchPage: React.FC = () => {
       date: "12 июня в 12:00",
       location: "Парк 300-летия Петербурга",
       price: "от 1500₽",
-      imageUrl: "/avatars/1.webp",
+      imageUrl: "./avatars/1.webp",
     },
     {
       id: 2,
@@ -19,7 +19,7 @@ export const SearchPage: React.FC = () => {
       date: "15 июня в 19:00",
       location: "Филармония им. Шостаковича",
       price: "от 2000₽",
-      imageUrl: "/avatars/2.avif",
+      imageUrl: "./avatars/2.avif",
     },
     {
       id: 3,
@@ -34,7 +34,7 @@ export const SearchPage: React.FC = () => {
       date: "20 июня в 12:00",
       location: "Новая Голландия",
       price: "Вход свободный",
-      imageUrl: "/avatars/2.avif",
+      imageUrl: "./avatars/2.avif",
     },
     {
       id: 5,
@@ -42,7 +42,7 @@ export const SearchPage: React.FC = () => {
       date: "25 июня в 10:00",
       location: "Эрарта",
       price: "от 700₽",
-      imageUrl: "/avatars/1.webp",
+      imageUrl: "./avatars/1.webp",
     },
     {
       id: 6,

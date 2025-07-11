@@ -1,23 +1,23 @@
-import { useAuth } from '@features/auth';
-import { Header } from '@shared/ui';
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import styles from './LoginPage.module.scss';
-import { PhoneStep } from './PhoneStep';
-import { PasswordStep } from './PasswordStep';
-import { NameStep } from './NameStep';
+import { useAuth } from "@features/auth";
+import { Header } from "@shared/ui";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import styles from "./LoginPage.module.scss";
+import { PhoneStep } from "./PhoneStep";
+import { PasswordStep } from "./PasswordStep";
+import { NameStep } from "./NameStep";
 
 export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const { checkPhone, login, register } = useAuth();
 
-  const [phone, setPhone] = useState('');
-  const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [phoneExists, setPhoneExists] = useState<boolean | null>(null);
-  const [step, setStep] = useState<'phone' | 'password' | 'name'>('phone');
+  const [step, setStep] = useState<"phone" | "password" | "name">("phone");
 
   const handlePhoneChange = (value: string) => {
     setPhone(value);
@@ -38,7 +38,7 @@ export const LoginPage: React.FC = () => {
 
   const handleCheckPhone = async () => {
     if (!phone || phone.length < 10) {
-      setError('Пожалуйста, введите корректный номер телефона');
+      setError("Пожалуйста, введите корректный номер телефона");
       return;
     }
 
@@ -47,16 +47,16 @@ export const LoginPage: React.FC = () => {
       const { exists } = await checkPhone(phone);
       setPhoneExists(exists);
       setIsLoading(false);
-      setStep('password');
+      setStep("password");
     } catch (err) {
-      setError('Произошла ошибка. Пожалуйста, попробуйте снова.');
+      setError("Произошла ошибка. Пожалуйста, попробуйте снова.");
       setIsLoading(false);
     }
   };
 
   const handlePasswordContinue = async () => {
     if (!password) {
-      setError('Пожалуйста, введите пароль');
+      setError("Пожалуйста, введите пароль");
       return;
     }
 
@@ -67,21 +67,21 @@ export const LoginPage: React.FC = () => {
         // Login
         await login(phone, password);
         setIsLoading(false);
-        navigate('/main');
+        navigate("/main");
       } else {
         // If registration, go to name step
         setIsLoading(false);
-        setStep('name');
+        setStep("name");
       }
     } catch (err) {
-      setError('Произошла ошибка. Пожалуйста, попробуйте снова.');
+      setError("Произошла ошибка. Пожалуйста, попробуйте снова.");
       setIsLoading(false);
     }
   };
 
   const handleSave = async () => {
     if (!name.trim()) {
-      setError('Пожалуйста, введите ваше имя');
+      setError("Пожалуйста, введите ваше имя");
       return;
     }
 
@@ -90,21 +90,21 @@ export const LoginPage: React.FC = () => {
       // Register with name
       await register(phone, password);
       setIsLoading(false);
-      navigate('/main');
+      navigate("/main");
     } catch (err) {
-      setError('Произошла ошибка. Пожалуйста, попробуйте снова.');
+      setError("Произошла ошибка. Пожалуйста, попробуйте снова.");
       setIsLoading(false);
     }
   };
 
   const handleBackToPhone = () => {
-    setStep('phone');
-    setPassword('');
+    setStep("phone");
+    setPassword("");
     setError(null);
   };
 
   const handleBackToPassword = () => {
-    setStep('password');
+    setStep("password");
     setError(null);
   };
 
@@ -119,13 +119,13 @@ export const LoginPage: React.FC = () => {
 
       <div className={styles.content}>
         <div className={styles.form}>
-          {step !== 'name' && (
+          {step !== "name" && (
             <div className={styles.imageContainer}>
-              <img src={'/login-image.png'} alt="logo" />
+              <img src={"./login-image.png"} alt="logo" />
             </div>
           )}
 
-          {step === 'phone' && (
+          {step === "phone" && (
             <PhoneStep
               phone={phone}
               error={error}
@@ -135,7 +135,7 @@ export const LoginPage: React.FC = () => {
             />
           )}
 
-          {step === 'password' && (
+          {step === "password" && (
             <PasswordStep
               phoneExists={phoneExists}
               password={password}
@@ -147,7 +147,7 @@ export const LoginPage: React.FC = () => {
             />
           )}
 
-          {step === 'name' && (
+          {step === "name" && (
             <NameStep
               name={name}
               error={error}
