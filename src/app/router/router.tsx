@@ -58,11 +58,12 @@ const WrappedRegisterPage = withMobileRedirect(RegisterPage);
 
 // Get the basename from the environment or use the default for GitHub Pages
 const getBasename = () => {
-  // For GitHub Pages deployment
-  if (import.meta.env.PROD) {
+  // Extract from the current URL to support GitHub Pages
+  const pathSegments = window.location.pathname.split("/");
+  if (pathSegments.length > 1 && pathSegments[1] === "tickets_project") {
     return "/tickets_project";
   }
-  return "/";
+  return "";
 };
 
 export const router = createBrowserRouter(
