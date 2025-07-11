@@ -1,14 +1,14 @@
-import React from 'react';
-import { Button } from '@shared/ui/Button';
-import { IconButton } from '@shared/ui/IconButton';
-import styles from './EventCard.module.scss';
+import React from "react";
+import { Button } from "@shared/ui/Button";
+import { IconButton } from "@shared/ui/IconButton";
+import styles from "./EventCard.module.scss";
 import {
   ArrowExport,
   CalendarIcon,
   CardIcon,
   Heart,
   LocationIcon,
-} from '@/shared/assets/icons';
+} from "@/shared/assets/icons";
 
 export interface EventCardProps {
   title: string;
@@ -34,18 +34,18 @@ export const EventCard: React.FC<EventCardProps> = ({
   forSearch = false,
   onButtonClick,
   onIconClick,
-  className = '',
+  className = "",
   price,
 }) => {
   const cardClasses = [
     styles.eventCard,
     image ? styles.withImage : styles.noImage,
-    !short ? styles.withMinHeight : '',
-    forSearch ? styles.withSearch : '',
+    !short ? styles.withMinHeight : "",
+    forSearch ? styles.withSearch : "",
     className,
   ]
     .filter(Boolean)
-    .join(' ');
+    .join(" ");
 
   return (
     <div className={cardClasses}>
@@ -85,7 +85,7 @@ export const EventCard: React.FC<EventCardProps> = ({
               <IconButton
                 icon={
                   <img
-                    src={'/avatars/1.webp'}
+                    src={"./avatars/1.webp"}
                     alt="avatar"
                     className={styles.avatar}
                   />
