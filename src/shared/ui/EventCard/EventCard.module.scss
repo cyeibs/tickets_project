@@ -29,7 +29,10 @@
   }
 
   &.withMinHeight {
-    min-height: 340px;
+    min-height: calc(340px * (100vw / 375px));
+    @media (max-width: 320px) {
+      min-height: 290px;
+    }
     .content {
       position: absolute;
       height: 100%;

@@ -56,8 +56,7 @@
 
   &.swiperMode {
     flex: 1;
-    padding-bottom: calc(
-      56px + 40px + 24px
-    ); /* Учитываем высоту снэкбара + отступ 46px */
+    padding: 0 $space-400;
+    padding-bottom: calc(56px + 46px);
   }
 }
