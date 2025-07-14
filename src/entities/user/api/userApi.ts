@@ -16,7 +16,7 @@ export const userApi = {
   // Check if phone exists
   checkPhone: async (phone: string): Promise<{ exists: boolean }> => {
     // For development, use mock data
-    if (process.env.NODE_ENV === "production") {
+    if (process.env.NODE_ENV === "development") {
       // Simulate API delay
       await new Promise((resolve) => setTimeout(resolve, 500));
       const exists = MOCK_USERS.some((user) => user.phone === phone);
@@ -34,7 +34,7 @@ export const userApi = {
     password: string
   ): Promise<{ user: User; token: string }> => {
     // For development, use mock data
-    if (process.env.NODE_ENV === "production") {
+    if (process.env.NODE_ENV === "development") {
       // Simulate API delay
       await new Promise((resolve) => setTimeout(resolve, 800));
 
@@ -63,7 +63,7 @@ export const userApi = {
     password: string
   ): Promise<{ user: User; token: string }> => {
     // For development, use mock data
-    if (process.env.NODE_ENV === "production") {
+    if (process.env.NODE_ENV === "development") {
       // Simulate API delay
       await new Promise((resolve) => setTimeout(resolve, 800));
 
@@ -99,7 +99,7 @@ export const userApi = {
   // Get current user
   getCurrentUser: async (): Promise<User> => {
     // For development, use mock data
-    if (process.env.NODE_ENV === "production") {
+    if (process.env.NODE_ENV === "development") {
       // Simulate API delay
       await new Promise((resolve) => setTimeout(resolve, 500));
 

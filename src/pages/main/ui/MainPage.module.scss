@@ -30,25 +30,34 @@
 .visible {
   max-height: 120px;
   opacity: 1;
-  margin: $space-400 0;
+  padding: $space-400 0;
 }
 
 .hidden {
   max-height: 0;
   opacity: 0;
-  margin: 0;
+  padding: 0;
+}
+
+.tabsContainer {
+  padding: $space-400;
+}
+
+.sectionBody {
+  display: flex;
+  flex-direction: column;
+  gap: $space-600;
 }
 
 .eventsContainer {
   display: flex;
   flex-direction: column;
-  gap: $space-400;
-  padding: $space-400 $space-400 0 $space-400;
+  gap: $space-600;
 
   &.swiperMode {
     flex: 1;
     padding-bottom: calc(
       56px + 40px + 24px
-    ); /* Учитываем высоту снэкбара + отступ 40px + нижний отступ страницы */
+    ); /* Учитываем высоту снэкбара + отступ 46px */
   }
 }

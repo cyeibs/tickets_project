@@ -41,6 +41,22 @@
   align-items: center;
 }
 
+.logo {
+  padding: $space-150 $space-600;
+  border-radius: $space-400;
+  background-color: black;
+  backdrop-filter: blur($blur-card-main);
+  box-shadow: 0px 1px 4px 0px rgba(255, 255, 255, 0.25) inset,
+    0px 4px 12px 0px rgba(0, 0, 0, 0.25);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  svg {
+    display: block;
+  }
+}
+
 .rightButton {
   flex: 1;
   display: flex;
@@ -50,7 +66,7 @@
 .searchRow {
   display: flex;
   align-items: center;
-  gap: $space-200; // 8px gap as requested
+  gap: $space-200;
   width: 100%;
 }
 

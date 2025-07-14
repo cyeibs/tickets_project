@@ -1,7 +1,7 @@
-import React from 'react';
-import type { ButtonHTMLAttributes } from 'react';
-import type { IconProps } from '@shared/assets/icons';
-import styles from './IconButton.module.scss';
+import React from "react";
+import type { ButtonHTMLAttributes } from "react";
+import type { IconProps } from "@shared/assets/icons";
+import styles from "./IconButton.module.scss";
 
 /**
  * IconButton component that accepts either an icon or an image
@@ -20,28 +20,30 @@ interface IconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   // Update icon prop to accept either a React.ReactNode or our IconComponent
   icon?: React.ReactNode | IconComponent;
   image?: React.ReactElement<HTMLImageElement>;
-  variant?: 'basic' | 'accent' | 'minimal';
-  size?: 'small' | 'medium' | 'large';
+  variant?: "basic" | "accent" | "minimal";
+  size?: "small" | "medium" | "large";
   iconSize?: number;
   iconColor?: string;
   round?: boolean;
   isActive?: boolean;
   isDisabled?: boolean;
   isFocused?: boolean;
+  fill?: string;
 }
 
 export const IconButton: React.FC<IconButtonProps> = ({
   icon,
   image,
-  variant = 'basic',
-  size = 'medium',
+  variant = "basic",
+  size = "medium",
   iconSize,
   iconColor,
-  className = '',
+  className = "",
   round = true,
   isActive = false,
   isFocused = false,
   disabled = false,
+  fill = "none",
   ...props
 }) => {
   // Get appropriate icon size based on button size if not explicitly provided
@@ -49,9 +51,9 @@ export const IconButton: React.FC<IconButtonProps> = ({
     if (iconSize) return iconSize;
 
     switch (size) {
-      case 'small':
+      case "small":
         return 16;
-      case 'large':
+      case "large":
         return 24;
       default:
         return 20;
@@ -76,12 +78,12 @@ export const IconButton: React.FC<IconButtonProps> = ({
     let finalIconColor = iconColor;
 
     if (!finalIconColor) {
-      if (variant === 'minimal' && isActive) {
-        finalIconColor = '#AFF940';
+      if (variant === "minimal" && isActive) {
+        finalIconColor = "#AFF940";
       }
     }
 
-    return <IconComp size={getIconSize()} color={finalIconColor} />;
+    return <IconComp size={getIconSize()} color={finalIconColor} fill={fill} />;
   };
 
   // Build class names based on props
@@ -90,14 +92,14 @@ export const IconButton: React.FC<IconButtonProps> = ({
       styles.iconButton,
       styles[variant],
       styles[size],
-      round ? styles.round : '',
-      isActive ? styles.active : '',
-      isFocused ? styles.focused : '',
-      disabled ? styles.disabled : '',
+      round ? styles.round : "",
+      isActive ? styles.active : "",
+      isFocused ? styles.focused : "",
+      disabled ? styles.disabled : "",
       className,
     ];
 
-    return classNames.filter(Boolean).join(' ');
+    return classNames.filter(Boolean).join(" ");
   };
 
   return (

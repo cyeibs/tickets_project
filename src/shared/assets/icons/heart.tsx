@@ -1,10 +1,11 @@
-import React, { useId } from 'react';
-import type { IconProps } from './index';
+import React, { useId } from "react";
+import type { IconProps } from "./index";
 
 export const Heart: React.FC<IconProps> = ({
   size = 24,
-  color = '#000000',
-  title = 'Heart',
+  color = "#000000",
+  title = "Heart",
+  fill = "none",
 }) => {
   const clipId = useId();
 
@@ -13,7 +14,7 @@ export const Heart: React.FC<IconProps> = ({
       width={size}
       height={size}
       viewBox="0 0 24 24"
-      fill="none"
+      fill={fill}
       xmlns="http://www.w3.org/2000/svg"
       aria-labelledby={`heart-title-${clipId}`}
     >

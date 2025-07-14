@@ -108,7 +108,9 @@ export const Header: React.FC<HeaderProps> = ({
               )}
             </div>
 
-            <div className={styles.logoContainer}>{showLogo && <Logo />}</div>
+            <div className={styles.logoContainer}>
+              <div className={styles.logo}>{showLogo && <Logo />}</div>
+            </div>
 
             <div className={styles.rightButton}>
               {showRightButton && (

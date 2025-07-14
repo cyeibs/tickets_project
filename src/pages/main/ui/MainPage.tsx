@@ -70,12 +70,8 @@ export const MainPage: React.FC = () => {
         <StoriesWidget />
       </div>
 
-      <div
-        className={`${styles.eventsContainer} ${
-          activeTab === "swiper" ? styles.swiperMode : ""
-        }`}
-      >
-        <TabGroup title="События">
+      <div className={styles.sectionBody}>
+        <TabGroup title="События" className={styles.tabsContainer}>
           <Tab
             accent={activeTab === "poster"}
             onClick={() => setActiveTab("poster")}
@@ -90,23 +86,29 @@ export const MainPage: React.FC = () => {
           </Tab>
         </TabGroup>
 
-        {activeTab === "poster" ? (
-          // Render 5 EventCard components when "poster" tab is active
-          events.map((event) => (
-            <EventCard
-              key={event.id}
-              title={event.title}
-              date={event.date}
-              location={event.location}
-              price={event.price}
-              imageUrl={event.imageUrl}
-              image={!!event.imageUrl}
-            />
-          ))
-        ) : (
-          // Render SwipeCards component when "swiper" tab is active
-          <SwipeCards events={eventCards} />
-        )}
+        <div
+          className={`${styles.eventsContainer} ${
+            activeTab === "swiper" ? styles.swiperMode : ""
+          }`}
+        >
+          {activeTab === "poster" ? (
+            // Render 5 EventCard components when "poster" tab is active
+            events.map((event) => (
+              <EventCard
+                key={event.id}
+                title={event.title}
+                date={event.date}
+                location={event.location}
+                price={event.price}
+                imageUrl={event.imageUrl}
+                image={!!event.imageUrl}
+              />
+            ))
+          ) : (
+            // Render SwipeCards component when "swiper" tab is active
+            <SwipeCards events={eventCards} />
+          )}
+        </div>
       </div>
     </div>
   );

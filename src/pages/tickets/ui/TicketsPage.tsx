@@ -1,15 +1,142 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "./TicketsPage.module.scss";
+import { Tab, TabGroup } from "@/shared/ui";
+import { EventTicketCard } from "@/shared/ui/EventTicketCard";
 
 export const TicketsPage: React.FC = () => {
+  const [activeTab, setActiveTab] = useState<
+    "favorites" | "actual" | "history"
+  >("favorites");
+
+  const favoriteEvents = [
+    {
+      id: 1,
+      title: "Путешествие в Оркестрбург: знакомство с ударными",
+      date: "12 июня",
+      time: "18:00",
+      status: "Избранное",
+      imageUrl: "./avatars/1.webp",
+    },
+    {
+      id: 2,
+      title: "Джазовый вечер в филармонии",
+      date: "15 июня",
+      time: "19:30",
+      status: "Избранное",
+      imageUrl: "./avatars/2.avif",
+    },
+  ];
+
+  const actualEvents = [
+    {
+      id: 3,
+      title: "Путешествие в Оркестрбург: знакомство с ударными",
+      date: "12 июня",
+      time: "18:00",
+      status: "В оплате",
+      imageUrl: "./avatars/1.webp",
+    },
+    {
+      id: 4,
+      title: "Симфонический оркестр",
+      date: "20 июня",
+      time: "20:00",
+      status: "Оплачено",
+    },
+  ];
+
+  const historyEvents = [
+    {
+      id: 5,
+      title: "Классическая музыка",
+      date: "5 мая",
+      time: "19:00",
+      status: "Завершено",
+      imageUrl: "./avatars/2.avif",
+    },
+    {
+      id: 6,
+      title: "Фортепианный концерт",
+      date: "1 мая",
+      time: "18:30",
+      status: "Завершено",
+    },
+  ];
+
+  const renderEvents = () => {
+    switch (activeTab) {
+      case "favorites":
+        return favoriteEvents.map((event) => (
+          <EventTicketCard
+            key={event.id}
+            title={event.title}
+            date={event.date}
+            time={event.time}
+            // status={event.status}
+            imageUrl={event.imageUrl}
+            image={!!event.imageUrl}
+            actionButton={true}
+          />
+        ));
+      case "actual":
+        return actualEvents.map((event) => (
+          <EventTicketCard
+            key={event.id}
+            title={event.title}
+            date={event.date}
+            time={event.time}
+            // status={event.status}
+            imageUrl={event.imageUrl}
+            image={!!event.imageUrl}
+            actionButton={false}
+          />
+        ));
+      case "history":
+        return historyEvents.map((event) => (
+          <EventTicketCard
+            key={event.id}
+            title={event.title}
+            date={event.date}
+            time={event.time}
+            // status={event.status}
+            imageUrl={event.imageUrl}
+            image={!!event.imageUrl}
+            actionButton={false}
+          />
+        ));
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>Мои билеты</h1>
-      <div className={styles.content}>
-        <p className={styles.emptyState}>У вас пока нет билетов</p>
-        <p className={styles.hint}>
-          Билеты на мероприятия будут отображаться здесь
-        </p>
+      <div className={`${styles.eventsContainer}`}>
+        <TabGroup>
+          <Tab
+            key="favorites"
+            accent={activeTab === "favorites"}
+            onClick={() => setActiveTab("favorites")}
+          >
+            Избранные
+          </Tab>
+          <Tab
+            key="actual"
+            accent={activeTab === "actual"}
+            onClick={() => setActiveTab("actual")}
+          >
+            Актуальные
+          </Tab>
+          <Tab
+            key="history"
+            accent={activeTab === "history"}
+            onClick={() => setActiveTab("history")}
+          >
+            Прошедшие
+          </Tab>
+        </TabGroup>
+
+        {renderEvents()}
       </div>
     </div>
   );

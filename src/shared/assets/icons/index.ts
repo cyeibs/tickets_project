@@ -3,6 +3,7 @@ export interface IconProps {
   size?: number;
   color?: string;
   title?: string;
+  fill?: string;
 }
 
 // Export all icons from this file
