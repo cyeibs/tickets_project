@@ -145,7 +145,7 @@ export const MyEventsPage: React.FC = () => {
       <div className={styles.actionsContainer}>
         <div className={styles.actions}>
           <Button accent onClick={() => {}} className={styles.button}>
-            К событию
+            Создать
           </Button>
         </div>
       </div>

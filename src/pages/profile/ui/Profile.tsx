@@ -33,7 +33,11 @@ export const ProfilePage: React.FC = () => {
       text: "Мои события",
       onClick: () => navigate("/my-events/1"),
     },
-    { id: "stories", text: "Сторисы", onClick: () => navigate("/stories") },
+    {
+      id: "stories",
+      text: "Сторисы",
+      onClick: () => navigate("/my-stories/1"),
+    },
     {
       id: "about-org",
       text: "Об организации",
@@ -136,7 +140,7 @@ export const ProfilePage: React.FC = () => {
               ))}
               <div className={styles.actions}>
                 <Button accent onClick={() => {}} className={styles.button}>
-                  К событию
+                  Создать событие
                 </Button>
               </div>
             </>

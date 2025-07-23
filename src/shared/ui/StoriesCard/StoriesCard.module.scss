@@ -1,0 +1,42 @@
+@import "@shared/styles/variables.scss";
+@import "@shared/styles/mixins.scss";
+
+.storiesCard {
+  display: flex;
+  border-radius: $space-800;
+  overflow: hidden;
+  background-color: $prime-dark-color;
+  box-shadow: $shadow-card-main;
+  position: relative;
+  height: 340px;
+  width: calc(100dvw - 50% - 6px);
+
+  &.noImage {
+    .content {
+      height: 100%;
+    }
+  }
+}
+
+.image {
+  width: 100%;
+  object-fit: cover;
+}
+
+.content {
+  position: absolute;
+  min-height: 35%;
+  @include flex-column;
+
+  bottom: 0;
+  z-index: 1;
+  border-radius: $space-800;
+  background-color: #bd99ff;
+  padding: $space-400 $space-400 $space-400 $space-400;
+}
+
+.title {
+  @include t18;
+  color: $text-prime-dark-color;
+  margin: 0;
+}

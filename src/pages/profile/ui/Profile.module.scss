@@ -106,7 +106,7 @@
   justify-content: space-between;
   gap: $space-300;
   border-radius: 999px;
-  padding: $space-200 $space-400 $space-200 $space-400;
+  padding: $space-200 $space-200 $space-200 $space-200;
   // background-color: $sec-white-color;
   margin-top: auto;
 
@@ -116,5 +116,6 @@
 }
 
 .button {
+  @include t14;
   width: 100%;
 }

@@ -124,5 +124,6 @@
 }
 
 .button {
+  @include t14;
   width: 100%;
 }

@@ -79,7 +79,7 @@ export const EventTicketCard: React.FC<EventTicketCardProps> = ({
         {actionButton && (
           <div className={styles.actions}>
             <Button accent onClick={onButtonClick} className={styles.button}>
-              К событию
+              Купить билет
             </Button>
 
             <IconButton
