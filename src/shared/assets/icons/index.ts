@@ -30,3 +30,4 @@ export * from "./profile";
 export * from "./profile-bold";
 export * from "./filter";
 export * from "./star";
+export * from "./reviews";

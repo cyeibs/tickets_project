@@ -1,0 +1,93 @@
+@import "@shared/styles/variables.scss";
+@import "@shared/styles/mixins.scss";
+
+.container {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: $space-1200;
+}
+
+.subscriptionsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: $space-100;
+  padding: $space-100 0 0 0;
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-300;
+  border-radius: 32px;
+  padding: $space-400;
+  margin-top: auto;
+  width: 100%;
+  background-color: $sec-dark-color;
+}
+
+.contentWrapper {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  gap: $space-100;
+}
+
+.infoWrapper {
+  display: flex;
+  gap: $space-50;
+}
+
+.infoText {
+  @include r14;
+  color: $text-prime-white-color;
+}
+
+.description {
+  display: flex;
+  flex-direction: column;
+  gap: $space-300;
+  border-radius: 32px;
+  padding: $space-400;
+  margin-top: auto;
+  width: 100%;
+  background-color: $sec-dark-color;
+}
+
+.descriptionTitle {
+  @include t16;
+  color: $text-prime-white-color;
+}
+
+.descriptionText {
+  @include r14;
+  color: $text-prime-white-color;
+}
+
+.descriptionContent {
+  display: flex;
+  flex-direction: column;
+  gap: $space-200;
+}
+
+.collapsed {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.expanded {
+  display: block;
+}
+
+.showMoreButton {
+  @include t14;
+  background: none;
+  border: none;
+  color: #aff940;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  width: fit-content;
+}

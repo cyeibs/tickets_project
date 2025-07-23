@@ -106,7 +106,7 @@ export const Header: React.FC<HeaderProps> = ({
                 <IconButton
                   icon={ArrowLeft}
                   variant="minimal"
-                  iconColor="#FFFFFF"
+                  iconColor="#151515"
                   onClick={onLeftButtonClick}
                 />
               )}
@@ -157,7 +157,7 @@ export const Header: React.FC<HeaderProps> = ({
                 <IconButton
                   icon={ArrowLeft}
                   variant="minimal"
-                  iconColor="#FFFFFF"
+                  iconColor="#151515"
                   onClick={onLeftButtonClick}
                 />
               )}

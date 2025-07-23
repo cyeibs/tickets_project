@@ -19,7 +19,7 @@ const actualEvents = [
   },
 ];
 
-const SubscriptionsPage = () => {
+export const SubscriptionsPage = () => {
   return (
     <div className={styles.container}>
       <div className={`${styles.subscriptionsContainer}`}>
@@ -29,6 +29,7 @@ const SubscriptionsPage = () => {
             title={event.title}
             date={event.date}
             time={event.time}
+            isHeart
             // status={event.status}
             imageUrl={event.imageUrl}
             image={!!event.imageUrl}

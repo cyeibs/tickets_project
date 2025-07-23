@@ -12,11 +12,13 @@ import { MainPage } from "@pages/main";
 import { InstallPage } from "@pages/install";
 import { SearchPage } from "@pages/search";
 import { TicketsPage } from "@pages/tickets";
+import { ProfilePage } from "@pages/profile";
+import { SubscriptionsPage } from "@pages/subscriptions";
+import { AboutCompanyPage } from "@pages/about-company";
+import { LegalDocsPage } from "@pages/legal-docs";
 import { ErrorBoundary } from "@shared/ui/ErrorBoundary";
 import { MainLayout } from "./layouts";
 import { isMobileDevice, isTelegramApp, isStandaloneMode } from "@shared/lib";
-import { ProfilePage } from "@/pages/profile";
-import SubscriptionsPage from "@/pages/subscriptions/ui/SubscriptionsPage";
 
 // Wrapper component to handle mobile redirect logic
 const MobileRedirectWrapper = ({ children }: { children: React.ReactNode }) => {
@@ -143,13 +145,36 @@ export const router = createBrowserRouter(
         {
           path: "subscriptions",
           element: <SubscriptionsPage />,
-          // Custom header props for tickets page
           handle: {
             headerProps: {
               showLogo: false,
               showLeftButton: true,
               showRightButton: false,
               pageName: "Подписки",
+            },
+          },
+        },
+        {
+          path: "about-company/:id",
+          element: <AboutCompanyPage />,
+          handle: {
+            headerProps: {
+              showLogo: false,
+              showLeftButton: true,
+              showRightButton: false,
+              pageName: "Об организации",
+            },
+          },
+        },
+        {
+          path: "legal-docs/:id",
+          element: <LegalDocsPage />,
+          handle: {
+            headerProps: {
+              showLogo: false,
+              showLeftButton: true,
+              showRightButton: false,
+              pageName: "Юридические документы",
             },
           },
         },

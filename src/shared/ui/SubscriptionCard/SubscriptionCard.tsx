@@ -1,4 +1,4 @@
-import { ArrowExport, Heart, StarIcon } from "@/shared/assets/icons";
+import { ArrowExport, Edit, Heart, StarIcon } from "@/shared/assets/icons";
 import { Button } from "@shared/ui/Button";
 import { IconButton } from "@shared/ui/IconButton";
 import React from "react";
@@ -15,6 +15,9 @@ export interface SubscriptionCardProps {
   className?: string;
   status?: string;
   actionButton?: boolean;
+  hideContent?: boolean;
+  isEdit?: boolean;
+  isHeart?: boolean;
 }
 
 export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
@@ -28,11 +31,15 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   className = "",
   status,
   actionButton = true,
+  isEdit = false,
+  isHeart = false,
+  hideContent = false,
 }) => {
   const cardClasses = [
     styles.subscriptionCard,
     image ? styles.withImage : styles.noImage,
     actionButton ? "" : styles.withoutActionButton,
+    hideContent ? styles.hideContent : "",
     className,
   ]
     .filter(Boolean)
@@ -47,14 +54,26 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
       <div className={styles.statusesWrapper}>
         <div className={styles.statusLine}>
           <div className={styles.heartWrapper}>
-            <IconButton
-              icon={Heart}
-              onClick={onIconClick}
-              iconColor="#212C3A"
-              variant="accent"
-              iconSize={24}
-              fill="#212C3A"
-            />
+            {isHeart && (
+              <IconButton
+                icon={Heart}
+                onClick={onIconClick}
+                iconColor="#212C3A"
+                variant="accent"
+                iconSize={24}
+                fill="#212C3A"
+              />
+            )}
+            {isEdit && (
+              <IconButton
+                icon={Edit}
+                onClick={onIconClick}
+                iconColor="#212C3A"
+                // variant="accent"
+                iconSize={24}
+                fill="#212C3A"
+              />
+            )}
           </div>
         </div>
       </div>
@@ -64,22 +83,24 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
           <h3 className={styles.title}>{title}</h3>
         </div>
 
-        <div className={styles.contentWrapper}>
-          <div className={styles.content}>
-            <span className={styles.infoText}>Рейтинг</span>
-            <div className={styles.infoWrapper}>
-              <StarIcon size={16} color="#BBBAFF" />
-              <div className={styles.infoText}>4,8</div>
+        {!hideContent && (
+          <div className={styles.contentWrapper}>
+            <div className={styles.content}>
+              <span className={styles.infoText}>Рейтинг</span>
+              <div className={styles.infoWrapper}>
+                <StarIcon size={16} color="#BBBAFF" />
+                <div className={styles.infoText}>4,8</div>
+              </div>
+            </div>
+            <div className={styles.content}>
+              <span className={styles.infoText}>Отзывы</span>
+              <div className={styles.infoWrapper}>
+                <StarIcon size={16} color="#BBBAFF" />
+                <div className={styles.infoText}>321</div>
+              </div>
             </div>
           </div>
-          <div className={styles.content}>
-            <span className={styles.infoText}>Отзывы</span>
-            <div className={styles.infoWrapper}>
-              <StarIcon size={16} color="#BBBAFF" />
-              <div className={styles.infoText}>321</div>
-            </div>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );

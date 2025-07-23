@@ -37,12 +37,12 @@ export const ProfilePage: React.FC = () => {
     {
       id: "about-org",
       text: "Об организации",
-      onClick: () => navigate("/about-organization"),
+      onClick: () => navigate("/about-company/1"),
     },
     {
       id: "legal-docs",
       text: "Юридические документы",
-      onClick: () => navigate("/legal-docs"),
+      onClick: () => navigate("/legal-docs/1"),
     },
     {
       id: "manager-support",
