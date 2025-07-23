@@ -21,7 +21,6 @@ export interface RouteHandle {
 
 export const MainLayout: React.FC = () => {
   const [activeNavItem, setActiveNavItem] = useState<SnackbarItemType>("main");
-  const { logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const matches = useMatches();

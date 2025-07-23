@@ -89,13 +89,17 @@ export const Header: React.FC<HeaderProps> = ({
 
   const isTopRowVisible = showLeftButton || showLogo || showRightButton;
 
+  // Determine if we should use the combined layout (buttons inline with pageName)
+  const useCombinedLayout =
+    !showLogo && pageName && (showLeftButton || showRightButton);
+
   return (
     <header
       className={styles.header}
       // style={{ height }}
     >
       <div ref={contentWrapperRef} className={styles.contentWrapper}>
-        {isTopRowVisible && (
+        {isTopRowVisible && !useCombinedLayout && (
           <div className={styles.topRow}>
             <div className={styles.leftButton}>
               {showLeftButton && (
@@ -109,7 +113,11 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
 
             <div className={styles.logoContainer}>
-              <div className={styles.logo}>{showLogo && <Logo />}</div>
+              {showLogo && (
+                <div className={styles.logo}>
+                  <Logo />
+                </div>
+              )}
             </div>
 
             <div className={styles.rightButton}>
@@ -142,11 +150,37 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         )}
 
-        {pageName && (
+        {useCombinedLayout ? (
+          <div className={styles.combinedRow}>
+            <div className={styles.leftButton}>
+              {showLeftButton && (
+                <IconButton
+                  icon={ArrowLeft}
+                  variant="minimal"
+                  iconColor="#FFFFFF"
+                  onClick={onLeftButtonClick}
+                />
+              )}
+            </div>
+
+            <div className={styles.pageName}>{pageName}</div>
+
+            <div className={styles.rightButton}>
+              {showRightButton && (
+                <IconButton
+                  icon={Edit}
+                  variant="minimal"
+                  iconColor="#FFFFFF"
+                  onClick={onRightButtonClick}
+                />
+              )}
+            </div>
+          </div>
+        ) : pageName ? (
           <div className={styles.bottomRow}>
             <div className={styles.pageName}>{pageName}</div>
           </div>
-        )}
+        ) : null}
       </div>
     </header>
   );

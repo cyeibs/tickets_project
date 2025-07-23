@@ -81,6 +81,23 @@
   width: 100%;
 }
 
+.combinedRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+
+  .pageName {
+    flex: 2;
+    text-align: center;
+  }
+
+  .leftButton,
+  .rightButton {
+    flex: 1;
+  }
+}
+
 .pageName {
   @include r16;
   color: $prime-dark-color;

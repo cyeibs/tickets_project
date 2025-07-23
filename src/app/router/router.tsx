@@ -16,6 +16,7 @@ import { ErrorBoundary } from "@shared/ui/ErrorBoundary";
 import { MainLayout } from "./layouts";
 import { isMobileDevice, isTelegramApp, isStandaloneMode } from "@shared/lib";
 import { ProfilePage } from "@/pages/profile";
+import SubscriptionsPage from "@/pages/subscriptions/ui/SubscriptionsPage";
 
 // Wrapper component to handle mobile redirect logic
 const MobileRedirectWrapper = ({ children }: { children: React.ReactNode }) => {
@@ -136,6 +137,19 @@ export const router = createBrowserRouter(
               showLeftButton: false,
               showRightButton: false,
               pageName: "Профиль",
+            },
+          },
+        },
+        {
+          path: "subscriptions",
+          element: <SubscriptionsPage />,
+          // Custom header props for tickets page
+          handle: {
+            headerProps: {
+              showLogo: false,
+              showLeftButton: true,
+              showRightButton: false,
+              pageName: "Подписки",
             },
           },
         },

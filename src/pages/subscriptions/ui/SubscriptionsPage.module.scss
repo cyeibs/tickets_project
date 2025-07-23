@@ -1,0 +1,15 @@
+@import "@shared/styles/variables.scss";
+@import "@shared/styles/mixins.scss";
+
+.container {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: $space-1200;
+}
+
+.subscriptionsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: $space-400;
+  padding: $space-400 $space-400 0 $space-400;
+}
