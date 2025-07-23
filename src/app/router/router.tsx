@@ -19,6 +19,7 @@ import { LegalDocsPage } from "@pages/legal-docs";
 import { ErrorBoundary } from "@shared/ui/ErrorBoundary";
 import { MainLayout } from "./layouts";
 import { isMobileDevice, isTelegramApp, isStandaloneMode } from "@shared/lib";
+import { MyEventsPage } from "@/pages/my-events";
 
 // Wrapper component to handle mobile redirect logic
 const MobileRedirectWrapper = ({ children }: { children: React.ReactNode }) => {
@@ -175,6 +176,18 @@ export const router = createBrowserRouter(
               showLeftButton: true,
               showRightButton: false,
               pageName: "Юридические документы",
+            },
+          },
+        },
+        {
+          path: "my-events/:id",
+          element: <MyEventsPage />,
+          handle: {
+            headerProps: {
+              showLogo: false,
+              showLeftButton: true,
+              showRightButton: false,
+              pageName: "Мои события",
             },
           },
         },

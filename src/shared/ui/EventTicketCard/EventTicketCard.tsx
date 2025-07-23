@@ -15,6 +15,8 @@ export interface EventTicketCardProps {
   className?: string;
   status?: string;
   actionButton?: boolean;
+  isHeart?: boolean;
+  isMyEvent?: boolean;
 }
 
 export const EventTicketCard: React.FC<EventTicketCardProps> = ({
@@ -28,11 +30,14 @@ export const EventTicketCard: React.FC<EventTicketCardProps> = ({
   className = "",
   status,
   actionButton = true,
+  isHeart = true,
+  isMyEvent = false,
 }) => {
   const cardClasses = [
     styles.eventTicketCard,
     image ? styles.withImage : styles.noImage,
     actionButton ? "" : styles.withoutActionButton,
+    isMyEvent ? styles.myEvent : "",
     className,
   ]
     .filter(Boolean)
@@ -47,16 +52,18 @@ export const EventTicketCard: React.FC<EventTicketCardProps> = ({
       <div className={styles.statusesWrapper}>
         <div className={styles.statusLine}>
           {status && <span className={styles.statusText}>{status}</span>}
-          <div className={styles.heartWrapper}>
-            <IconButton
-              icon={Heart}
-              onClick={onIconClick}
-              iconColor="#212C3A"
-              variant="accent"
-              iconSize={24}
-              fill="#212C3A"
-            />
-          </div>
+          {isHeart && (
+            <div className={styles.heartWrapper}>
+              <IconButton
+                icon={Heart}
+                onClick={onIconClick}
+                iconColor="#212C3A"
+                variant="accent"
+                iconSize={24}
+                fill="#212C3A"
+              />
+            </div>
+          )}
         </div>
       </div>
 

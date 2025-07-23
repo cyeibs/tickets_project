@@ -1,5 +1,5 @@
 import { Edit, StarIcon } from "@/shared/assets/icons";
-import { Avatar, IconButton, Tab, TabGroup } from "@/shared/ui";
+import { Avatar, Button, IconButton, Tab, TabGroup } from "@/shared/ui";
 import React, { useState } from "react";
 import styles from "./Profile.module.scss";
 import { Link } from "@/shared/ui/Link";
@@ -31,7 +31,7 @@ export const ProfilePage: React.FC = () => {
     {
       id: "my-events",
       text: "Мои события",
-      onClick: () => navigate("/my-events"),
+      onClick: () => navigate("/my-events/1"),
     },
     { id: "stories", text: "Сторисы", onClick: () => navigate("/stories") },
     {
@@ -125,13 +125,22 @@ export const ProfilePage: React.FC = () => {
         </div>
 
         <div className={styles.userActions}>
-          {activeTab === "user"
-            ? userLinks.map((link) => (
-                <Link key={link.id} text={link.text} onClick={link.onClick} />
-              ))
-            : managerLinks.map((link) => (
+          {activeTab === "user" ? (
+            userLinks.map((link) => (
+              <Link key={link.id} text={link.text} onClick={link.onClick} />
+            ))
+          ) : (
+            <>
+              {managerLinks.map((link) => (
                 <Link key={link.id} text={link.text} onClick={link.onClick} />
               ))}
+              <div className={styles.actions}>
+                <Button accent onClick={() => {}} className={styles.button}>
+                  К событию
+                </Button>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>

@@ -44,7 +44,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: $space-400;
-  padding: $space-400 $space-400 0 $space-400;
+  padding: $space-400 0 0 0;
 
   > div {
     &[class*="withImage"] {

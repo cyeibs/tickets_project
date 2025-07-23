@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import styles from "./TicketsPage.module.scss";
-import { Tab, TabGroup } from "@/shared/ui";
+import styles from "./MyEventsPage.module.scss";
+import { Button, Tab, TabGroup } from "@/shared/ui";
 import { EventTicketCard } from "@/shared/ui/EventTicketCard";
 
-export const TicketsPage: React.FC = () => {
+export const MyEventsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<
     "favorites" | "actual" | "history"
   >("favorites");
@@ -15,7 +15,7 @@ export const TicketsPage: React.FC = () => {
       date: "12 июня",
       time: "18:00",
       status: "Избранное",
-      imageUrl: "./avatars/1.webp",
+      imageUrl: "/tickets_project/avatars/1.webp",
     },
     {
       id: 2,
@@ -23,7 +23,7 @@ export const TicketsPage: React.FC = () => {
       date: "15 июня",
       time: "19:30",
       status: "Избранное",
-      imageUrl: "./avatars/2.avif",
+      imageUrl: "/tickets_project/avatars/2.avif",
     },
   ];
 
@@ -34,7 +34,7 @@ export const TicketsPage: React.FC = () => {
       date: "12 июня",
       time: "18:00",
       status: "В оплате",
-      imageUrl: "./avatars/1.webp",
+      imageUrl: "/tickets_project/avatars/1.webp",
     },
     {
       id: 4,
@@ -52,7 +52,7 @@ export const TicketsPage: React.FC = () => {
       date: "5 мая",
       time: "19:00",
       status: "Завершено",
-      imageUrl: "./avatars/2.avif",
+      imageUrl: "/tickets_project/avatars/2.avif",
     },
     {
       id: 6,
@@ -72,10 +72,11 @@ export const TicketsPage: React.FC = () => {
             title={event.title}
             date={event.date}
             time={event.time}
-            // status={event.status}
             imageUrl={event.imageUrl}
             image={!!event.imageUrl}
-            actionButton={true}
+            actionButton={false}
+            isHeart={false}
+            isMyEvent={true}
           />
         ));
       case "actual":
@@ -85,10 +86,11 @@ export const TicketsPage: React.FC = () => {
             title={event.title}
             date={event.date}
             time={event.time}
-            // status={event.status}
             imageUrl={event.imageUrl}
             image={!!event.imageUrl}
             actionButton={false}
+            isMyEvent={true}
+            isHeart={false}
           />
         ));
       case "history":
@@ -98,10 +100,11 @@ export const TicketsPage: React.FC = () => {
             title={event.title}
             date={event.date}
             time={event.time}
-            // status={event.status}
             imageUrl={event.imageUrl}
             image={!!event.imageUrl}
             actionButton={false}
+            isMyEvent={true}
+            isHeart={false}
           />
         ));
       default:
@@ -118,26 +121,34 @@ export const TicketsPage: React.FC = () => {
             accent={activeTab === "favorites"}
             onClick={() => setActiveTab("favorites")}
           >
-            Избранные
+            Модерация
           </Tab>
           <Tab
             key="actual"
             accent={activeTab === "actual"}
             onClick={() => setActiveTab("actual")}
           >
-            Актуальные
+            Активные
           </Tab>
           <Tab
             key="history"
             accent={activeTab === "history"}
             onClick={() => setActiveTab("history")}
           >
-            Прошедшие
+            Черновики
           </Tab>
         </TabGroup>
       </div>
 
       <div className={styles.eventsListContainer}>{renderEvents()}</div>
+
+      <div className={styles.actionsContainer}>
+        <div className={styles.actions}>
+          <Button accent onClick={() => {}} className={styles.button}>
+            К событию
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };
