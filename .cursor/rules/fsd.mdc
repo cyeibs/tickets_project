@@ -1,8 +1,7 @@
 ---
-description: 
-globs: 
-alwaysApply: false
+alwaysApply: true
 ---
+
 Feature-Sliced Design (FSD) is an architectural methodology for scaffolding front-end applications. Simply put, it's a compilation of rules and conventions on organizing code. The main purpose of this methodology is to make the project more understandable and stable in the face of ever-changing business requirements.
 
 Layers are standardized across all FSD projects. You don't have to use all of the layers, but their names are important. There are currently seven of them (from top to bottom):
@@ -58,19 +57,19 @@ For the Shared layer that has no slices, it’s usually more convenient to defin
 Our slices/segments will appear to each other as follows:
 
 📂 pages/
-  📂 feed/
-    📄 index
-  📂 sign-in/
-    📄 index
-  📂 article-read/
-    📄 index
-  📁 …
+📂 feed/
+📄 index
+📂 sign-in/
+📄 index
+📂 article-read/
+📄 index
+📁 …
 📂 shared/
-  📂 ui/
-    📄 index
-  📂 api/
-    📄 index
-  📁 …
+📂 ui/
+📄 index
+📂 api/
+📄 index
+📁 …
 
 Whatever is inside folders like pages/feed or shared/ui is only known to those folders, and other files should not rely on the internal structure of these folders.
 

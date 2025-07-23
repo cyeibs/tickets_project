@@ -1,5 +1,6 @@
 // Colors
 $prime-accent-color: #aff940;
+$alt-accent-color: #bbbaff;
 $prime-dark-color: #23222a;
 $prime-white-color: #ffffff;
 $sec-accent-color: #9bd83f;
@@ -99,4 +100,5 @@ $shadow-button-snackbar: inset 0 5.33px 5.33px rgba(255, 255, 255, 0.25),
   0 -2.67px 5.33px rgba(0, 0, 0, 0.1);
 $shadow-button-press: inset 0 -4px 12px rgba(38, 37, 45, 0.1);
 
-$shadow-glass: 0px 1px 4px 0px rgba(255, 255, 255, 0.25) inset, 0px 4px 12px 0px rgba(0, 0, 0, 0.25);
+$shadow-glass: 0px 1px 4px 0px rgba(255, 255, 255, 0.25) inset,
+  0px 4px 12px 0px rgba(0, 0, 0, 0.25);

@@ -15,6 +15,7 @@ import { TicketsPage } from "@pages/tickets";
 import { ErrorBoundary } from "@shared/ui/ErrorBoundary";
 import { MainLayout } from "./layouts";
 import { isMobileDevice, isTelegramApp, isStandaloneMode } from "@shared/lib";
+import { ProfilePage } from "@/pages/profile";
 
 // Wrapper component to handle mobile redirect logic
 const MobileRedirectWrapper = ({ children }: { children: React.ReactNode }) => {
@@ -127,7 +128,16 @@ export const router = createBrowserRouter(
         },
         {
           path: "profile",
-          element: <div>Profile Page (to be implemented)</div>,
+          element: <ProfilePage />,
+          // Custom header props for tickets page
+          handle: {
+            headerProps: {
+              showLogo: false,
+              showLeftButton: false,
+              showRightButton: false,
+              pageName: "Профиль",
+            },
+          },
         },
         {
           path: "add",

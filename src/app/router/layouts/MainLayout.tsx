@@ -113,7 +113,6 @@ export const MainLayout: React.FC = () => {
               activeItem={activeNavItem}
               onClick={() => {
                 handleNavItemClick("profile");
-                logout();
               }}
             />
           </Snackbar>

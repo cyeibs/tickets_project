@@ -1,0 +1,52 @@
+@import "../../styles/variables.scss";
+@import "../../styles/mixins.scss";
+
+.button {
+  @include r16;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 $space-400;
+  border-radius: 99px;
+  border: none;
+  cursor: pointer;
+  background-color: $prime-white-color;
+  color: $text-prime-dark-color;
+  transition: background-color 0.2s ease;
+  box-shadow: $shadow-glass;
+  width: 100%;
+  border: 1px solid transparent;
+  height: 40px;
+
+  &:hover {
+    background-color: $sec-white-color;
+    box-shadow: 0px 4px 12px 0px #26252d1a inset;
+    border: 1px solid $sec-gray-color;
+  }
+
+  &.accent {
+    background-color: $prime-accent-color;
+    color: $text-prime-dark-color;
+
+    &:hover {
+      background-color: $sec-accent-color;
+    }
+  }
+
+  &.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.text {
+  @include r16;
+}
+
+.iconWrapper {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

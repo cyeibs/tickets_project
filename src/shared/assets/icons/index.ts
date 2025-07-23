@@ -8,6 +8,7 @@ export interface IconProps {
 
 // Export all icons from this file
 export * from "./arrow-left";
+export * from "./arrow-right";
 export * from "./arrow-export";
 export * from "./edit";
 export * from "./logo";
@@ -28,3 +29,4 @@ export * from "./ticket-bold";
 export * from "./profile";
 export * from "./profile-bold";
 export * from "./filter";
+export * from "./star";
