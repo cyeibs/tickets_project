@@ -1,9 +1,12 @@
 import { EventCard } from "@/shared/ui";
 import React from "react";
 import styles from "./SearchPage.module.scss";
+import { useNavigate } from "react-router-dom";
 
 export const SearchPage: React.FC = () => {
   // Sample event data (in a real app, this would come from an API)
+
+  const navigate = useNavigate();
   const events = [
     {
       id: 1,
@@ -65,6 +68,9 @@ export const SearchPage: React.FC = () => {
             price={event.price}
             image={!!event.imageUrl}
             imageUrl={event.imageUrl}
+            onButtonClick={() => {
+              navigate(`/event/1`);
+            }}
             forSearch
           />
         ))}

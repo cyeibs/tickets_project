@@ -1,14 +1,7 @@
-import React from 'react';
-import { Button } from '@shared/ui/Button';
-import { IconButton } from '@shared/ui/IconButton';
-import styles from './EventSwiperCard.module.scss';
-import {
-  ArrowExport,
-  CalendarIcon,
-  CardIcon,
-  Heart,
-  LocationIcon,
-} from '@/shared/assets/icons';
+import { CalendarIcon, CardIcon, LocationIcon } from "@/shared/assets/icons";
+import { Button } from "@shared/ui/Button";
+import React from "react";
+import styles from "./EventSwiperCard.module.scss";
 
 export interface EventSwiperCardProps {
   title: string;
@@ -30,7 +23,7 @@ export const EventSwiperCard: React.FC<EventSwiperCardProps> = ({
   imageUrl,
   image = true,
   onButtonClick,
-  className = '',
+  className = "",
   price,
   isFront,
 }) => {
@@ -40,7 +33,7 @@ export const EventSwiperCard: React.FC<EventSwiperCardProps> = ({
     className,
   ]
     .filter(Boolean)
-    .join(' ');
+    .join(" ");
 
   return (
     <div className={cardClasses}>
@@ -50,7 +43,7 @@ export const EventSwiperCard: React.FC<EventSwiperCardProps> = ({
           alt={title}
           className={styles.image}
           draggable="false"
-          style={{ pointerEvents: 'none' }}
+          style={{ pointerEvents: "none" }}
         />
       )}
       <div className={styles.content}>

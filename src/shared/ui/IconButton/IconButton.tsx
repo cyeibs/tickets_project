@@ -39,6 +39,7 @@ export const IconButton: React.FC<IconButtonProps> = ({
   iconSize,
   iconColor,
   className = "",
+  onClick,
   round = true,
   isActive = false,
   isFocused = false,
@@ -103,7 +104,12 @@ export const IconButton: React.FC<IconButtonProps> = ({
   };
 
   return (
-    <button className={getClassNames()} disabled={disabled} {...props}>
+    <button
+      className={getClassNames()}
+      disabled={disabled}
+      onClick={onClick}
+      {...props}
+    >
       {renderIcon()}
     </button>
   );

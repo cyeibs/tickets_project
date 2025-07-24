@@ -1,0 +1,66 @@
+@import "@shared/styles/variables.scss";
+@import "@shared/styles/mixins.scss";
+
+.container {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: $space-1200;
+}
+
+.eventContainer {
+  display: flex;
+  flex-direction: column;
+  gap: $space-400;
+  padding: $space-400 0;
+}
+
+.participants {
+  display: flex;
+  flex-direction: column;
+  gap: $space-300;
+  border-radius: 32px;
+  padding: $space-400;
+  margin-top: auto;
+  width: 100%;
+  background-color: $sec-dark-color;
+}
+
+.participantsWrapper {
+  display: flex;
+  flex-direction: row;
+  gap: $space-300;
+  align-items: baseline;
+}
+
+.participantsTitle {
+  @include t16;
+  color: $text-prime-white-color;
+}
+
+.participantsValue {
+  @include r16;
+  color: $sec-fill-color;
+}
+
+.participantsList {
+  display: flex;
+  flex-direction: column;
+  gap: $space-300;
+}
+
+.participantItem {
+  display: flex;
+  gap: $space-300;
+  padding-bottom: $space-200;
+  align-items: center;
+  border-bottom: 1px solid $text-sec-dark-color;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.participantName {
+  @include t14;
+  color: $text-prime-white-color;
+}

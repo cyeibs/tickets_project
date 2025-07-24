@@ -22,6 +22,11 @@
   &.hideContent {
     height: 251px;
   }
+
+  &.eventPage {
+    border-radius: 0 0 $space-800 $space-800;
+    height: 345px;
+  }
 }
 
 .image {
@@ -62,6 +67,23 @@
   flex-direction: column;
   gap: $space-300;
   padding: $space-400 $space-400 0 $space-400;
+}
+
+.headerWrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 99;
+  display: flex;
+  flex-direction: column;
+  gap: $space-300;
+  padding: $space-400 $space-400 0 $space-400;
+}
+
+.backWrapper {
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
 }
 
 .heartWrapper {

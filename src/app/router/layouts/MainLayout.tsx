@@ -14,6 +14,7 @@ export interface RouteHandle {
     showSearchInput?: boolean;
     showFilterButton?: boolean;
     pageName?: string;
+    navigateTo?: string; // Добавляем поле для пути навигации
   };
   showHeader?: boolean;
   showSnackbar?: boolean;
@@ -62,6 +63,19 @@ export const MainLayout: React.FC = () => {
     navigate(`/${item === "main" ? "main" : item}`);
   };
 
+  // Обработчик для кнопки фильтра
+  const handleFilterButtonClick = () => {
+    if (headerProps.navigateTo) {
+      navigate(headerProps.navigateTo);
+    }
+  };
+
+  const onLeftButtonClick = () => {
+    if (headerProps.navigateTo) {
+      navigate(-1);
+    }
+  };
+
   return (
     <div className={styles.layout}>
       {showHeader && (
@@ -72,6 +86,8 @@ export const MainLayout: React.FC = () => {
           showSearchInput={headerProps.showSearchInput}
           showFilterButton={headerProps.showFilterButton}
           pageName={headerProps.pageName}
+          onLeftButtonClick={onLeftButtonClick}
+          onFilterButtonClick={handleFilterButtonClick} // Передаем обработчик для кнопки фильтра
         />
       )}
 

@@ -31,3 +31,5 @@ export * from "./profile-bold";
 export * from "./filter";
 export * from "./star";
 export * from "./reviews";
+export * from "./check";
+export * from "./time";

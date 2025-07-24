@@ -1,0 +1,56 @@
+@import "@shared/styles/variables.scss";
+@import "@shared/styles/mixins.scss";
+
+.pills {
+  display: flex;
+  align-items: center;
+  background-color: $sec-dark-color;
+  justify-content: space-between;
+  padding: $space-400;
+  border-radius: 32px;
+  width: 100%;
+  position: relative;
+
+  &[type="button"] {
+    border: none;
+    font-family: inherit;
+    cursor: pointer;
+    text-align: left;
+  }
+}
+
+.leftContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $space-200;
+}
+
+.iconContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  margin-left: $space-100;
+  justify-content: center;
+}
+
+.primaryText {
+  @include r16;
+  color: $text-prime-white-color;
+}
+
+.secondaryText {
+  @include r12;
+  color: $text-prime-white-color;
+  opacity: 0.5;
+}
+
+.rightIcon {
+  top: $space-400;
+  right: $space-400;
+}

@@ -18,12 +18,12 @@ export const ProfilePage: React.FC = () => {
     {
       id: "become-organizer",
       text: "Стать организатором",
-      onClick: () => navigate("/organizer-profile-create"),
+      onClick: () => navigate("/get-rights"),
     },
     {
       id: "user-support",
       text: "Служба поддержки",
-      onClick: () => navigate("/support"),
+      onClick: () => {},
     },
   ];
 
@@ -51,7 +51,7 @@ export const ProfilePage: React.FC = () => {
     {
       id: "manager-support",
       text: "Служба поддержки",
-      onClick: () => navigate("/support"),
+      onClick: () => {},
     },
   ];
 

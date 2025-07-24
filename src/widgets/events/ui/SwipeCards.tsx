@@ -19,9 +19,10 @@ interface SwipeCardProps {
   date: string;
   location: string;
   price: string;
-  imageUrl: string;
+  imageUrl?: string;
   setCards: Dispatch<SetStateAction<EventCardType[]>>;
   cards: EventCardType[];
+  onButtonClick: () => void;
 }
 
 const SwipeCard: React.FC<SwipeCardProps> = ({
@@ -33,6 +34,7 @@ const SwipeCard: React.FC<SwipeCardProps> = ({
   imageUrl,
   setCards,
   cards,
+  onButtonClick,
 }) => {
   const x = useMotionValue(0);
   const rotateRaw = useTransform(x, [-150, 150], [-18, 18]);
@@ -102,17 +104,19 @@ const SwipeCard: React.FC<SwipeCardProps> = ({
         date={date}
         location={location}
         price={price}
-        imageUrl={imageUrl}
+        imageUrl={imageUrl || ""}
         image={!!imageUrl}
         isFront={isFront}
+        onButtonClick={onButtonClick}
       />
     </motion.div>
   );
 };
 
-export const SwipeCards: React.FC<{ events: EventCardType[] }> = ({
-  events,
-}) => {
+export const SwipeCards: React.FC<{
+  events: EventCardType[];
+  onButtonClick: () => void;
+}> = ({ events, onButtonClick }) => {
   const [cards, setCards] = useState<EventCardType[]>(events);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -141,7 +145,13 @@ export const SwipeCards: React.FC<{ events: EventCardType[] }> = ({
       onTouchStart={(e) => e.stopPropagation()}
     >
       {cards.map((card) => (
-        <SwipeCard key={card.id} cards={cards} setCards={setCards} {...card} />
+        <SwipeCard
+          key={card.id}
+          cards={cards}
+          onButtonClick={onButtonClick}
+          setCards={setCards}
+          {...card}
+        />
       ))}
     </div>
   );

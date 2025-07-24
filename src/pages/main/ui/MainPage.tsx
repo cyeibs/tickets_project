@@ -4,51 +4,52 @@ import type { EventCardType } from "@/widgets/events/ui/SwipeCards";
 import { StoriesWidget } from "@widgets/stories";
 import React, { useState } from "react";
 import styles from "./MainPage.module.scss";
+import { useNavigate } from "react-router-dom";
 
+const events = [
+  {
+    id: 1,
+    title: "Путешествие в Оркестрбург: знакомство с ударными",
+    date: "12 июня в 12:00",
+    location: "Парк 300-летия Петербурга",
+    price: "от 1500₽",
+    imageUrl: "./avatars/1.webp",
+  },
+  {
+    id: 2,
+    title: "Джазовый вечер в филармонии",
+    date: "15 июня в 19:00",
+    location: "Филармония им. Шостаковича",
+    price: "от 2000₽",
+    imageUrl: "./avatars/2.avif",
+  },
+  {
+    id: 3,
+    title: "Мастер-класс по живописи",
+    date: "18 июня в 15:00",
+    location: "Творческая студия «Палитра»",
+    price: "от 1200₽",
+  },
+  {
+    id: 4,
+    title: "Фестиваль уличной еды",
+    date: "20 июня в 12:00",
+    location: "Новая Голландия",
+    price: "Вход свободный",
+    imageUrl: "./avatars/2.avif",
+  },
+  {
+    id: 5,
+    title: "Выставка современного искусства",
+    date: "25 июня в 10:00",
+    location: "Эрарта",
+    price: "от 700₽",
+  },
+];
 export const MainPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"poster" | "swiper">("poster");
-
+  const navigate = useNavigate();
   // Sample event data (in a real app, this would come from an API)
-  const events = [
-    {
-      id: 1,
-      title: "Путешествие в Оркестрбург: знакомство с ударными",
-      date: "12 июня в 12:00",
-      location: "Парк 300-летия Петербурга",
-      price: "от 1500₽",
-      imageUrl: "./avatars/1.webp",
-    },
-    {
-      id: 2,
-      title: "Джазовый вечер в филармонии",
-      date: "15 июня в 19:00",
-      location: "Филармония им. Шостаковича",
-      price: "от 2000₽",
-      imageUrl: "./avatars/2.avif",
-    },
-    {
-      id: 3,
-      title: "Мастер-класс по живописи",
-      date: "18 июня в 15:00",
-      location: "Творческая студия «Палитра»",
-      price: "от 1200₽",
-    },
-    {
-      id: 4,
-      title: "Фестиваль уличной еды",
-      date: "20 июня в 12:00",
-      location: "Новая Голландия",
-      price: "Вход свободный",
-      imageUrl: "./avatars/2.avif",
-    },
-    {
-      id: 5,
-      title: "Выставка современного искусства",
-      date: "25 июня в 10:00",
-      location: "Эрарта",
-      price: "от 700₽",
-    },
-  ];
 
   // Convert events to EventCardType for SwipeCards
   const eventCards: EventCardType[] = events.map((event) => ({
@@ -102,11 +103,22 @@ export const MainPage: React.FC = () => {
                 price={event.price}
                 imageUrl={event.imageUrl}
                 image={!!event.imageUrl}
+                onIconClick={() => {
+                  navigate(`/about-company/1`);
+                }}
+                onButtonClick={() => {
+                  navigate(`/event/1`);
+                }}
               />
             ))
           ) : (
             // Render SwipeCards component when "swiper" tab is active
-            <SwipeCards events={eventCards} />
+            <SwipeCards
+              events={eventCards}
+              onButtonClick={() => {
+                navigate(`/event/1`);
+              }}
+            />
           )}
         </div>
       </div>

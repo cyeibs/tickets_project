@@ -1,0 +1,86 @@
+@import "@shared/styles/variables.scss";
+@import "@shared/styles/mixins.scss";
+
+.stepper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: space-between;
+  position: relative;
+}
+
+.stepContainer {
+  display: flex;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: $prime-dark-color;
+  border: 2px solid $sec-dark-color;
+  color: $text-prime-white-color;
+  font-size: $font-size-r12;
+  line-height: $line-height-r12;
+  font-weight: $font-weight-r12;
+  position: relative;
+  padding: 0;
+  cursor: pointer;
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.7;
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba($alt-accent-color, 0.5);
+  }
+}
+
+.connector {
+  height: 2px;
+  background-color: $sec-dark-color;
+  position: absolute;
+  left: 16px; /* Half of step width */
+  right: 16px;
+  top: 16px; /* Half of step height */
+  z-index: 0;
+}
+
+.connectorCompleted {
+  background-color: $alt-accent-color;
+}
+
+.active {
+  border: 2px solid $alt-accent-color;
+  color: $alt-accent-color;
+}
+
+.completed {
+  background-color: $alt-accent-color;
+  border: 2px solid $alt-accent-color;
+  color: $prime-dark-color;
+}
+
+.label {
+  position: absolute;
+  top: 42px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: $font-size-r12;
+  line-height: $line-height-r12;
+  color: $text-sec-fill-color;
+  white-space: nowrap;
+  margin-top: $space-100;
+}
+
+.activeLabel {
+  color: $text-prime-white-color;
+}

@@ -1,4 +1,10 @@
-import { ArrowExport, Edit, Heart, StarIcon } from "@/shared/assets/icons";
+import {
+  ArrowExport,
+  ArrowLeft,
+  Edit,
+  Heart,
+  StarIcon,
+} from "@/shared/assets/icons";
 import { Button } from "@shared/ui/Button";
 import { IconButton } from "@shared/ui/IconButton";
 import React from "react";
@@ -12,34 +18,36 @@ export interface SubscriptionCardProps {
   image?: boolean;
   onButtonClick?: () => void;
   onIconClick?: () => void;
+  onBackClick?: () => void;
   className?: string;
   status?: string;
   actionButton?: boolean;
   hideContent?: boolean;
   isEdit?: boolean;
   isHeart?: boolean;
+  isEventPage?: boolean;
 }
 
 export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   title,
-  date,
-  time,
   imageUrl,
   image = true,
   onButtonClick,
   onIconClick,
+  onBackClick,
   className = "",
-  status,
   actionButton = true,
   isEdit = false,
   isHeart = false,
   hideContent = false,
+  isEventPage = false,
 }) => {
   const cardClasses = [
     styles.subscriptionCard,
     image ? styles.withImage : styles.noImage,
     actionButton ? "" : styles.withoutActionButton,
     hideContent ? styles.hideContent : "",
+    isEventPage ? styles.eventPage : "",
     className,
   ]
     .filter(Boolean)
@@ -51,30 +59,42 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
         <img src={imageUrl} alt={title} className={styles.image} />
       )}
 
-      <div className={styles.statusesWrapper}>
-        <div className={styles.statusLine}>
-          <div className={styles.heartWrapper}>
-            {isHeart && (
-              <IconButton
-                icon={Heart}
-                onClick={onIconClick}
-                iconColor="#212C3A"
-                variant="accent"
-                iconSize={24}
-                fill="#212C3A"
-              />
-            )}
-            {isEdit && (
-              <IconButton
-                icon={Edit}
-                onClick={onIconClick}
-                iconColor="#212C3A"
-                // variant="accent"
-                iconSize={24}
-                fill="#212C3A"
-              />
-            )}
+      {isEventPage && (
+        <div className={styles.headerWrapper}>
+          <div className={styles.backWrapper}>
+            <IconButton
+              icon={ArrowLeft}
+              onClick={onBackClick}
+              iconColor="#212C3A"
+              iconSize={24}
+              fill="#212C3A"
+            />
           </div>
+        </div>
+      )}
+
+      <div className={styles.statusesWrapper}>
+        <div className={styles.heartWrapper}>
+          {isHeart && (
+            <IconButton
+              icon={Heart}
+              onClick={onIconClick}
+              iconColor="#212C3A"
+              variant="accent"
+              iconSize={24}
+              fill="#212C3A"
+            />
+          )}
+          {isEdit && (
+            <IconButton
+              icon={Edit}
+              onClick={onIconClick}
+              iconColor="#212C3A"
+              // variant="accent"
+              iconSize={24}
+              fill="#212C3A"
+            />
+          )}
         </div>
       </div>
 

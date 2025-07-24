@@ -4,6 +4,7 @@ import {
   Navigate,
   useNavigate,
   useLocation,
+  Outlet,
 } from "react-router-dom";
 import { SplashPage } from "@pages/splash";
 import { LoginPage } from "@pages/login";
@@ -21,6 +22,10 @@ import { MainLayout } from "./layouts";
 import { isMobileDevice, isTelegramApp, isStandaloneMode } from "@shared/lib";
 import { MyEventsPage } from "@/pages/my-events";
 import { StoriesPage } from "@/pages/stories";
+import { GetRightsPage } from "@/pages/get-rights";
+import { FiltersPage } from "@/pages/filters";
+import { EventPage } from "@/pages/event";
+import { EventParticipantsPage } from "@/pages/event-participants";
 
 // Wrapper component to handle mobile redirect logic
 const MobileRedirectWrapper = ({ children }: { children: React.ReactNode }) => {
@@ -115,6 +120,7 @@ export const router = createBrowserRouter(
               showRightButton: false,
               showSearchInput: true,
               showFilterButton: true,
+              navigateTo: "/search/filters", // Передаем путь вместо функции
             },
           },
         },
@@ -152,6 +158,7 @@ export const router = createBrowserRouter(
               showLogo: false,
               showLeftButton: true,
               showRightButton: false,
+              navigateTo: "back",
               pageName: "Подписки",
             },
           },
@@ -164,6 +171,7 @@ export const router = createBrowserRouter(
               showLogo: false,
               showLeftButton: true,
               showRightButton: false,
+              navigateTo: "back",
               pageName: "Об организации",
             },
           },
@@ -176,6 +184,7 @@ export const router = createBrowserRouter(
               showLogo: false,
               showLeftButton: true,
               showRightButton: false,
+              navigateTo: "back",
               pageName: "Юридические документы",
             },
           },
@@ -188,6 +197,7 @@ export const router = createBrowserRouter(
               showLogo: false,
               showLeftButton: true,
               showRightButton: false,
+              navigateTo: "back",
               pageName: "Мои события",
             },
           },
@@ -199,8 +209,55 @@ export const router = createBrowserRouter(
             headerProps: {
               showLogo: false,
               showLeftButton: true,
+              navigateTo: "back",
               showRightButton: false,
               pageName: "Сторисы",
+            },
+          },
+        },
+        {
+          path: "get-rights",
+          element: <GetRightsPage />,
+          handle: {
+            headerProps: {
+              showLogo: false,
+              showLeftButton: true,
+              showRightButton: false,
+              navigateTo: "back",
+              pageName: "Создание профиля",
+            },
+          },
+        },
+        {
+          path: "search/filters",
+          element: <FiltersPage />,
+          handle: {
+            headerProps: {
+              showLogo: false,
+              showLeftButton: true,
+              showRightButton: false,
+              navigateTo: "back",
+              pageName: "Фильтры",
+            },
+          },
+        },
+        {
+          path: "event/:id",
+          element: <EventPage />,
+          handle: {
+            showHeader: false,
+          },
+        },
+        {
+          path: "event/:id/participants",
+          element: <EventParticipantsPage />,
+          handle: {
+            headerProps: {
+              showLogo: false,
+              showLeftButton: true,
+              showRightButton: false,
+              navigateTo: "back",
+              pageName: "Участники",
             },
           },
         },

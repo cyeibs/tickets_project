@@ -1,12 +1,13 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { Avatar } from '../Avatar';
-import type { AvatarSize } from '../Avatar';
-import styles from './StoriesLine.module.scss';
+import React, { useRef, useState, useEffect } from "react";
+import { Avatar } from "../Avatar";
+import type { AvatarSize } from "../Avatar";
+import styles from "./StoriesLine.module.scss";
 
 interface Story {
   id: string | number;
   imageUrl?: string;
   title?: string;
+  name?: string;
 }
 
 interface StoriesLineProps {
@@ -14,6 +15,7 @@ interface StoriesLineProps {
   stories: Story[];
   avatarSize?: AvatarSize;
   className?: string;
+  onStoryClick?: (index: number) => void;
 }
 
 export const StoriesLine: React.FC<StoriesLineProps> = ({
@@ -21,6 +23,7 @@ export const StoriesLine: React.FC<StoriesLineProps> = ({
   stories,
   avatarSize = 64,
   className,
+  onStoryClick,
 }) => {
   const scrollContainerRef = useRef<HTMLUListElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -52,20 +55,26 @@ export const StoriesLine: React.FC<StoriesLineProps> = ({
     scrollContainerRef.current.scrollLeft = scrollLeft - walk;
   };
 
+  const handleStoryClick = (index: number) => {
+    if (onStoryClick && !isDragging) {
+      onStoryClick(index);
+    }
+  };
+
   useEffect(() => {
     const handleGlobalMouseUp = () => {
       setIsDragging(false);
     };
 
-    document.addEventListener('mouseup', handleGlobalMouseUp);
+    document.addEventListener("mouseup", handleGlobalMouseUp);
 
     return () => {
-      document.removeEventListener('mouseup', handleGlobalMouseUp);
+      document.removeEventListener("mouseup", handleGlobalMouseUp);
     };
   }, []);
 
   return (
-    <div className={`${styles.container} ${className || ''}`}>
+    <div className={`${styles.container} ${className || ""}`}>
       <h2 className={styles.title}>{title}</h2>
       <ul
         className={styles.scrollContainer}
@@ -76,10 +85,22 @@ export const StoriesLine: React.FC<StoriesLineProps> = ({
         onMouseLeave={handleMouseLeave}
         onMouseMove={handleMouseMove}
       >
-        {stories.map((story) => (
+        {stories.map((story, index) => (
           <li key={story.id} className={styles.storyItem}>
-            <Avatar size={avatarSize} src={story.imageUrl} />
-            {story.title && <span>{story.title}</span>}
+            <button
+              type="button"
+              className={styles.storyButton}
+              onClick={() => handleStoryClick(index)}
+              aria-label={`View story ${
+                story.name || story.title || index + 1
+              }`}
+            >
+              <Avatar size={avatarSize} src={story.imageUrl} />
+              {story.title && <span>{story.title}</span>}
+              {story.name && (
+                <span className={styles.storyName}>{story.name}</span>
+              )}
+            </button>
           </li>
         ))}
       </ul>

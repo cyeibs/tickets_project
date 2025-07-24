@@ -1,0 +1,1 @@
+export { GetRightsPage } from "./GetRightsPage";

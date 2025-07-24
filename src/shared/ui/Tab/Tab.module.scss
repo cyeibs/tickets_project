@@ -12,31 +12,31 @@
   color: $text-prime-dark-color;
   transition: color 0.2s ease;
   position: relative;
-  
+
   /* Prevent default mobile tap highlight */
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
   user-select: none;
-  
+
   &:hover {
     background-color: $sec-white-color;
     color: $text-prime-dark-color;
   }
-  
+
   &.accent {
     // background-color: $prime-accent-color;
     color: $text-prime-dark-color;
-    
+
     &:hover {
       // background-color: $sec-accent-color;
       color: $text-prime-dark-color;
     }
   }
-  
+
   &:active {
     background-color: transparent;
   }
-  
+
   &.disabled {
     background-color: $sec-white-color;
     color: $text-sec-dark-color;
@@ -55,6 +55,6 @@
   inset: 0;
   z-index: 0;
   border-radius: 99px;
-  background-color: $prime-accent-color;
+  background-color: $alt-accent-color;
   box-sizing: border-box;
-} 
+}

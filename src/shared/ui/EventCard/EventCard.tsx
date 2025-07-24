@@ -19,6 +19,7 @@ export interface EventCardProps {
   image?: boolean;
   forSearch?: boolean;
   onButtonClick?: () => void;
+  onLikeClick?: () => void;
   onIconClick?: () => void;
   className?: string;
   price?: string;
@@ -34,6 +35,7 @@ export const EventCard: React.FC<EventCardProps> = ({
   forSearch = false,
   onButtonClick,
   onIconClick,
+  onLikeClick,
   className = "",
   price,
 }) => {
@@ -96,7 +98,7 @@ export const EventCard: React.FC<EventCardProps> = ({
               />
               <IconButton
                 icon={Heart}
-                onClick={onIconClick}
+                onClick={onLikeClick}
                 iconColor="#151515"
                 iconSize={24}
               />

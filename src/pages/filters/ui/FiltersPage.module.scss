@@ -1,0 +1,31 @@
+@import "@shared/styles/variables.scss";
+@import "@shared/styles/mixins.scss";
+
+.container {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: $space-1200;
+}
+
+.profileContainer {
+  display: flex;
+  flex-direction: column;
+  gap: $space-400;
+  padding: $space-400 0;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  justify-content: space-between;
+  border-radius: $space-800;
+  gap: $space-400;
+  padding: $space-400;
+  background-color: $sec-dark-color;
+}
+
+.button {
+  @include t14;
+  width: 100%;
+}
