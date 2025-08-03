@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styles from "./MyEventsPage.module.scss";
 import { Button, Tab, TabGroup } from "@/shared/ui";
 import { EventTicketCard } from "@/shared/ui/EventTicketCard";
+import { useNavigate } from "react-router-dom";
 
 export const MyEventsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<
@@ -62,6 +63,8 @@ export const MyEventsPage: React.FC = () => {
       status: "Завершено",
     },
   ];
+
+  const navigate = useNavigate();
 
   const renderEvents = () => {
     switch (activeTab) {

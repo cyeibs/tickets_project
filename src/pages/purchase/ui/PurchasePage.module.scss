@@ -1,0 +1,97 @@
+@import "@shared/styles/variables.scss";
+@import "@shared/styles/mixins.scss";
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.purchaseContainer {
+  display: flex;
+  flex-direction: column;
+  gap: $space-400;
+  padding: $space-400 0 0 0;
+}
+
+.paymentContainer {
+  display: flex;
+  flex-direction: column;
+  gap: $space-300;
+  border-radius: $space-800;
+  padding: $space-400;
+  margin-top: auto;
+  width: 100%;
+  background-color: $sec-dark-color;
+}
+
+.paymentTitle,
+.detailsTitle {
+  @include t16;
+  color: $text-prime-white-color;
+}
+
+.paymentContent {
+  display: flex;
+  flex-direction: column;
+  gap: $space-300;
+}
+
+.ticketsField {
+  height: 40px;
+}
+
+.ticketsContainer {
+  display: flex;
+  flex-direction: row;
+  gap: $space-300;
+  align-items: end;
+}
+
+.detailsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: $space-300;
+  border-radius: $space-800;
+  padding: $space-400;
+  margin-top: auto;
+  width: 100%;
+  background-color: $sec-dark-color;
+}
+
+.detailsContent {
+  display: flex;
+  flex-direction: column;
+  gap: $space-200;
+}
+
+.detailsItem {
+  display: flex;
+  justify-content: space-between;
+}
+
+.itemTitle {
+  @include r14;
+  color: $text-prime-white-color;
+}
+
+.itemValue {
+  @include t14;
+  color: $text-prime-white-color;
+}
+
+.detailsSeparator {
+  width: 100%;
+  height: 1px;
+  background-color: $text-sec-dark-color;
+}
+
+.button {
+  margin-top: $space-300;
+  width: 100%;
+}
+
+.detailsText {
+  @include r12;
+  color: $text-prime-white-color;
+}

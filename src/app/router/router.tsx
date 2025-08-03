@@ -26,6 +26,7 @@ import { GetRightsPage } from "@/pages/get-rights";
 import { FiltersPage } from "@/pages/filters";
 import { EventPage } from "@/pages/event";
 import { EventParticipantsPage } from "@/pages/event-participants";
+import { PurchasePage } from "@/pages/purchase";
 
 // Wrapper component to handle mobile redirect logic
 const MobileRedirectWrapper = ({ children }: { children: React.ReactNode }) => {
@@ -264,6 +265,19 @@ export const router = createBrowserRouter(
         {
           path: "add",
           element: <div>Add Event Page (to be implemented)</div>,
+        },
+        {
+          path: "purchase/:id",
+          element: <PurchasePage />,
+          handle: {
+            headerProps: {
+              showLogo: false,
+              showLeftButton: true,
+              showRightButton: false,
+              navigateTo: "back",
+              pageName: "Покупка билета",
+            },
+          },
         },
       ],
     },

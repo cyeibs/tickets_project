@@ -61,6 +61,21 @@
       }
     }
   }
+
+  &.short {
+    .image {
+      height: 102px;
+    }
+
+    .content {
+      width: 64%;
+      gap: $space-300;
+    }
+
+    .info {
+      gap: $space-200;
+    }
+  }
 }
 
 .image {

@@ -158,6 +158,7 @@ export const Header: React.FC<HeaderProps> = ({
                   icon={ArrowLeft}
                   variant="minimal"
                   iconColor="#151515"
+                  size="small"
                   onClick={onLeftButtonClick}
                 />
               )}
@@ -171,6 +172,7 @@ export const Header: React.FC<HeaderProps> = ({
                   icon={Edit}
                   variant="minimal"
                   iconColor="#FFFFFF"
+                  size="small"
                   onClick={onRightButtonClick}
                 />
               )}

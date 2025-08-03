@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styles from "./TicketsPage.module.scss";
 import { Tab, TabGroup } from "@/shared/ui";
 import { EventTicketCard } from "@/shared/ui/EventTicketCard";
+import { useNavigate } from "react-router-dom";
 
 export const TicketsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<
@@ -63,6 +64,8 @@ export const TicketsPage: React.FC = () => {
     },
   ];
 
+  const navigate = useNavigate();
+
   const renderEvents = () => {
     switch (activeTab) {
       case "favorites":
@@ -73,6 +76,9 @@ export const TicketsPage: React.FC = () => {
             date={event.date}
             time={event.time}
             // status={event.status}
+            onButtonClick={() => {
+              navigate(`/purchase/1`);
+            }}
             imageUrl={event.imageUrl}
             image={!!event.imageUrl}
             actionButton={true}

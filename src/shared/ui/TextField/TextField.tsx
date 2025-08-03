@@ -1,11 +1,11 @@
-import React, { forwardRef, useState } from 'react';
-import type { InputHTMLAttributes } from 'react';
-import styles from './TextField.module.scss';
-import { CrossIcon } from '@shared/assets/icons';
-import { IconButton } from '../IconButton';
+import React, { forwardRef, useState } from "react";
+import type { InputHTMLAttributes } from "react";
+import styles from "./TextField.module.scss";
+import { CrossIcon } from "@shared/assets/icons";
+import { IconButton } from "../IconButton";
 
 interface TextFieldProps
-  extends Omit<InputHTMLAttributes<HTMLInputElement>, 'prefix'> {
+  extends Omit<InputHTMLAttributes<HTMLInputElement>, "prefix"> {
   /** Label text displayed above the input field (optional) */
   label?: string;
 
@@ -48,14 +48,14 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
       disabled = false,
       ...props
     },
-    ref,
+    ref
   ) => {
     // Generate a unique ID if not provided
     const inputId =
       id || `text-field-${Math.random().toString(36).substring(2, 9)}`;
 
     // Track internal value state if component is uncontrolled
-    const [internalValue, setInternalValue] = useState('');
+    const [internalValue, setInternalValue] = useState("");
 
     // Determine if we should show the clear button
     const inputValue = value !== undefined ? String(value) : internalValue;
@@ -71,7 +71,7 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
 
     // Handle clear button click
     const handleClear = () => {
-      setInternalValue('');
+      setInternalValue("");
       if (onClear) {
         onClear();
       }
@@ -79,14 +79,14 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
       // Create a synthetic event to simulate clearing the input
       if (onChange) {
         const syntheticEvent = {
-          target: { value: '' },
+          target: { value: "" },
         } as React.ChangeEvent<HTMLInputElement>;
         onChange(syntheticEvent);
       }
     };
 
     return (
-      <div className={`${styles.container} ${className || ''}`}>
+      <div className={`${styles.container}`}>
         {label && (
           <label htmlFor={inputId} className={styles.label}>
             {label}
@@ -94,9 +94,9 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
         )}
 
         <div
-          className={`${styles.inputWrapper} ${
-            error ? styles.error : ''
-          } ${disabled ? styles.disabled : ''}`}
+          className={`${styles.inputWrapper} ${error ? styles.error : ""} ${
+            disabled ? styles.disabled : ""
+          } ${className}`}
         >
           {prefixElement && (
             <div className={styles.prefix}>{prefixElement}</div>
@@ -131,7 +131,7 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
         {!error && hint && <p className={styles.hint}>{hint}</p>}
       </div>
     );
-  },
+  }
 );
 
-TextField.displayName = 'TextField';
+TextField.displayName = "TextField";

@@ -42,6 +42,7 @@ export const EventCard: React.FC<EventCardProps> = ({
   const cardClasses = [
     styles.eventCard,
     image ? styles.withImage : styles.noImage,
+    short ? styles.short : "",
     !short ? styles.withMinHeight : "",
     forSearch ? styles.withSearch : "",
     className,
