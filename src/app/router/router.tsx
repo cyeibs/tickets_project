@@ -27,6 +27,7 @@ import { FiltersPage } from "@/pages/filters";
 import { EventPage } from "@/pages/event";
 import { EventParticipantsPage } from "@/pages/event-participants";
 import { PurchasePage } from "@/pages/purchase";
+import { ReviewsPage } from "@/pages/reviews";
 
 // Wrapper component to handle mobile redirect logic
 const MobileRedirectWrapper = ({ children }: { children: React.ReactNode }) => {
@@ -174,6 +175,19 @@ export const router = createBrowserRouter(
               showRightButton: false,
               navigateTo: "back",
               pageName: "Об организации",
+            },
+          },
+        },
+        {
+          path: "about-company/:id/reviews",
+          element: <ReviewsPage />,
+          handle: {
+            headerProps: {
+              showLogo: false,
+              showLeftButton: true,
+              showRightButton: false,
+              navigateTo: "back",
+              pageName: "Отзывы",
             },
           },
         },

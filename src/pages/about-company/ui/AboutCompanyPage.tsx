@@ -2,6 +2,7 @@ import { SubscriptionCard } from "@/shared/ui/SubscriptionCard";
 import styles from "./AboutCompanyPage.module.scss";
 import { StarIcon, ReviewsIcon } from "@/shared/assets/icons";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const actualEvents = {
   id: 3,
@@ -14,6 +15,7 @@ const actualEvents = {
 
 export const AboutCompanyPage = () => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const navigate = useNavigate();
 
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
@@ -39,13 +41,18 @@ export const AboutCompanyPage = () => {
               <div className={styles.infoText}>4,8</div>
             </div>
           </div>
-          <div className={styles.content}>
+          <button
+            type="button"
+            className={styles.content}
+            onClick={() => navigate("/about-company/3/reviews")}
+            aria-label="Перейти к отзывам"
+          >
             <span className={styles.infoText}>Отзывы</span>
             <div className={styles.infoWrapper}>
               <ReviewsIcon size={16} color="#BBBAFF" />
               <div className={styles.infoText}>321</div>
             </div>
-          </div>
+          </button>
         </div>
         <div className={styles.description}>
           <span className={styles.descriptionTitle}>Об организации</span>

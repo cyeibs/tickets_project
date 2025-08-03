@@ -26,6 +26,7 @@ export interface SubscriptionCardProps {
   isEdit?: boolean;
   isHeart?: boolean;
   isEventPage?: boolean;
+  hideReviews?: boolean;
 }
 
 export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
@@ -41,6 +42,7 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   isHeart = false,
   hideContent = false,
   isEventPage = false,
+  hideReviews = false,
 }) => {
   const cardClasses = [
     styles.subscriptionCard,
@@ -112,13 +114,15 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
                 <div className={styles.infoText}>4,8</div>
               </div>
             </div>
-            <div className={styles.content}>
-              <span className={styles.infoText}>Отзывы</span>
-              <div className={styles.infoWrapper}>
-                <StarIcon size={16} color="#BBBAFF" />
-                <div className={styles.infoText}>321</div>
+            {!hideReviews && (
+              <div className={styles.content}>
+                <span className={styles.infoText}>Отзывы</span>
+                <div className={styles.infoWrapper}>
+                  <StarIcon size={16} color="#BBBAFF" />
+                  <div className={styles.infoText}>321</div>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         )}
       </div>
