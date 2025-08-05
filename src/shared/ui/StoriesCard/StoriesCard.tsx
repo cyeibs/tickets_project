@@ -43,10 +43,12 @@ export const StoriesCard: React.FC<StoriesCardProps> = ({
         className={styles.content}
         style={backgroundColor ? { backgroundColor } : undefined}
       >
-        <div className={styles.infoWrapper}>
-          <div className={styles.infoText}>{date}</div>
-          <div className={styles.infoText}>{time}</div>
-        </div>
+        {(date || time) && (
+          <div className={styles.infoWrapper}>
+            {date && <div className={styles.infoText}>{date}</div>}
+            {time && <div className={styles.infoText}>{time}</div>}
+          </div>
+        )}
         <div className={styles.contentWrapper}>
           <h3 className={styles.title} style={{ color: textColor }}>
             {title}

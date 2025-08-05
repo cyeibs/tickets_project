@@ -3,12 +3,15 @@ import {
   ArrowLeft,
   Edit,
   Heart,
+  MessagesIcon,
+  ReviewsIcon,
   StarIcon,
 } from "@/shared/assets/icons";
 import { Button } from "@shared/ui/Button";
 import { IconButton } from "@shared/ui/IconButton";
 import React from "react";
 import styles from "./SubscriptionCard.module.scss";
+import { useNavigate } from "react-router-dom";
 
 export interface SubscriptionCardProps {
   title: string;
@@ -44,6 +47,7 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   isEventPage = false,
   hideReviews = false,
 }) => {
+  const navigate = useNavigate();
   const cardClasses = [
     styles.subscriptionCard,
     image ? styles.withImage : styles.noImage,
@@ -115,13 +119,18 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
               </div>
             </div>
             {!hideReviews && (
-              <div className={styles.content}>
+              <button
+                type="button"
+                className={styles.content}
+                onClick={() => navigate("/profile/about-company/reviews")}
+                aria-label="Перейти к отзывам"
+              >
                 <span className={styles.infoText}>Отзывы</span>
                 <div className={styles.infoWrapper}>
-                  <StarIcon size={16} color="#BBBAFF" />
+                  <ReviewsIcon size={16} color="#BBBAFF" />
                   <div className={styles.infoText}>321</div>
                 </div>
-              </div>
+              </button>
             )}
           </div>
         )}

@@ -24,4 +24,5 @@ export interface CompanyStories {
 
 export interface StoriesWidgetProps {
   companies?: CompanyStories[];
+  className?: string;
 }

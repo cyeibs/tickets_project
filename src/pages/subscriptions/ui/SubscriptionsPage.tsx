@@ -8,7 +8,7 @@ const actualEvents = [
     date: "12 июня",
     time: "18:00",
     status: "В оплате",
-    imageUrl: "./avatars/1.webp",
+    imageUrl: "/tickets_project/avatars/1.webp",
   },
   {
     id: 4,

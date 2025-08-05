@@ -147,7 +147,13 @@ export const MyEventsPage: React.FC = () => {
 
       <div className={styles.actionsContainer}>
         <div className={styles.actions}>
-          <Button accent onClick={() => {}} className={styles.button}>
+          <Button
+            accent
+            onClick={() => {
+              navigate("/event-create");
+            }}
+            className={styles.button}
+          >
             Создать
           </Button>
         </div>

@@ -1,0 +1,189 @@
+@import "@shared/styles/variables.scss";
+@import "@shared/styles/mixins.scss";
+
+.container {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: $space-1200;
+}
+
+.eventContainer {
+  display: flex;
+  flex-direction: column;
+  gap: $space-400;
+}
+
+.eventContent {
+  display: flex;
+  width: 100%;
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-300;
+  border-radius: 32px;
+  padding: $space-400;
+  margin-top: auto;
+  width: 100%;
+  background-color: $sec-dark-color;
+}
+
+.infoWrapper {
+  display: flex;
+  gap: $space-50;
+}
+
+.contentWrapper {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  gap: $space-100;
+}
+
+.infoText {
+  @include r14;
+  color: $text-prime-white-color;
+}
+
+.description,
+.statistics,
+.participants,
+.eventsWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: $space-300;
+  border-radius: 32px;
+  padding: $space-400;
+  margin-top: auto;
+  width: 100%;
+  background-color: $sec-dark-color;
+}
+
+.storiesWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: $space-300;
+  border-radius: 32px;
+  padding: $space-400 0;
+  margin-top: auto;
+  width: 100%;
+  background-color: $sec-dark-color;
+}
+
+.participantsWrapper {
+  display: flex;
+  flex-direction: row;
+  gap: $space-300;
+  align-items: baseline;
+}
+
+.statisticsItem {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.descriptionTitle,
+.statisticsTitle,
+.participantsTitle,
+.eventsTitle {
+  @include t16;
+  color: $text-prime-white-color;
+}
+
+.participantsContent {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: $space-200;
+  padding: 0 $space-150;
+  // max-width: 100%;
+
+  // & > div {
+  //   margin-bottom: $space-200;
+  // }
+}
+
+.participantsValue {
+  @include r16;
+  color: $sec-fill-color;
+}
+
+.descriptionText,
+.statisticsText {
+  @include r14;
+  color: $text-prime-white-color;
+}
+
+.statisticsValue {
+  @include t14;
+  color: $text-prime-white-color;
+}
+
+.descriptionContent,
+.statisticsContent {
+  display: flex;
+  flex-direction: column;
+  gap: $space-200;
+}
+
+.collapsed {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.expanded {
+  display: block;
+}
+
+.showMoreButton {
+  @include t14;
+  background: none;
+  border: none;
+  color: #aff940;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  width: fit-content;
+}
+
+.eventsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-400;
+  padding: $space-400 0 0 0;
+
+  > div {
+    &[class*="withImage"] {
+      width: calc(50% - #{calc($space-400 / 2)});
+
+      .image {
+        width: 100%;
+        height: 140px;
+        object-fit: cover;
+      }
+
+      .content {
+        width: 100%;
+        height: auto;
+        position: relative;
+        bottom: 0;
+      }
+    }
+
+    &[class*="noImage"] {
+      width: 100%;
+    }
+  }
+
+  &.swiperMode {
+    flex: 1;
+    padding-bottom: calc(
+      56px + 40px + 24px
+    ); /* Учитываем высоту снэкбара + отступ 40px + нижний отступ страницы */
+  }
+}

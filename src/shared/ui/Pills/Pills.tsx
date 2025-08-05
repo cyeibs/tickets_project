@@ -18,6 +18,7 @@ export interface PillsProps {
   rightIcon?: React.ComponentType<IconProps>;
   className?: string;
   onClick?: () => void;
+  iconColor?: string;
 }
 
 export const Pills: React.FC<PillsProps> = ({
@@ -28,6 +29,7 @@ export const Pills: React.FC<PillsProps> = ({
   rightIcon: RightIcon,
   className,
   onClick,
+  iconColor = "#FFFFFF",
 }) => {
   const Component = onClick ? "button" : "div";
 
@@ -65,7 +67,7 @@ export const Pills: React.FC<PillsProps> = ({
 
       {RightIcon && (
         <div className={styles.rightIcon}>
-          <RightIcon size={24} color="#FFFFFF" />
+          <RightIcon size={24} color={iconColor} />
         </div>
       )}
     </>

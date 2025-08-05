@@ -10,6 +10,7 @@ import {
 import { useState } from "react";
 import { Avatar, Pills } from "@/shared/ui";
 import { useNavigate } from "react-router-dom";
+import { GoToIcon } from "@/shared/assets/icons/goTo";
 
 const actualEvents = {
   id: 1,
@@ -60,7 +61,11 @@ export const EventPage = () => {
             }}
             primaryText="Особняк Серебрякова"
             secondaryText="Организатор"
-            rightIcon={LocationIcon}
+            rightIcon={GoToIcon}
+            iconColor="#AFF940"
+            onClick={() => {
+              navigate(`/organizer/1`);
+            }}
           />
         </div>
         <div className={styles.infoWrapper}>

@@ -38,3 +38,4 @@ export * from "./minus";
 export * from "./image";
 export * from "./gallerty-add";
 export * from "./tick-circle";
+export * from "./messages";

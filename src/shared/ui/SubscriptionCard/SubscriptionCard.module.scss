@@ -40,11 +40,6 @@
   margin: 0;
 }
 
-.infoText {
-  @include r14;
-  color: $text-prime-white-color;
-}
-
 .actionsWrapper {
   position: absolute;
   bottom: 0;
@@ -117,4 +112,9 @@
   justify-content: space-between;
   flex-direction: row;
   gap: $space-100;
+}
+
+.infoText {
+  @include r14;
+  color: $text-prime-white-color;
 }

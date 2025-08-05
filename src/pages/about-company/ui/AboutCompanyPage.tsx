@@ -44,7 +44,7 @@ export const AboutCompanyPage = () => {
           <button
             type="button"
             className={styles.content}
-            onClick={() => navigate("/about-company/3/reviews")}
+            onClick={() => navigate("/profile/about-company/reviews")}
             aria-label="Перейти к отзывам"
           >
             <span className={styles.infoText}>Отзывы</span>

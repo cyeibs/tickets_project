@@ -31,6 +31,7 @@ import { ReviewsPage } from "@/pages/reviews";
 import { StoryCreatePage } from "@/pages/story-create";
 import { EventCreatePage } from "@/pages/event-create";
 import { TicketPage } from "@/pages/ticket";
+import { OrganizerPage } from "@/pages/organizer";
 
 // Wrapper component to handle mobile redirect logic
 const MobileRedirectWrapper = ({ children }: { children: React.ReactNode }) => {
@@ -110,6 +111,7 @@ export const router = createBrowserRouter(
       element: <MainLayout />,
       errorElement: <ErrorBoundary />,
       children: [
+        ///MAIN ROUTES///
         {
           path: "main",
           element: <MainPage />,
@@ -126,6 +128,19 @@ export const router = createBrowserRouter(
               showSearchInput: true,
               showFilterButton: true,
               navigateTo: "/search/filters", // Передаем путь вместо функции
+            },
+          },
+        },
+        {
+          path: "search/filters",
+          element: <FiltersPage />,
+          handle: {
+            headerProps: {
+              showLogo: false,
+              showLeftButton: true,
+              showRightButton: false,
+              navigateTo: "back",
+              pageName: "Фильтры",
             },
           },
         },
@@ -155,8 +170,11 @@ export const router = createBrowserRouter(
             },
           },
         },
+        ///MAIN ROUTES///
+
+        /////PROFILE ROUTES////
         {
-          path: "subscriptions",
+          path: "profile/subscriptions",
           element: <SubscriptionsPage />,
           handle: {
             headerProps: {
@@ -169,7 +187,7 @@ export const router = createBrowserRouter(
           },
         },
         {
-          path: "about-company/:id",
+          path: "profile/about-company",
           element: <AboutCompanyPage />,
           handle: {
             headerProps: {
@@ -182,7 +200,7 @@ export const router = createBrowserRouter(
           },
         },
         {
-          path: "about-company/:id/reviews",
+          path: "profile/about-company/reviews",
           element: <ReviewsPage />,
           handle: {
             headerProps: {
@@ -195,7 +213,7 @@ export const router = createBrowserRouter(
           },
         },
         {
-          path: "legal-docs/:id",
+          path: "profile/legal-docs",
           element: <LegalDocsPage />,
           handle: {
             headerProps: {
@@ -208,7 +226,7 @@ export const router = createBrowserRouter(
           },
         },
         {
-          path: "my-events/:id",
+          path: "profile/my-events",
           element: <MyEventsPage />,
           handle: {
             headerProps: {
@@ -221,7 +239,7 @@ export const router = createBrowserRouter(
           },
         },
         {
-          path: "my-stories/:id",
+          path: "profile/my-stories",
           element: <StoriesPage />,
           handle: {
             headerProps: {
@@ -234,7 +252,7 @@ export const router = createBrowserRouter(
           },
         },
         {
-          path: "get-rights",
+          path: "profile/get-rights",
           element: <GetRightsPage />,
           handle: {
             headerProps: {
@@ -246,37 +264,13 @@ export const router = createBrowserRouter(
             },
           },
         },
-        {
-          path: "search/filters",
-          element: <FiltersPage />,
-          handle: {
-            headerProps: {
-              showLogo: false,
-              showLeftButton: true,
-              showRightButton: false,
-              navigateTo: "back",
-              pageName: "Фильтры",
-            },
-          },
-        },
+        /////PROFILE ROUTES////
+
         {
           path: "event/:id",
           element: <EventPage />,
           handle: {
             showHeader: false,
-          },
-        },
-        {
-          path: "ticket/:id",
-          element: <TicketPage />,
-          handle: {
-            headerProps: {
-              showLogo: false,
-              showLeftButton: true,
-              navigateTo: "back",
-              showRightButton: false,
-              pageName: "Билет на событие",
-            },
           },
         },
         {
@@ -289,6 +283,42 @@ export const router = createBrowserRouter(
               showRightButton: false,
               navigateTo: "back",
               pageName: "Участники",
+            },
+          },
+        },
+
+        {
+          path: "organizer/:id",
+          element: <OrganizerPage />,
+          handle: {
+            showHeader: false,
+          },
+        },
+
+        {
+          path: "organizer/:id/reviews",
+          element: <ReviewsPage />,
+          handle: {
+            headerProps: {
+              showLogo: false,
+              showLeftButton: true,
+              showRightButton: false,
+              navigateTo: "back",
+              pageName: "Отзывы",
+            },
+          },
+        },
+
+        {
+          path: "ticket/:id",
+          element: <TicketPage />,
+          handle: {
+            headerProps: {
+              showLogo: false,
+              showLeftButton: true,
+              navigateTo: "back",
+              showRightButton: false,
+              pageName: "Билет на событие",
             },
           },
         },

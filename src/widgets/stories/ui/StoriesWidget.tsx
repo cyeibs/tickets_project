@@ -9,10 +9,10 @@ const defaultMockCompanies: CompanyStories[] = [
   {
     id: 1,
     name: "Company 1",
-    avatarUrl: "./avatars/1.webp",
+    avatarUrl: "/tickets_project/avatars/1.webp",
     stories: [
       {
-        url: "./avatars/1.webp",
+        url: "/tickets_project/avatars/1.webp",
         duration: 5000,
       },
       {
@@ -24,14 +24,14 @@ const defaultMockCompanies: CompanyStories[] = [
   {
     id: 2,
     name: "Company 2",
-    avatarUrl: "./avatars/2.avif",
+    avatarUrl: "/tickets_project/avatars/2.avif",
     stories: [
       {
-        url: "./avatars/1.webp",
+        url: "/tickets_project/avatars/1.webp",
         duration: 5000,
       },
       {
-        url: "./avatars/2.avif",
+        url: "/tickets_project/avatars/2.avif",
         duration: 5000,
       },
     ],

@@ -1,24 +1,35 @@
 import { Edit, StarIcon } from "@/shared/assets/icons";
 import { Avatar, Button, IconButton, Tab, TabGroup } from "@/shared/ui";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./Profile.module.scss";
 import { Link } from "@/shared/ui/Link";
 import { useNavigate } from "react-router-dom";
 
 export const ProfilePage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<"user" | "manager">("user");
+  const [activeTab, setActiveTab] = useState<"user" | "manager">(() => {
+    // Get the saved tab from localStorage or default to "user"
+    return (
+      (localStorage.getItem("profileActiveTab") as "user" | "manager") || "user"
+    );
+  });
+
+  // Save active tab to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("profileActiveTab", activeTab);
+  }, [activeTab]);
+
   const navigate = useNavigate();
 
   const userLinks = [
     {
       id: "subscriptions",
       text: "Подписки",
-      onClick: () => navigate("/subscriptions"),
+      onClick: () => navigate("/profile/subscriptions"),
     },
     {
       id: "become-organizer",
       text: "Стать организатором",
-      onClick: () => navigate("/get-rights"),
+      onClick: () => navigate("/profile/get-rights"),
     },
     {
       id: "user-support",
@@ -31,22 +42,22 @@ export const ProfilePage: React.FC = () => {
     {
       id: "my-events",
       text: "Мои события",
-      onClick: () => navigate("/my-events/1"),
+      onClick: () => navigate("/profile/my-events"),
     },
     {
       id: "stories",
       text: "Сторисы",
-      onClick: () => navigate("/my-stories/1"),
+      onClick: () => navigate("/profile/my-stories"),
     },
     {
       id: "about-org",
       text: "Об организации",
-      onClick: () => navigate("/about-company/1"),
+      onClick: () => navigate("/profile/about-company"),
     },
     {
       id: "legal-docs",
       text: "Юридические документы",
-      onClick: () => navigate("/legal-docs/1"),
+      onClick: () => navigate("/profile/legal-docs"),
     },
     {
       id: "manager-support",
