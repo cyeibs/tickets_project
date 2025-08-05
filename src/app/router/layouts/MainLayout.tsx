@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { Outlet, useLocation, useMatches, useNavigate } from "react-router-dom";
 import { Header, Snackbar, SnackbarItem } from "@shared/ui";
 import type { SnackbarItemType } from "@shared/ui/Snackbar/SnackbarItem";
-import { useAuth } from "@features/auth";
+import React, { useEffect, useState } from "react";
+import { Outlet, useLocation, useMatches, useNavigate } from "react-router-dom";
 import styles from "./MainLayout.module.scss";
+import { useAuth } from "@/features/auth";
 
 // Type for route handle data
 export interface RouteHandle {
@@ -78,6 +78,8 @@ export const MainLayout: React.FC = () => {
     }
   };
 
+  const { isAuthenticated } = useAuth();
+
   return (
     <div className={styles.layout}>
       {showHeader && (
@@ -116,20 +118,36 @@ export const MainLayout: React.FC = () => {
               type="event-create"
               isActive={activeNavItem === "event-create"}
               activeItem={activeNavItem}
-              onClick={() => handleNavItemClick("event-create")}
+              onClick={() => {
+                if (isAuthenticated) {
+                  handleNavItemClick("event-create");
+                } else {
+                  navigate("/login");
+                }
+              }}
             />
             <SnackbarItem
               type="ticket"
               isActive={activeNavItem === "ticket"}
               activeItem={activeNavItem}
-              onClick={() => handleNavItemClick("ticket")}
+              onClick={() => {
+                if (isAuthenticated) {
+                  handleNavItemClick("ticket");
+                } else {
+                  navigate("/login");
+                }
+              }}
             />
             <SnackbarItem
               type="profile"
               isActive={activeNavItem === "profile"}
               activeItem={activeNavItem}
               onClick={() => {
-                handleNavItemClick("profile");
+                if (isAuthenticated) {
+                  handleNavItemClick("profile");
+                } else {
+                  navigate("/login");
+                }
               }}
             />
           </Snackbar>

@@ -1,13 +1,13 @@
 import React, { useId } from "react";
 import type { IconProps } from "./index";
 
-export const Logo: React.FC<IconProps> = () => {
+export const Logo: React.FC<IconProps> = ({ width = 67, height = 22 }) => {
   const titleId = useId();
 
   return (
     <svg
-      width="67"
-      height="22"
+      width={width}
+      height={height}
       viewBox="0 0 67 22"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

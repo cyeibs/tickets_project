@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import styles from "./Profile.module.scss";
 import { Link } from "@/shared/ui/Link";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/features/auth";
 
 export const ProfilePage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"user" | "manager">(() => {
@@ -20,6 +21,8 @@ export const ProfilePage: React.FC = () => {
 
   const navigate = useNavigate();
 
+  const { logout } = useAuth();
+
   const userLinks = [
     {
       id: "subscriptions",
@@ -35,6 +38,14 @@ export const ProfilePage: React.FC = () => {
       id: "user-support",
       text: "Служба поддержки",
       onClick: () => {},
+    },
+    {
+      id: "logout",
+      text: "Выйти",
+      onClick: () => {
+        logout();
+        navigate("/main");
+      },
     },
   ];
 
@@ -99,7 +110,7 @@ export const ProfilePage: React.FC = () => {
               <div className={styles.profileCardHeaderRight}>
                 <IconButton
                   icon={Edit}
-                  onClick={() => navigate("/profile-edit")}
+                  onClick={() => {}}
                   iconColor="#ffffff"
                   iconSize={24}
                   variant={"minimal"}
@@ -117,7 +128,7 @@ export const ProfilePage: React.FC = () => {
                 <div className={styles.profileCardHeaderRight}>
                   <IconButton
                     icon={Edit}
-                    onClick={() => navigate("/organizer/edit")}
+                    onClick={() => {}}
                     iconColor="#ffffff"
                     iconSize={24}
                     variant={"minimal"}

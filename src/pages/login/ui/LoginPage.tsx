@@ -6,6 +6,7 @@ import styles from "./LoginPage.module.scss";
 import { PhoneStep } from "./PhoneStep";
 import { PasswordStep } from "./PasswordStep";
 import { NameStep } from "./NameStep";
+import { Logo } from "@/shared/assets/icons";
 
 export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ export const LoginPage: React.FC = () => {
 
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [name, setName] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -28,6 +30,13 @@ export const LoginPage: React.FC = () => {
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
+    setError(null);
+  };
+
+  const handleConfirmPasswordChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setConfirmPassword(e.target.value);
     setError(null);
   };
 
@@ -120,8 +129,10 @@ export const LoginPage: React.FC = () => {
       <div className={styles.content}>
         <div className={styles.form}>
           {step !== "name" && (
-            <div className={styles.imageContainer}>
-              <img src={"./login-image.png"} alt="logo" />
+            <div className={styles.logoContainer}>
+              <div className={styles.logo}>
+                <Logo width={76} height={27} />
+              </div>
             </div>
           )}
 
@@ -139,6 +150,8 @@ export const LoginPage: React.FC = () => {
             <PasswordStep
               phoneExists={phoneExists}
               password={password}
+              confirmPassword={confirmPassword}
+              onConfirmPasswordChange={handleConfirmPasswordChange}
               error={error}
               isLoading={isLoading}
               onPasswordChange={handlePasswordChange}

@@ -5,26 +5,26 @@ import styles from "./SplashPage.module.scss";
 
 export const SplashPage: React.FC = () => {
   const navigate = useNavigate();
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isLoading } = useAuth();
 
   useEffect(() => {
     const timer = setTimeout(() => {
       if (!isLoading) {
-        if (isAuthenticated) {
-          navigate("/main");
-        } else {
-          navigate("/login");
-        }
+        navigate("/main");
       }
     }, 3500); // Показываем сплэш-экран 2.5 секунды для лучшего эффекта пульсации
 
     return () => clearTimeout(timer);
-  }, [isAuthenticated, isLoading, navigate]);
+  }, [isLoading, navigate]);
 
   return (
     <div className={styles.container}>
       <div className={styles.logoWrapper}>
-        <img src="./splash-logo.png" alt="ЛУП Logo" className={styles.logo} />
+        <img
+          src="/tickets_project/splash-logo.png"
+          alt="ЛУП Logo"
+          className={styles.logo}
+        />
       </div>
     </div>
   );

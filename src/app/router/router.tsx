@@ -85,11 +85,11 @@ const getBasename = () => {
 
 export const router = createBrowserRouter(
   [
-    {
-      path: "/",
-      element: <WrappedSplashPage />,
-      errorElement: <ErrorBoundary />,
-    },
+    // {
+    //   path: "/",
+    //   element: <WrappedSplashPage />,
+    //   errorElement: <ErrorBoundary />,
+    // },
     {
       path: "/login",
       element: <WrappedLoginPage />,
@@ -112,6 +112,10 @@ export const router = createBrowserRouter(
       errorElement: <ErrorBoundary />,
       children: [
         ///MAIN ROUTES///
+        {
+          index: true,
+          element: <MainPage />,
+        },
         {
           path: "main",
           element: <MainPage />,
