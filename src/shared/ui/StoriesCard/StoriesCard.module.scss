@@ -8,8 +8,12 @@
   background-color: $prime-dark-color;
   box-shadow: $shadow-card-main;
   position: relative;
-  height: 340px;
-  width: calc(100dvw - 50% - 6px);
+  height: calc(100vh - 120px - 32px - 56px - 80px - 24px);
+
+  &.small {
+    height: 340px;
+    width: calc(100dvw - 50% - 6px);
+  }
 
   &.noImage {
     .content {
@@ -25,18 +29,54 @@
 
 .content {
   position: absolute;
-  min-height: 35%;
+  gap: $space-400;
+  min-height: 50%;
   @include flex-column;
 
   bottom: 0;
   z-index: 1;
   border-radius: $space-800;
-  background-color: #bd99ff;
+  background-color: $alt-accent-color; /* Default color, can be overridden by inline style */
   padding: $space-400 $space-400 $space-400 $space-400;
+
+  &.small {
+    min-height: 35%;
+  }
+}
+
+.contentWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: $space-300;
 }
 
 .title {
   @include t18;
-  color: $text-prime-dark-color;
+  color: $text-prime-white-color;
   margin: 0;
+
+  &.small {
+    @include t16;
+    color: $text-prime-dark-color;
+  }
+}
+
+.description {
+  @include r14;
+  color: $text-prime-white-color;
+  margin: 0;
+}
+
+.infoWrapper {
+  display: flex;
+  gap: $space-300;
+}
+
+.infoText {
+  display: inline-block;
+  @include t12;
+  color: $text-prime-dark-color;
+  background-color: $sec-white-color;
+  padding: $space-100 $space-400;
+  border-radius: $space-800;
 }

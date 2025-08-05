@@ -35,3 +35,6 @@ export * from "./check";
 export * from "./time";
 export * from "./add";
 export * from "./minus";
+export * from "./image";
+export * from "./gallerty-add";
+export * from "./tick-circle";

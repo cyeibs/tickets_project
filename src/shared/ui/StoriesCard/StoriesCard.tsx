@@ -1,4 +1,3 @@
-import React from "react";
 import styles from "./StoriesCard.module.scss";
 
 export interface StoriesCardProps {
@@ -6,6 +5,12 @@ export interface StoriesCardProps {
   imageUrl?: string;
   image?: boolean;
   className?: string;
+  size?: "small" | "large";
+  description?: string;
+  date?: string;
+  time?: string;
+  backgroundColor?: string;
+  textColor?: string;
 }
 
 export const StoriesCard: React.FC<StoriesCardProps> = ({
@@ -13,11 +18,18 @@ export const StoriesCard: React.FC<StoriesCardProps> = ({
   imageUrl,
   image = true,
   className = "",
+  size = "small",
+  description,
+  date,
+  time,
+  backgroundColor,
+  textColor,
 }) => {
   const cardClasses = [
     styles.storiesCard,
     image ? "" : styles.noImage,
     className,
+    size === "small" ? styles.small : "",
   ]
     .filter(Boolean)
     .join(" ");
@@ -27,8 +39,22 @@ export const StoriesCard: React.FC<StoriesCardProps> = ({
       {image && imageUrl && (
         <img src={imageUrl} alt={title} className={styles.image} />
       )}
-      <div className={styles.content}>
-        <h3 className={styles.title}>{title}</h3>
+      <div
+        className={styles.content}
+        style={backgroundColor ? { backgroundColor } : undefined}
+      >
+        <div className={styles.infoWrapper}>
+          <div className={styles.infoText}>{date}</div>
+          <div className={styles.infoText}>{time}</div>
+        </div>
+        <div className={styles.contentWrapper}>
+          <h3 className={styles.title} style={{ color: textColor }}>
+            {title}
+          </h3>
+          <h3 className={styles.description} style={{ color: textColor }}>
+            {description}
+          </h3>
+        </div>
       </div>
     </div>
   );

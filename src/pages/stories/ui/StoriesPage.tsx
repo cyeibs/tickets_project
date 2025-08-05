@@ -1,6 +1,7 @@
 import { Button, EventCard } from "@/shared/ui";
 import styles from "./StoriesPage.module.scss";
 import { StoriesCard } from "@/shared/ui/StoriesCard";
+import { useNavigate } from "react-router-dom";
 
 const events = [
   {
@@ -52,6 +53,7 @@ const events = [
 ];
 
 export const StoriesPage = () => {
+  const navigate = useNavigate();
   return (
     <div className={styles.container}>
       <div className={styles.eventsContainer}>
@@ -59,19 +61,21 @@ export const StoriesPage = () => {
           <StoriesCard
             key={event.id}
             title={event.title}
-            date={event.date}
-            location={event.location}
-            price={event.price}
-            image={!!event.imageUrl}
             imageUrl={event.imageUrl}
-            forSearch
+            image={!!event.imageUrl}
           />
         ))}
       </div>
 
       <div className={styles.actionsContainer}>
         <div className={styles.actions}>
-          <Button accent onClick={() => {}} className={styles.button}>
+          <Button
+            accent
+            onClick={() => {
+              navigate("/story-create");
+            }}
+            className={styles.button}
+          >
             Создать
           </Button>
         </div>
