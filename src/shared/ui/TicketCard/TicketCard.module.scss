@@ -1,0 +1,184 @@
+@import "@shared/styles/variables.scss";
+@import "@shared/styles/mixins.scss";
+
+.subscriptionCard {
+  display: flex;
+  border-radius: $space-800;
+  overflow: hidden;
+  background-color: $prime-dark-color;
+  box-shadow: $shadow-card-main;
+  position: relative;
+  height: 505px;
+
+  &.noImage {
+    height: 387px;
+    background-color: #9ec7ff;
+  }
+
+  &.withoutActionButton {
+    height: 285px;
+  }
+
+  &.hideContent {
+    height: 251px;
+  }
+
+  &.eventPage {
+    border-radius: 0 0 $space-800 $space-800;
+    height: 345px;
+  }
+}
+
+.image {
+  width: 100%;
+  object-fit: cover;
+}
+
+.title {
+  @include t32;
+  color: $text-prime-white-color;
+  margin: 0;
+}
+
+.infoText {
+  @include r14;
+  color: $text-prime-white-color;
+}
+
+.actionsWrapper {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: $space-200;
+  padding: 0 $space-400 $space-400 $space-400;
+}
+
+.statusesWrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: $space-300;
+  padding: $space-400 $space-400 0 $space-400;
+}
+
+.headerWrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 99;
+  display: flex;
+  flex-direction: column;
+  gap: $space-300;
+  padding: $space-400 $space-400 0 $space-400;
+}
+
+.backWrapper {
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.heartWrapper {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $space-300;
+  border-radius: 32px;
+  padding: $space-400;
+  margin-top: auto;
+  width: 100%;
+
+  backdrop-filter: blur($blur-card-main);
+  box-shadow: 0px 1px 4px 0px rgba(255, 255, 255, 0.25) inset,
+    0px 4px 12px 0px rgba(0, 0, 0, 0.25);
+}
+
+.infoWrapper {
+  display: flex;
+  gap: $space-50;
+}
+
+.contentWrapper {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  gap: $space-100;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+}
+
+.ticketCard {
+  width: 100%;
+  height: auto;
+  border-radius: $space-400;
+  overflow: hidden;
+  position: relative;
+}
+
+.ticketSvg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.ticketInfo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: $space-400;
+  gap: $space-200;
+  z-index: 1;
+
+  :first-child {
+    margin-top: 10px;
+  }
+
+  :last-child {
+    margin-top: auto;
+  }
+}
+
+.ticketInfoItem {
+  display: flex;
+  flex-direction: column;
+  gap: $space-100;
+  align-items: center;
+  justify-content: center;
+}
+
+.ticketInfoDate {
+  @include t16;
+  color: $text-prime-dark-color;
+}
+
+.ticketInfoTime {
+  @include t24;
+  color: $text-prime-dark-color;
+}
+
+.ticketInfoLocation {
+  @include r14;
+  color: $text-prime-dark-color;
+  margin-bottom: 10px;
+}

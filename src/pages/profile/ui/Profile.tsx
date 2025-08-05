@@ -139,7 +139,13 @@ export const ProfilePage: React.FC = () => {
                 <Link key={link.id} text={link.text} onClick={link.onClick} />
               ))}
               <div className={styles.actions}>
-                <Button accent onClick={() => {}} className={styles.button}>
+                <Button
+                  accent
+                  onClick={() => {
+                    navigate("event-create");
+                  }}
+                  className={styles.button}
+                >
                   Создать событие
                 </Button>
               </div>

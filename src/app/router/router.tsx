@@ -30,6 +30,7 @@ import { PurchasePage } from "@/pages/purchase";
 import { ReviewsPage } from "@/pages/reviews";
 import { StoryCreatePage } from "@/pages/story-create";
 import { EventCreatePage } from "@/pages/event-create";
+import { TicketPage } from "@/pages/ticket";
 
 // Wrapper component to handle mobile redirect logic
 const MobileRedirectWrapper = ({ children }: { children: React.ReactNode }) => {
@@ -263,6 +264,19 @@ export const router = createBrowserRouter(
           element: <EventPage />,
           handle: {
             showHeader: false,
+          },
+        },
+        {
+          path: "ticket/:id",
+          element: <TicketPage />,
+          handle: {
+            headerProps: {
+              showLogo: false,
+              showLeftButton: true,
+              navigateTo: "back",
+              showRightButton: false,
+              pageName: "Билет на событие",
+            },
           },
         },
         {
