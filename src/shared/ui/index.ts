@@ -14,3 +14,4 @@ export * from "./StoriesLine";
 export * from "./Tab";
 export * from "./TabGroup";
 export * from "./TextField";
+export * from "./Toast";

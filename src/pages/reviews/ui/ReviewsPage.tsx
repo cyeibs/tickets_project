@@ -3,6 +3,7 @@ import styles from "./ReviewsPage.module.scss";
 import { useState } from "react";
 import { Avatar } from "@/shared/ui/Avatar";
 import { Button } from "@/shared/ui";
+import { EventRatingModal } from "@/widgets/modals";
 
 const actualEvents = {
   id: 3,
@@ -35,6 +36,8 @@ const reviewsData = [
 ];
 
 export const ReviewsPage = () => {
+  const [isEventRatingModalOpen, setIsEventRatingModalOpen] = useState(false);
+
   const [expandedReviews, setExpandedReviews] = useState<number[]>([]);
 
   const toggleExpand = (id: number) => {
@@ -47,6 +50,10 @@ export const ReviewsPage = () => {
 
   return (
     <div className={styles.container}>
+      <EventRatingModal
+        isOpen={isEventRatingModalOpen}
+        onClose={() => setIsEventRatingModalOpen(false)}
+      />
       <div className={`${styles.reviewsContainer}`}>
         <SubscriptionCard
           title={actualEvents.title}
@@ -102,7 +109,10 @@ export const ReviewsPage = () => {
         </div>
         <div className={styles.actionsContainer}>
           <div className={styles.actions}>
-            <Button onClick={() => {}} className={styles.button}>
+            <Button
+              onClick={() => setIsEventRatingModalOpen(true)}
+              className={styles.button}
+            >
               Оставить отзыв
             </Button>
           </div>

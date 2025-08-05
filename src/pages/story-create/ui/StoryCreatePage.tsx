@@ -1,10 +1,12 @@
 import { useState, useRef, useEffect } from "react";
-import { Button, StepperHorizontal, TextField } from "@shared/ui";
+import { Button, Pills, StepperHorizontal, TextField } from "@shared/ui";
+import { showToast } from "@/shared/ui/Toast";
 import styles from "./StoryCreatePage.module.scss";
 import { useNavigate } from "react-router-dom";
 import { GalleryAddIcon } from "@/shared/assets/icons/gallerty-add";
-import { TickCircleIcon } from "@/shared/assets/icons";
+import { CrossIcon, TickCircleIcon } from "@/shared/assets/icons";
 import { StoriesCard } from "@/shared/ui/StoriesCard";
+import { toast } from "react-toastify";
 
 export const StoryCreatePage = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -47,6 +49,17 @@ export const StoryCreatePage = () => {
     if (currentStep < totalSteps) {
       setCurrentStep(currentStep + 1);
     }
+  };
+
+  const handleSubmit = () => {
+    toast(
+      <Pills
+        icon={TickCircleIcon}
+        primaryText="История успешно создана!"
+        secondaryText="Ю-ху!"
+        iconColor="#AFF940"
+      />
+    );
   };
 
   const handlePrevStep = () => {
@@ -97,7 +110,7 @@ export const StoryCreatePage = () => {
         )}
 
         {currentStep === totalSteps && (
-          <Button accent className={styles.button} onClick={handleNextStep}>
+          <Button accent className={styles.button} onClick={handleSubmit}>
             Отправить
           </Button>
         )}

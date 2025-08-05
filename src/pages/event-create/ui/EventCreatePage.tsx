@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import {
   Button,
   EventCard,
+  Pills,
   StepperHorizontal,
   Tab,
   TabGroup,
@@ -13,6 +14,7 @@ import { GalleryAddIcon } from "@/shared/assets/icons/gallerty-add";
 import { TickCircleIcon } from "@/shared/assets/icons";
 import { StoriesCard } from "@/shared/ui/StoriesCard";
 import { EventSwiperCard } from "@/shared/ui/EventSwiperCard";
+import { toast } from "react-toastify";
 
 export const EventCreatePage = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -80,6 +82,17 @@ export const EventCreatePage = () => {
     fileInputRef.current?.click();
   };
 
+  const handleSubmit = () => {
+    toast(
+      <Pills
+        icon={TickCircleIcon}
+        primaryText="Ивент успешно создан!"
+        secondaryText="Ю-ху!"
+        iconColor="#AFF940"
+      />
+    );
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.stepperContainer}>
@@ -107,7 +120,7 @@ export const EventCreatePage = () => {
         )}
 
         {currentStep === totalSteps && (
-          <Button accent className={styles.button} onClick={handleNextStep}>
+          <Button accent className={styles.button} onClick={handleSubmit}>
             Отправить
           </Button>
         )}

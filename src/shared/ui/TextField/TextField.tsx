@@ -1,11 +1,13 @@
 import React, { forwardRef, useState } from "react";
-import type { InputHTMLAttributes } from "react";
+import type {
+  InputHTMLAttributes,
+  TextareaHTMLAttributes,
+  ChangeEvent,
+} from "react";
 import styles from "./TextField.module.scss";
 import { CrossIcon } from "@shared/assets/icons";
-import { IconButton } from "../IconButton";
 
-interface TextFieldProps
-  extends Omit<InputHTMLAttributes<HTMLInputElement>, "prefix"> {
+type TextFieldBaseProps = {
   /** Label text displayed above the input field (optional) */
   label?: string;
 
@@ -29,7 +31,26 @@ interface TextFieldProps
 
   /** Whether the input is disabled */
   disabled?: boolean;
-}
+
+  /** Whether the input is multiline */
+  multiline?: boolean;
+
+  /** Number of rows for multiline input */
+  rows?: number;
+
+  /** Value of the input */
+  value?: string | number;
+
+  /** Callback when the input value changes */
+  onChange?: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+};
+
+type TextFieldProps = TextFieldBaseProps &
+  Omit<InputHTMLAttributes<HTMLInputElement>, "prefix" | "value" | "onChange"> &
+  Omit<
+    TextareaHTMLAttributes<HTMLTextAreaElement>,
+    "prefix" | "value" | "onChange"
+  >;
 
 export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
   (
@@ -46,6 +67,8 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
       value,
       onChange,
       disabled = false,
+      multiline = false,
+      rows = 1,
       ...props
     },
     ref
@@ -62,7 +85,9 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
     const showClear = showClearButton && inputValue && !disabled;
 
     // Handle input change
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (
+      e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => {
       setInternalValue(e.target.value);
       if (onChange) {
         onChange(e);
@@ -80,7 +105,7 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
       if (onChange) {
         const syntheticEvent = {
           target: { value: "" },
-        } as React.ChangeEvent<HTMLInputElement>;
+        } as ChangeEvent<HTMLInputElement | HTMLTextAreaElement>;
         onChange(syntheticEvent);
       }
     };
@@ -102,15 +127,27 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
             <div className={styles.prefix}>{prefixElement}</div>
           )}
 
-          <input
-            ref={ref}
-            id={inputId}
-            className={styles.input}
-            value={value !== undefined ? value : internalValue}
-            onChange={handleChange}
-            disabled={disabled}
-            {...props}
-          />
+          {multiline ? (
+            <textarea
+              id={inputId}
+              className={styles.input}
+              value={value !== undefined ? value : internalValue}
+              onChange={handleChange}
+              disabled={disabled}
+              rows={rows}
+              {...(props as unknown as TextareaHTMLAttributes<HTMLTextAreaElement>)}
+            />
+          ) : (
+            <input
+              ref={ref}
+              id={inputId}
+              className={styles.input}
+              value={value !== undefined ? value : internalValue}
+              onChange={handleChange}
+              disabled={disabled}
+              {...props}
+            />
+          )}
 
           {showClear && (
             <button

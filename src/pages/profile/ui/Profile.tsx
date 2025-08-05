@@ -5,6 +5,7 @@ import styles from "./Profile.module.scss";
 import { Link } from "@/shared/ui/Link";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/features/auth";
+import { SupportModal } from "@/widgets/modals";
 
 export const ProfilePage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"user" | "manager">(() => {
@@ -13,6 +14,8 @@ export const ProfilePage: React.FC = () => {
       (localStorage.getItem("profileActiveTab") as "user" | "manager") || "user"
     );
   });
+
+  const [isSupportModalOpen, setIsSupportModalOpen] = useState(false);
 
   // Save active tab to localStorage whenever it changes
   useEffect(() => {
@@ -37,7 +40,7 @@ export const ProfilePage: React.FC = () => {
     {
       id: "user-support",
       text: "Служба поддержки",
-      onClick: () => {},
+      onClick: () => setIsSupportModalOpen(true),
     },
     {
       id: "logout",
@@ -73,12 +76,16 @@ export const ProfilePage: React.FC = () => {
     {
       id: "manager-support",
       text: "Служба поддержки",
-      onClick: () => {},
+      onClick: () => setIsSupportModalOpen(true),
     },
   ];
 
   return (
     <div className={styles.container}>
+      <SupportModal
+        isOpen={isSupportModalOpen}
+        onClose={() => setIsSupportModalOpen(false)}
+      />
       <div className={styles.profileContainer}>
         <TabGroup>
           <Tab
@@ -164,7 +171,7 @@ export const ProfilePage: React.FC = () => {
                 <Button
                   accent
                   onClick={() => {
-                    navigate("event-create");
+                    navigate("/event-create");
                   }}
                   className={styles.button}
                 >

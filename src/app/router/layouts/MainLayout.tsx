@@ -1,4 +1,4 @@
-import { Header, Snackbar, SnackbarItem } from "@shared/ui";
+import { Header, Snackbar, SnackbarItem, Toast } from "@shared/ui";
 import type { SnackbarItemType } from "@shared/ui/Snackbar/SnackbarItem";
 import React, { useEffect, useState } from "react";
 import { Outlet, useLocation, useMatches, useNavigate } from "react-router-dom";
@@ -153,6 +153,7 @@ export const MainLayout: React.FC = () => {
           </Snackbar>
         </div>
       )}
+      <Toast />
     </div>
   );
 };
