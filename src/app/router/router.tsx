@@ -29,6 +29,7 @@ import { EventParticipantsPage } from "@/pages/event-participants";
 import { PurchasePage } from "@/pages/purchase";
 import { ReviewsPage } from "@/pages/reviews";
 import { StoryCreatePage } from "@/pages/story-create";
+import { EventCreatePage } from "@/pages/event-create";
 
 // Wrapper component to handle mobile redirect logic
 const MobileRedirectWrapper = ({ children }: { children: React.ReactNode }) => {
@@ -278,10 +279,6 @@ export const router = createBrowserRouter(
           },
         },
         {
-          path: "add",
-          element: <div>Add Event Page (to be implemented)</div>,
-        },
-        {
           path: "purchase/:id",
           element: <PurchasePage />,
           handle: {
@@ -304,6 +301,19 @@ export const router = createBrowserRouter(
               showRightButton: false,
               navigateTo: "back",
               pageName: "Создание сторис",
+            },
+          },
+        },
+        {
+          path: "event-create",
+          element: <EventCreatePage />,
+          handle: {
+            headerProps: {
+              showLogo: false,
+              showLeftButton: true,
+              showRightButton: false,
+              navigateTo: "back",
+              pageName: "Создание события",
             },
           },
         },

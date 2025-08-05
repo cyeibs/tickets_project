@@ -53,7 +53,9 @@ export const MainLayout: React.FC = () => {
   // Set active nav item based on current path
   useEffect(() => {
     const path = location.pathname.substring(1) || "main";
-    if (["main", "search", "add", "ticket", "profile"].includes(path)) {
+    if (
+      ["main", "search", "event-create", "ticket", "profile"].includes(path)
+    ) {
       setActiveNavItem(path as SnackbarItemType);
     }
   }, [location.pathname]);
@@ -111,10 +113,10 @@ export const MainLayout: React.FC = () => {
               onClick={() => handleNavItemClick("search")}
             />
             <SnackbarItem
-              type="add"
-              isActive={activeNavItem === "add"}
+              type="event-create"
+              isActive={activeNavItem === "event-create"}
               activeItem={activeNavItem}
-              onClick={() => handleNavItemClick("add")}
+              onClick={() => handleNavItemClick("event-create")}
             />
             <SnackbarItem
               type="ticket"

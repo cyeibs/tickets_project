@@ -14,6 +14,8 @@ export interface EventSwiperCardProps {
   className?: string;
   price?: string;
   isFront?: boolean;
+  backgroundColor?: string;
+  textColor?: string;
 }
 
 export const EventSwiperCard: React.FC<EventSwiperCardProps> = ({
@@ -26,6 +28,8 @@ export const EventSwiperCard: React.FC<EventSwiperCardProps> = ({
   className = "",
   price,
   isFront,
+  backgroundColor,
+  textColor,
 }) => {
   const cardClasses = [
     styles.eventCard,
@@ -46,27 +50,40 @@ export const EventSwiperCard: React.FC<EventSwiperCardProps> = ({
           style={{ pointerEvents: "none" }}
         />
       )}
-      <div className={styles.content}>
-        <h3 className={styles.title}>{title}</h3>
+      <div
+        className={styles.content}
+        style={{
+          backgroundColor: backgroundColor,
+        }}
+      >
+        <h3 className={styles.title} style={{ color: textColor }}>
+          {title}
+        </h3>
 
         {(date || location || price) && (
           <div className={styles.info}>
             {date && (
               <span className={styles.infoWrapper}>
-                <CalendarIcon size={16} color="#212C3A" />
-                <span className={styles.infoText}>{date}</span>
+                <CalendarIcon size={16} color={textColor} />
+                <span className={styles.infoText} style={{ color: textColor }}>
+                  {date}
+                </span>
               </span>
             )}
             {location && (
               <span className={styles.infoWrapper}>
-                <LocationIcon size={16} color="#212C3A" />
-                <span className={styles.infoText}>{location}</span>
+                <LocationIcon size={16} color={textColor} />
+                <span className={styles.infoText} style={{ color: textColor }}>
+                  {location}
+                </span>
               </span>
             )}
             {price && (
               <span className={styles.infoWrapper}>
-                <CardIcon size={16} color="#212C3A" />
-                <span className={styles.infoText}>{price}</span>
+                <CardIcon size={16} color={textColor} />
+                <span className={styles.infoText} style={{ color: textColor }}>
+                  {price}
+                </span>
               </span>
             )}
           </div>

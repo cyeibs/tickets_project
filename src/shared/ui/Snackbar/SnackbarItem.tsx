@@ -13,7 +13,12 @@ import {
   ProfileIconBold,
 } from "@/shared/assets/icons";
 
-export type SnackbarItemType = "main" | "search" | "add" | "ticket" | "profile";
+export type SnackbarItemType =
+  | "main"
+  | "search"
+  | "ticket"
+  | "profile"
+  | "event-create";
 
 interface SnackbarItemProps {
   type: SnackbarItemType;
@@ -28,7 +33,7 @@ export const SnackbarItem: React.FC<SnackbarItemProps> = ({
   activeItem,
   onClick,
 }) => {
-  const shouldAddBeEnlarged = type === "add" && activeItem === "main";
+  const shouldAddBeEnlarged = type === "event-create" && activeItem === "main";
 
   const renderIcon = () => {
     const iconColor = "#FFFFFF";
@@ -49,7 +54,7 @@ export const SnackbarItem: React.FC<SnackbarItemProps> = ({
         ) : (
           <SearchIcon size={iconSize} color={iconColor} />
         );
-      case "add":
+      case "event-create":
         return isActive ? (
           <AddCircleBold size={iconSize} color={iconColorBold} />
         ) : (
@@ -78,7 +83,7 @@ export const SnackbarItem: React.FC<SnackbarItemProps> = ({
         return styles.homeItem;
       case "search":
         return styles.searchItem;
-      case "add":
+      case "event-create":
         return styles.addItem;
       case "ticket":
         return styles.ticketItem;
