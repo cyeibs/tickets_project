@@ -1,6 +1,6 @@
 import { SubscriptionCard } from "@/shared/ui/SubscriptionCard";
 import styles from "./ReviewsPage.module.scss";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Avatar } from "@/shared/ui/Avatar";
 import { Button } from "@/shared/ui";
 import { EventRatingModal } from "@/widgets/modals";
@@ -39,6 +39,10 @@ export const ReviewsPage = () => {
   const [isEventRatingModalOpen, setIsEventRatingModalOpen] = useState(false);
 
   const [expandedReviews, setExpandedReviews] = useState<number[]>([]);
+  const [canShowMoreById, setCanShowMoreById] = useState<
+    Record<number, boolean>
+  >({});
+  const reviewRefs = useRef<Record<number, HTMLSpanElement | null>>({});
 
   const toggleExpand = (id: number) => {
     setExpandedReviews((prev) =>
@@ -47,6 +51,27 @@ export const ReviewsPage = () => {
         : [...prev, id]
     );
   };
+
+  useEffect(() => {
+    const checkOverflow = () => {
+      const nextState: Record<number, boolean> = {};
+      for (const review of reviewsData) {
+        const el = reviewRefs.current[review.id];
+        if (!el) continue;
+        if (expandedReviews.includes(review.id)) {
+          nextState[review.id] = canShowMoreById[review.id] ?? false;
+          continue;
+        }
+        nextState[review.id] = el.scrollHeight > el.clientHeight + 1;
+      }
+      setCanShowMoreById((prev) => ({ ...prev, ...nextState }));
+    };
+
+    checkOverflow();
+    window.addEventListener("resize", checkOverflow);
+    return () => window.removeEventListener("resize", checkOverflow);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [expandedReviews]);
 
   return (
     <div className={styles.container}>
@@ -87,10 +112,14 @@ export const ReviewsPage = () => {
                           ? styles.expanded
                           : styles.collapsed
                       }`}
+                      ref={(el) => {
+                        reviewRefs.current[review.id] = el;
+                      }}
                     >
                       {review.text}
                     </span>
-                    {review.text.length > 100 && (
+                    {(canShowMoreById[review.id] ||
+                      expandedReviews.includes(review.id)) && (
                       <button
                         className={styles.showMoreButton}
                         onClick={() => toggleExpand(review.id)}

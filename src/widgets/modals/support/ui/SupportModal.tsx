@@ -38,12 +38,12 @@ export const SupportModal: React.FC<SupportModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <button
+    <div
       className={styles.overlay}
       onClick={onClose}
       onKeyDown={(e) => e.key === "Escape" && onClose()}
       aria-label="Close modal"
-      type="button"
+      role="presentation"
     >
       <div
         className={styles.modal}
@@ -78,6 +78,6 @@ export const SupportModal: React.FC<SupportModalProps> = ({
           </div>
         </form>
       </div>
-    </button>
+    </div>
   );
 };

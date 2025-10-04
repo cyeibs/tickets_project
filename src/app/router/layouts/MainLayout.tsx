@@ -5,7 +5,6 @@ import { Outlet, useLocation, useMatches, useNavigate } from "react-router-dom";
 import styles from "./MainLayout.module.scss";
 import { useAuth } from "@/features/auth";
 
-// Type for route handle data
 export interface RouteHandle {
   headerProps?: {
     showLogo?: boolean;
@@ -14,7 +13,7 @@ export interface RouteHandle {
     showSearchInput?: boolean;
     showFilterButton?: boolean;
     pageName?: string;
-    navigateTo?: string; // Добавляем поле для пути навигации
+    navigateTo?: string;
   };
   showHeader?: boolean;
   showSnackbar?: boolean;
@@ -26,31 +25,25 @@ export const MainLayout: React.FC = () => {
   const location = useLocation();
   const matches = useMatches();
 
-  // Get the current route's handle data
-  // Find the most specific match (deepest path) that has a handle
   const routeMatch = matches
     .filter((match) => Boolean(match.handle))
-    .slice(-1)[0]; // Get the last (most specific) match with a handle
+    .slice(-1)[0];
   const routeHandle = routeMatch?.handle as RouteHandle | undefined;
 
-  // Default header props
   const defaultHeaderProps = {
     showLogo: true,
     showLeftButton: false,
     showRightButton: false,
   };
 
-  // Merge default header props with route-specific header props
   const headerProps = {
     ...defaultHeaderProps,
     ...(routeHandle?.headerProps || {}),
   };
 
-  // Determine if header and snackbar should be shown
   const showHeader = routeHandle?.showHeader !== false;
   const showSnackbar = routeHandle?.showSnackbar !== false;
 
-  // Set active nav item based on current path
   useEffect(() => {
     const path = location.pathname.substring(1) || "main";
     if (
@@ -60,12 +53,21 @@ export const MainLayout: React.FC = () => {
     }
   }, [location.pathname]);
 
+  useEffect(() => {
+    const root = document.getElementById("root");
+    if (root) {
+      root.scrollTo({ top: 0, left: 0, behavior: "auto" });
+      root.scrollTop = 0;
+    } else {
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    }
+  }, [location.pathname]);
+
   const handleNavItemClick = (item: SnackbarItemType) => {
     setActiveNavItem(item);
     navigate(`/${item === "main" ? "main" : item}`);
   };
 
-  // Обработчик для кнопки фильтра
   const handleFilterButtonClick = () => {
     if (headerProps.navigateTo) {
       navigate(headerProps.navigateTo);
@@ -91,7 +93,7 @@ export const MainLayout: React.FC = () => {
           showFilterButton={headerProps.showFilterButton}
           pageName={headerProps.pageName}
           onLeftButtonClick={onLeftButtonClick}
-          onFilterButtonClick={handleFilterButtonClick} // Передаем обработчик для кнопки фильтра
+          onFilterButtonClick={handleFilterButtonClick}
         />
       )}
 

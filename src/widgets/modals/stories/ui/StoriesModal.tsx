@@ -21,7 +21,6 @@ export const StoriesModal: React.FC<StoriesModalProps> = ({
   const modalRef = useRef<HTMLDivElement>(null);
 
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    // Close stories only if clicking outside the modal
     if (e.target === e.currentTarget) {
       onClose();
     }

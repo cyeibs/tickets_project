@@ -1,0 +1,147 @@
+@import "@shared/styles/variables.scss";
+@import "@shared/styles/mixins.scss";
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: $space-100;
+  width: 100%;
+  position: relative;
+}
+
+.label {
+  @include r14;
+  color: var(--Fill-prime-white-color, rgba(255, 255, 255, 1));
+  margin-bottom: $space-100;
+}
+
+.inputWrapper {
+  display: flex;
+  align-items: center;
+  border-radius: 20px;
+  transition: all 0.2s ease;
+  position: relative;
+  width: 100%;
+  padding: $space-200 $space-400;
+  gap: 4px;
+  background: rgba(255, 255, 255, 1);
+  border: 1px solid rgba(202, 205, 208, 1);
+
+  &:hover:not(.disabled):not(:focus-within) {
+    border: 1px solid rgba(166, 171, 176, 1);
+  }
+
+  &:focus-within:not(.error) {
+    border: 1px solid rgba(166, 171, 176, 1);
+    box-shadow: 0 0 0 3px rgba(16, 178, 81, 0.3);
+  }
+}
+
+.input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #212c3a;
+  @include r14;
+  padding: $space-50 $space-100;
+  width: 100%;
+  font-family: inherit;
+
+  &::placeholder {
+    @include r14;
+    color: #626974;
+  }
+}
+
+.suffix {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #626974;
+}
+
+.caret {
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid #626974;
+}
+
+.clearButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 4px;
+}
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid rgba(202, 205, 208, 1);
+  border-radius: 12px;
+  padding: 6px 0;
+  max-height: 240px;
+  overflow-y: auto;
+  z-index: 1000;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.option {
+  padding: 10px 12px;
+  cursor: pointer;
+  @include r14;
+  color: #212c3a;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.04);
+  }
+}
+
+.selected {
+  background: rgba(16, 178, 81, 0.1);
+}
+
+.highlighted {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.noOptions {
+  padding: 10px 12px;
+  @include r14;
+  color: #626974;
+}
+
+.error {
+  border: 1px solid rgba(224, 83, 83, 1) !important;
+
+  &:focus-within {
+    box-shadow: 0 0 0 2px rgba(224, 83, 83, 0.1) !important;
+  }
+}
+
+.errorText {
+  @include r12;
+  color: rgba(224, 83, 83, 1);
+  margin-top: $space-100;
+}
+
+.hint {
+  @include r12;
+  color: #626974;
+  margin-top: $space-100;
+}
+
+.disabled {
+  background: rgba(233, 234, 236, 1);
+  border: 1px solid rgba(202, 205, 208, 1);
+  pointer-events: none;
+
+  .input {
+    opacity: 0.7;
+  }
+}

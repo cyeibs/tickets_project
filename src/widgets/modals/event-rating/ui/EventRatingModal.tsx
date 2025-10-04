@@ -40,12 +40,12 @@ export const EventRatingModal: React.FC<EventRatingModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <button
+    <div
       className={styles.overlay}
       onClick={onClose}
       onKeyDown={(e) => e.key === "Escape" && onClose()}
       aria-label="Close modal"
-      type="button"
+      role="presentation"
     >
       <div
         className={styles.modal}
@@ -74,6 +74,6 @@ export const EventRatingModal: React.FC<EventRatingModalProps> = ({
           </div>
         </form>
       </div>
-    </button>
+    </div>
   );
 };

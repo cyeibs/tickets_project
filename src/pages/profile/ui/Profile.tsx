@@ -87,7 +87,7 @@ export const ProfilePage: React.FC = () => {
         onClose={() => setIsSupportModalOpen(false)}
       />
       <div className={styles.profileContainer}>
-        <TabGroup>
+        <TabGroup key="tabs">
           <Tab
             key="user"
             accent={activeTab === "user"}

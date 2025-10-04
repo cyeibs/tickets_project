@@ -1,7 +1,7 @@
 import { SubscriptionCard } from "@/shared/ui/SubscriptionCard";
 import styles from "./AboutCompanyPage.module.scss";
 import { StarIcon, ReviewsIcon } from "@/shared/assets/icons";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const actualEvents = {
@@ -15,11 +15,24 @@ const actualEvents = {
 
 export const AboutCompanyPage = () => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [canShowMore, setCanShowMore] = useState(false);
+  const descriptionRef = useRef<HTMLSpanElement | null>(null);
   const navigate = useNavigate();
 
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
   };
+
+  useEffect(() => {
+    const checkOverflow = () => {
+      const el = descriptionRef.current;
+      if (!el) return;
+      setCanShowMore(el.scrollHeight > el.clientHeight + 1);
+    };
+    checkOverflow();
+    window.addEventListener("resize", checkOverflow);
+    return () => window.removeEventListener("resize", checkOverflow);
+  }, []);
 
   return (
     <div className={styles.container}>
@@ -61,19 +74,22 @@ export const AboutCompanyPage = () => {
               className={`${styles.descriptionText} ${
                 isExpanded ? styles.expanded : styles.collapsed
               }`}
+              ref={descriptionRef}
             >
               Симфонический оркестр — это коллектив музыкантов, который
               исполняет симфонические произведения. Он состоит из солистов,
               струнных, духовых и ударных инструментов. Симфонический оркестр
               исполняет произведения разных эпох и наций.
             </span>
-            <button
-              className={styles.showMoreButton}
-              onClick={toggleExpand}
-              type="button"
-            >
-              {isExpanded ? "Скрыть" : "Показать еще"}
-            </button>
+            {(canShowMore || isExpanded) && (
+              <button
+                className={styles.showMoreButton}
+                onClick={toggleExpand}
+                type="button"
+              >
+                {isExpanded ? "Скрыть" : "Показать еще"}
+              </button>
+            )}
           </div>
         </div>
       </div>

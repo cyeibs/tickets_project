@@ -69,6 +69,27 @@ export const LoginPage: React.FC = () => {
       return;
     }
 
+    if (phoneExists === false) {
+      const hasUppercase = /[A-Z]/.test(password);
+      const hasDigit = /\d/.test(password);
+      const hasSpecial = /[^A-Za-z0-9]/.test(password);
+      const isPasswordLengthValid = password.length >= 8;
+      const isPasswordFormatValid =
+        hasUppercase && hasDigit && hasSpecial && isPasswordLengthValid;
+
+      if (!isPasswordFormatValid) {
+        setError(
+          "Пароль должен быть не менее 8 символов и содержать минимум одну заглавную букву, специальный символ и цифру"
+        );
+        return;
+      }
+
+      if (confirmPassword !== password) {
+        setError("Пароли не совпадают");
+        return;
+      }
+    }
+
     try {
       setIsLoading(true);
 

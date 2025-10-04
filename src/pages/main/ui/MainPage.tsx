@@ -72,14 +72,16 @@ export const MainPage: React.FC = () => {
       </div>
 
       <div className={styles.sectionBody}>
-        <TabGroup title="События" className={styles.tabsContainer}>
+        <TabGroup key="tabs" title="События" className={styles.tabsContainer}>
           <Tab
+            key="poster"
             accent={activeTab === "poster"}
             onClick={() => setActiveTab("poster")}
           >
             Афишой
           </Tab>
           <Tab
+            key="swiper"
             accent={activeTab === "swiper"}
             onClick={() => setActiveTab("swiper")}
           >

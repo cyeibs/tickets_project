@@ -7,6 +7,7 @@ export * from "./IconButton";
 export * from "./Loader";
 export * from "./PhoneInput";
 export * from "./Pills";
+export * from "./AutocompleteSelect";
 export * from "./SearchInput";
 export * from "./Snackbar";
 export * from "./StepperHorizontal";

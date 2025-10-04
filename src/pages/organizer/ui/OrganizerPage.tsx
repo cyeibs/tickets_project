@@ -1,15 +1,8 @@
 import { SubscriptionCard } from "@/shared/ui/SubscriptionCard";
 import styles from "./OrganizerPage.module.scss";
-import {
-  StarIcon,
-  ReviewsIcon,
-  CalendarIcon,
-  LocationIcon,
-  TimeIcon,
-  MessagesIcon,
-} from "@/shared/assets/icons";
-import { useState } from "react";
-import { Avatar, EventCard, Pills, StoriesLine } from "@/shared/ui";
+import { StarIcon, ReviewsIcon } from "@/shared/assets/icons";
+import { useEffect, useRef, useState } from "react";
+import { EventCard } from "@/shared/ui";
 import { useNavigate } from "react-router-dom";
 import { StoriesWidget } from "@/widgets";
 
@@ -73,10 +66,23 @@ const events = [
 
 export const OrganizerPage = () => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [canShowMore, setCanShowMore] = useState(false);
+  const descriptionRef = useRef<HTMLSpanElement | null>(null);
   const navigate = useNavigate();
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
   };
+
+  useEffect(() => {
+    const checkOverflow = () => {
+      const el = descriptionRef.current;
+      if (!el) return;
+      setCanShowMore(el.scrollHeight > el.clientHeight + 1);
+    };
+    checkOverflow();
+    window.addEventListener("resize", checkOverflow);
+    return () => window.removeEventListener("resize", checkOverflow);
+  }, []);
 
   return (
     <div className={styles.container}>
@@ -125,6 +131,7 @@ export const OrganizerPage = () => {
               className={`${styles.descriptionText} ${
                 isExpanded ? styles.expanded : styles.collapsed
               }`}
+              ref={descriptionRef}
             >
               VK Fest — это музыка от известных исполнителей, встречи с
               блогерами, знания и лекции, спорт, мастер-классы, конкурсы и много
@@ -136,13 +143,15 @@ export const OrganizerPage = () => {
               мероприятия –{" "}
               <a href="https://vkfest.ru/rules">https://vkfest.ru/rules</a>
             </span>
-            <button
-              className={styles.showMoreButton}
-              onClick={toggleExpand}
-              type="button"
-            >
-              {isExpanded ? "Скрыть" : "Показать еще"}
-            </button>
+            {(canShowMore || isExpanded) && (
+              <button
+                className={styles.showMoreButton}
+                onClick={toggleExpand}
+                type="button"
+              >
+                {isExpanded ? "Скрыть" : "Показать еще"}
+              </button>
+            )}
           </div>
         </div>
 

@@ -1,13 +1,7 @@
 import { SubscriptionCard } from "@/shared/ui/SubscriptionCard";
 import styles from "./EventPage.module.scss";
-import {
-  StarIcon,
-  ReviewsIcon,
-  CalendarIcon,
-  LocationIcon,
-  TimeIcon,
-} from "@/shared/assets/icons";
-import { useState } from "react";
+import { CalendarIcon, LocationIcon, TimeIcon } from "@/shared/assets/icons";
+import { useEffect, useRef, useState } from "react";
 import { Avatar, Pills } from "@/shared/ui";
 import { useNavigate } from "react-router-dom";
 import { GoToIcon } from "@/shared/assets/icons/goTo";
@@ -21,7 +15,6 @@ const actualEvents = {
   imageUrl: "/tickets_project/avatars/1.webp",
 };
 
-// Create an array of participants (20 total)
 const participants = Array(20)
   .fill(null)
   .map((_, i) => ({
@@ -31,10 +24,23 @@ const participants = Array(20)
 
 export const EventPage = () => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [canShowMore, setCanShowMore] = useState(false);
+  const descriptionRef = useRef<HTMLSpanElement | null>(null);
   const navigate = useNavigate();
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
   };
+
+  useEffect(() => {
+    const checkOverflow = () => {
+      const el = descriptionRef.current;
+      if (!el) return;
+      setCanShowMore(el.scrollHeight > el.clientHeight + 1);
+    };
+    checkOverflow();
+    window.addEventListener("resize", checkOverflow);
+    return () => window.removeEventListener("resize", checkOverflow);
+  }, []);
 
   return (
     <div className={styles.container}>
@@ -142,6 +148,7 @@ export const EventPage = () => {
               className={`${styles.descriptionText} ${
                 isExpanded ? styles.expanded : styles.collapsed
               }`}
+              ref={descriptionRef}
             >
               VK Fest — это музыка от известных исполнителей, встречи с
               блогерами, знания и лекции, спорт, мастер-классы, конкурсы и много
@@ -153,13 +160,15 @@ export const EventPage = () => {
               мероприятия –{" "}
               <a href="https://vkfest.ru/rules">https://vkfest.ru/rules</a>
             </span>
-            <button
-              className={styles.showMoreButton}
-              onClick={toggleExpand}
-              type="button"
-            >
-              {isExpanded ? "Скрыть" : "Показать еще"}
-            </button>
+            {(canShowMore || isExpanded) && (
+              <button
+                className={styles.showMoreButton}
+                onClick={toggleExpand}
+                type="button"
+              >
+                {isExpanded ? "Скрыть" : "Показать еще"}
+              </button>
+            )}
           </div>
         </div>
       </div>

@@ -25,6 +25,26 @@ export const PasswordStep: React.FC<PasswordStepProps> = ({
   onContinue,
   onBack,
 }) => {
+  const isRegistration = phoneExists === false;
+
+  const hasUppercase = /[A-Z]/.test(password);
+  const hasDigit = /\d/.test(password);
+  const hasSpecial = /[^A-Za-z0-9]/.test(password);
+  const isPasswordLengthValid = password.length >= 8;
+  const isPasswordFormatValid =
+    hasUppercase && hasDigit && hasSpecial && isPasswordLengthValid;
+
+  const showPasswordFormatError =
+    isRegistration && password.length > 0 && !isPasswordFormatValid;
+
+  const passwordError = showPasswordFormatError
+    ? "Пароль должен быть не менее 8 символов и содержать минимум одну заглавную букву, специальный символ и цифру"
+    : error || undefined;
+
+  const confirmError =
+    isRegistration && confirmPassword.length > 0 && confirmPassword !== password
+      ? "Пароли не совпадают"
+      : error || undefined;
   return (
     <>
       <p className={styles.phoneText}>
@@ -41,8 +61,10 @@ export const PasswordStep: React.FC<PasswordStepProps> = ({
           }
           placeholder="Введите пароль"
           value={password}
-          onChange={onPasswordChange}
-          error={error || undefined}
+          onChange={(e) =>
+            onPasswordChange(e as React.ChangeEvent<HTMLInputElement>)
+          }
+          error={passwordError}
           type="password"
         />
 
@@ -50,8 +72,10 @@ export const PasswordStep: React.FC<PasswordStepProps> = ({
           label="Повторите пароль"
           placeholder="Введите пароль"
           value={confirmPassword}
-          onChange={onConfirmPasswordChange}
-          error={error || undefined}
+          onChange={(e) =>
+            onConfirmPasswordChange(e as React.ChangeEvent<HTMLInputElement>)
+          }
+          error={confirmError}
           type="password"
         />
       </div>
@@ -60,7 +84,18 @@ export const PasswordStep: React.FC<PasswordStepProps> = ({
         <Button onClick={onContinue} disabled={isLoading} type="button">
           {isLoading ? "Загрузка..." : "Продолжить"}
         </Button>
-        <Button onClick={onBack} type="button">
+        <Button
+          onClick={() => {
+            onBack();
+            onPasswordChange({
+              target: { value: "" },
+            } as React.ChangeEvent<HTMLInputElement>);
+            onConfirmPasswordChange({
+              target: { value: "" },
+            } as React.ChangeEvent<HTMLInputElement>);
+          }}
+          type="button"
+        >
           Назад
         </Button>
       </div>

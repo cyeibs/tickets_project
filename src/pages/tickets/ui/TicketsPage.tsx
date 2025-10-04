@@ -118,7 +118,7 @@ export const TicketsPage: React.FC = () => {
   return (
     <div className={styles.container}>
       <div className={`${styles.tabsContainer}`}>
-        <TabGroup>
+        <TabGroup key="tabs">
           <Tab
             key="favorites"
             accent={activeTab === "favorites"}
