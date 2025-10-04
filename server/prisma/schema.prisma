@@ -1,0 +1,174 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Role {
+  id        String   @id @default(uuid())
+  code      String   @unique
+  name      String
+  users     User[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Media {
+  id           String   @id @default(uuid())
+  fileName     String
+  mimeType     String
+  size         Int
+  storagePath  String
+  createdAt    DateTime @default(now())
+
+  users          User[]         @relation("UserAvatar")
+  organizations  Organization[] @relation("OrganizationAvatar")
+  events         Event[]        @relation("EventPoster")
+}
+
+model Organization {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  telephone   String?
+  socialUrl   String?
+  inn         String?
+  ogrn        String?
+  kpp         String?
+  licence     String?
+
+  avatarId String?
+  avatar   Media?   @relation("OrganizationAvatar", fields: [avatarId], references: [id])
+
+  users  User[]
+  events Event[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model User {
+  id         String   @id @default(uuid())
+  firstName  String
+  lastName   String
+  middleName String?
+  telephone  String   @unique
+  password   String
+
+  avatarId String?
+  avatar   Media?   @relation("UserAvatar", fields: [avatarId], references: [id])
+
+  roleId String
+  role   Role     @relation(fields: [roleId], references: [id])
+
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+
+  purchases       Purchase[]
+  reviews         Review[]
+  supportRequests SupportRequest[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model EventCategory {
+  id     String @id @default(uuid())
+  name   String
+  slug   String? @unique
+  events Event[]
+}
+
+model City {
+  id     String @id @default(uuid())
+  name   String
+  slug   String? @unique
+  events Event[]
+}
+
+model EventColor {
+  id        String @id @default(uuid())
+  name      String
+  color     String
+  textColor String
+  events    Event[]
+}
+
+model Event {
+  id             String       @id @default(uuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+
+  posterId String?
+  poster   Media?       @relation("EventPoster", fields: [posterId], references: [id])
+
+  name        String
+  description String?     @db.Text
+  categoryId  String
+  category    EventCategory @relation(fields: [categoryId], references: [id])
+  cityId      String
+  city        City         @relation(fields: [cityId], references: [id])
+  eventDate   DateTime
+  startTime   String
+  location    String
+  maxQuantity Int
+  price       Decimal      @db.Decimal(10, 2)
+  colorId     String
+  color       EventColor   @relation(fields: [colorId], references: [id])
+
+  reviews   Review[]
+  purchases Purchase[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  eventId   String
+  event     Event    @relation(fields: [eventId], references: [id])
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
+  text      String
+  rating    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([eventId, authorId])
+}
+
+model PurchaseStatus {
+  id        String     @id @default(uuid())
+  code      String     @unique
+  name      String
+  purchases Purchase[]
+}
+
+model Purchase {
+  id         String         @id @default(uuid())
+  eventId    String
+  event      Event          @relation(fields: [eventId], references: [id])
+  userId     String
+  user       User           @relation(fields: [userId], references: [id])
+  firstName  String
+  lastName   String
+  price      Decimal        @db.Decimal(10, 2)
+  serviceTax Decimal        @db.Decimal(10, 2)
+  statusId   String
+  status     PurchaseStatus @relation(fields: [statusId], references: [id])
+  createdAt  DateTime       @default(now())
+}
+
+model SupportRequest {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  subject     String
+  description String
+  createdAt   DateTime @default(now())
+}
+
+
