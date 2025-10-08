@@ -80,6 +80,14 @@ export const MainLayout: React.FC = () => {
     }
   };
 
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const params = new URLSearchParams(location.search);
+    const value = event.target.value;
+    if (value) params.set("q", value);
+    else params.delete("q");
+    navigate({ pathname: location.pathname, search: params.toString() });
+  };
+
   const { isAuthenticated } = useAuth();
 
   return (
@@ -94,6 +102,7 @@ export const MainLayout: React.FC = () => {
           pageName={headerProps.pageName}
           onLeftButtonClick={onLeftButtonClick}
           onFilterButtonClick={handleFilterButtonClick}
+          onSearchChange={handleSearchChange}
         />
       )}
 

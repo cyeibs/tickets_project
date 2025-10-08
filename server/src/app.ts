@@ -12,8 +12,16 @@ import { registerRoutes } from "./routes";
 export function buildApp() {
   const app = Fastify({ logger: true });
 
-  app.register(helmet);
-  app.register(cors, { origin: true, credentials: true });
+  app.register(helmet, {
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+    crossOriginEmbedderPolicy: false,
+  });
+  app.register(cors, {
+    origin: true,
+    credentials: true,
+    methods: ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  });
   app.register(multipart, {
     limits: { fileSize: env.maxFileSizeMB * 1024 * 1024 },
   });

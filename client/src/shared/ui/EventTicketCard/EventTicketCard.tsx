@@ -17,6 +17,7 @@ export interface EventTicketCardProps {
   actionButton?: boolean;
   isHeart?: boolean;
   isMyEvent?: boolean;
+  liked?: boolean;
 }
 
 export const EventTicketCard: React.FC<EventTicketCardProps> = ({
@@ -32,6 +33,7 @@ export const EventTicketCard: React.FC<EventTicketCardProps> = ({
   actionButton = true,
   isHeart = true,
   isMyEvent = false,
+  liked = true,
 }) => {
   const cardClasses = [
     styles.eventTicketCard,
@@ -57,10 +59,10 @@ export const EventTicketCard: React.FC<EventTicketCardProps> = ({
               <IconButton
                 icon={Heart}
                 onClick={onIconClick}
-                iconColor="#212C3A"
-                variant="accent"
+                iconColor={liked ? "#212C3A" : "#151515"}
+                variant={liked ? "accent" : "basic"}
                 iconSize={24}
-                fill="#212C3A"
+                fill={liked ? "#212C3A" : "none"}
               />
             </div>
           )}

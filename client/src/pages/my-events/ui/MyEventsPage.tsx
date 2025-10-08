@@ -16,7 +16,7 @@ export const MyEventsPage: React.FC = () => {
       date: "12 июня",
       time: "18:00",
       status: "Избранное",
-      imageUrl: "/tickets_project/avatars/1.webp",
+      imageUrl: "/avatars/1.webp",
     },
     {
       id: 2,
@@ -24,7 +24,7 @@ export const MyEventsPage: React.FC = () => {
       date: "15 июня",
       time: "19:30",
       status: "Избранное",
-      imageUrl: "/tickets_project/avatars/2.avif",
+      imageUrl: "/avatars/2.avif",
     },
   ];
 
@@ -35,7 +35,7 @@ export const MyEventsPage: React.FC = () => {
       date: "12 июня",
       time: "18:00",
       status: "В оплате",
-      imageUrl: "/tickets_project/avatars/1.webp",
+      imageUrl: "/avatars/1.webp",
     },
     {
       id: 4,
@@ -53,7 +53,7 @@ export const MyEventsPage: React.FC = () => {
       date: "5 мая",
       time: "19:00",
       status: "Завершено",
-      imageUrl: "/tickets_project/avatars/2.avif",
+      imageUrl: "/avatars/2.avif",
     },
     {
       id: 6,

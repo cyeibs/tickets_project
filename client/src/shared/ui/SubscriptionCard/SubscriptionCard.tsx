@@ -1,13 +1,10 @@
 import {
-  ArrowExport,
   ArrowLeft,
   Edit,
   Heart,
-  MessagesIcon,
   ReviewsIcon,
   StarIcon,
 } from "@/shared/assets/icons";
-import { Button } from "@shared/ui/Button";
 import { IconButton } from "@shared/ui/IconButton";
 import React from "react";
 import styles from "./SubscriptionCard.module.scss";
@@ -20,7 +17,7 @@ export interface SubscriptionCardProps {
   imageUrl?: string;
   image?: boolean;
   onButtonClick?: () => void;
-  onIconClick?: () => void;
+  onHeartClick?: () => void;
   onBackClick?: () => void;
   className?: string;
   status?: string;
@@ -28,6 +25,9 @@ export interface SubscriptionCardProps {
   hideContent?: boolean;
   isEdit?: boolean;
   isHeart?: boolean;
+  isSubscribed?: boolean;
+  ratingAvg?: number | null;
+  reviewsCount?: number;
   isEventPage?: boolean;
   hideReviews?: boolean;
 }
@@ -37,15 +37,18 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   imageUrl,
   image = true,
   onButtonClick,
-  onIconClick,
+  onHeartClick,
   onBackClick,
   className = "",
   actionButton = true,
   isEdit = false,
   isHeart = false,
+  isSubscribed = false,
   hideContent = false,
   isEventPage = false,
   hideReviews = false,
+  ratingAvg = null,
+  reviewsCount,
 }) => {
   const navigate = useNavigate();
   const cardClasses = [
@@ -84,17 +87,17 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
           {isHeart && (
             <IconButton
               icon={Heart}
-              onClick={onIconClick}
-              iconColor="#212C3A"
-              variant="accent"
+              onClick={onHeartClick}
+              iconColor={isSubscribed ? "#212C3A" : "#151515"}
+              variant={isSubscribed ? "accent" : "basic"}
               iconSize={24}
-              fill="#212C3A"
+              fill={isSubscribed ? "#212C3A" : "none"}
             />
           )}
           {isEdit && (
             <IconButton
               icon={Edit}
-              onClick={onIconClick}
+              onClick={onButtonClick}
               iconColor="#212C3A"
               // variant="accent"
               iconSize={24}
@@ -115,7 +118,13 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
               <span className={styles.infoText}>Рейтинг</span>
               <div className={styles.infoWrapper}>
                 <StarIcon size={16} color="#BBBAFF" />
-                <div className={styles.infoText}>4,8</div>
+                <div className={styles.infoText}>
+                  {ratingAvg != null
+                    ? (Math.round((ratingAvg as number) * 10) / 10)
+                        .toString()
+                        .replace(".", ",")
+                    : "—"}
+                </div>
               </div>
             </div>
             {!hideReviews && (
@@ -128,7 +137,7 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
                 <span className={styles.infoText}>Отзывы</span>
                 <div className={styles.infoWrapper}>
                   <ReviewsIcon size={16} color="#BBBAFF" />
-                  <div className={styles.infoText}>321</div>
+                  <div className={styles.infoText}>{reviewsCount ?? 0}</div>
                 </div>
               </button>
             )}

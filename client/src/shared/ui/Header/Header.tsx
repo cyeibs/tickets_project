@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useRef, useState } from "react";
+import React, { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { IconButton } from "../IconButton";
 import { ArrowLeft, Edit, Logo, FilterIcon } from "@shared/assets/icons";
 import styles from "./Header.module.scss";
@@ -70,6 +70,12 @@ export const Header: React.FC<HeaderProps> = ({
 }) => {
   const [height, setHeight] = useState<number | "auto">("auto");
   const contentWrapperRef = useRef<HTMLDivElement>(null);
+  const [searchValue, setSearchValue] = useState<string>("");
+
+  const currentQuery = useMemo(
+    () => new URLSearchParams(window.location.search),
+    []
+  );
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useLayoutEffect(() => {
@@ -86,6 +92,14 @@ export const Header: React.FC<HeaderProps> = ({
     showSearchInput,
     showFilterButton,
   ]);
+
+  useLayoutEffect(() => {
+    // Initialize input from URL when header mounts
+    if (showSearchInput) {
+      const q = new URLSearchParams(window.location.search).get("q") || "";
+      setSearchValue(q);
+    }
+  }, [showSearchInput]);
 
   const isTopRowVisible = showLeftButton || showLogo || showRightButton;
 
@@ -137,7 +151,13 @@ export const Header: React.FC<HeaderProps> = ({
           <div className={styles.searchRow}>
             {showSearchInput && (
               <div className={styles.searchInputContainer}>
-                <SearchInput onChange={onSearchChange} />
+                <SearchInput
+                  value={searchValue}
+                  onChange={(e) => {
+                    setSearchValue(e.target.value);
+                    onSearchChange?.(e);
+                  }}
+                />
               </div>
             )}
             {showFilterButton && (

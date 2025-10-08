@@ -6,6 +6,7 @@ import { Link } from "@/shared/ui/Link";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/features/auth";
 import { SupportModal } from "@/widgets/modals";
+import { userApi } from "@/entities/user";
 
 export const ProfilePage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"user" | "manager">(() => {
@@ -24,7 +25,28 @@ export const ProfilePage: React.FC = () => {
 
   const navigate = useNavigate();
 
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
+
+  const isOrganizer = !!user?.isOrganizer;
+  const displayName = user?.name ?? "";
+  const avatarSrc = user?.avatar ?? undefined;
+
+  const [organization, setOrganization] = useState<{
+    id: string;
+    name: string;
+    avatarUrl?: string;
+    description?: string;
+    ratingAvg?: number | null;
+  } | null>(null);
+
+  useEffect(() => {
+    if (activeTab === "manager" && isOrganizer && user?.organizationId) {
+      userApi
+        .getOrganization(user.organizationId)
+        .then(setOrganization)
+        .catch(() => setOrganization(null));
+    }
+  }, [activeTab, isOrganizer, user?.organizationId]);
 
   const userLinks = [
     {
@@ -87,37 +109,39 @@ export const ProfilePage: React.FC = () => {
         onClose={() => setIsSupportModalOpen(false)}
       />
       <div className={styles.profileContainer}>
-        <TabGroup key="tabs">
-          <Tab
-            key="user"
-            accent={activeTab === "user"}
-            onClick={() => setActiveTab("user")}
-          >
-            Пользователь
-          </Tab>
-          <Tab
-            key="manager"
-            accent={activeTab === "manager"}
-            onClick={() => setActiveTab("manager")}
-          >
-            Организатор
-          </Tab>
-        </TabGroup>
+        {isOrganizer && (
+          <TabGroup key="tabs">
+            <Tab
+              key="user"
+              accent={activeTab === "user"}
+              onClick={() => setActiveTab("user")}
+            >
+              Пользователь
+            </Tab>
+            <Tab
+              key="manager"
+              accent={activeTab === "manager"}
+              onClick={() => setActiveTab("manager")}
+            >
+              Организатор
+            </Tab>
+          </TabGroup>
+        )}
 
         <div className={styles.profileCard}>
-          {activeTab === "user" ? (
+          {!isOrganizer || activeTab === "user" ? (
             <div className={styles.userProfileLayout}>
               <div className={styles.userAvatarContainer}>
-                <Avatar size={64} src={"./avatars/1.webp"} />
+                <Avatar size={64} src={avatarSrc} />
               </div>
               <div className={styles.userInfoContainer}>
-                <div className={styles.profileName}>Женя Антонова</div>
-                <div className={styles.profileUsername}>@jenya_antonova</div>
+                <div className={styles.profileName}>{displayName}</div>
+                {/* <div className={styles.profileUsername}>@jenya_antonova</div> */}
               </div>
               <div className={styles.profileCardHeaderRight}>
                 <IconButton
                   icon={Edit}
-                  onClick={() => {}}
+                  onClick={() => navigate("/profile/edit")}
                   iconColor="#ffffff"
                   iconSize={24}
                   variant={"minimal"}
@@ -129,7 +153,7 @@ export const ProfilePage: React.FC = () => {
               <div className={styles.profileCardHeader}>
                 <div className={styles.profileCardHeaderLeft}>
                   <div className={styles.profileCardHeaderLeftImage}>
-                    <Avatar size={100} src={"./avatars/1.webp"} />
+                    <Avatar size={100} src={organization?.avatarUrl} />
                   </div>
                 </div>
                 <div className={styles.profileCardHeaderRight}>
@@ -145,12 +169,23 @@ export const ProfilePage: React.FC = () => {
 
               <div className={styles.profileInfo}>
                 <div className={styles.profileInfoLeft}>
-                  <div className={styles.profileName}>Лучший организатор</div>
-                  <div className={styles.profileUsername}>Женя Антонова</div>
+                  <div className={styles.profileName}>
+                    {organization?.name ?? "Организация"}
+                  </div>
+                  <div className={styles.profileUsername}>{displayName}</div>
                 </div>
                 <div className={styles.profileInfoRight}>
                   <StarIcon size={16} color="#BBBAFF" />
-                  <div className={styles.profileRating}>4,8</div>
+                  <div className={styles.profileRating}>
+                    {organization?.ratingAvg != null
+                      ? (
+                          Math.round((organization.ratingAvg as number) * 10) /
+                          10
+                        )
+                          .toString()
+                          .replace(".", ",")
+                      : "—"}
+                  </div>
                 </div>
               </div>
             </>
@@ -158,7 +193,7 @@ export const ProfilePage: React.FC = () => {
         </div>
 
         <div className={styles.userActions}>
-          {activeTab === "user" ? (
+          {!isOrganizer || activeTab === "user" ? (
             userLinks.map((link) => (
               <Link key={link.id} text={link.text} onClick={link.onClick} />
             ))

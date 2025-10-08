@@ -25,6 +25,7 @@ export interface EventCardProps {
   price?: string;
   backgroundColor?: string;
   textColor?: string;
+  liked?: boolean;
 }
 
 export const EventCard: React.FC<EventCardProps> = ({
@@ -42,6 +43,7 @@ export const EventCard: React.FC<EventCardProps> = ({
   price,
   backgroundColor,
   textColor,
+  liked = false,
 }) => {
   const cardClasses = [
     styles.eventCard,
@@ -122,8 +124,10 @@ export const EventCard: React.FC<EventCardProps> = ({
               <IconButton
                 icon={Heart}
                 onClick={onLikeClick}
-                iconColor="#151515"
+                iconColor={liked ? "#212C3A" : "#151515"}
+                variant={liked ? "accent" : "basic"}
                 iconSize={24}
+                fill={liked ? "#212C3A" : "none"}
               />
             </div>
           )}

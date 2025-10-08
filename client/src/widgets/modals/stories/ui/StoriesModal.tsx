@@ -69,7 +69,7 @@ export const StoriesModal: React.FC<StoriesModalProps> = ({
     >
       <div ref={modalRef} className={styles.storiesModal} tabIndex={-1}>
         <Stories
-          defaultInterval={5000}
+          defaultInterval={4001}
           width="100%"
           preloadCount={3}
           height="100%"

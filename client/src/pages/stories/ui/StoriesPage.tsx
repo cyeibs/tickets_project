@@ -10,7 +10,7 @@ const events = [
     date: "12 июня в 12:00",
     location: "Парк 300-летия Петербурга",
     price: "от 1500₽",
-    imageUrl: "/tickets_project/avatars/1.webp",
+    imageUrl: "/avatars/1.webp",
   },
   {
     id: 2,
@@ -18,7 +18,7 @@ const events = [
     date: "15 июня в 19:00",
     location: "Филармония им. Шостаковича",
     price: "от 2000₽",
-    imageUrl: "/tickets_project/avatars/2.avif",
+    imageUrl: "/avatars/2.avif",
   },
   {
     id: 3,
@@ -33,7 +33,7 @@ const events = [
     date: "20 июня в 12:00",
     location: "Новая Голландия",
     price: "Вход свободный",
-    imageUrl: "/tickets_project/avatars/2.avif",
+    imageUrl: "/avatars/2.avif",
   },
   {
     id: 5,
@@ -41,7 +41,7 @@ const events = [
     date: "25 июня в 10:00",
     location: "Эрарта",
     price: "от 700₽",
-    imageUrl: "/tickets_project/avatars/1.webp",
+    imageUrl: "/avatars/1.webp",
   },
   {
     id: 6,

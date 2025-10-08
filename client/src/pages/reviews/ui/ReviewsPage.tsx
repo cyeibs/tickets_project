@@ -11,7 +11,7 @@ const actualEvents = {
   date: "12 июня",
   time: "18:00",
   status: "В оплате",
-  imageUrl: "/tickets_project/avatars/1.webp",
+  imageUrl: "/avatars/1.webp",
 };
 
 const reviewsData = [
@@ -19,19 +19,19 @@ const reviewsData = [
     id: 1,
     name: "Антонова Женя",
     text: "Слов нет, отличные ребята. Очень понравилось мероприятие, обязательно приду еще раз!",
-    avatar: "/tickets_project/avatars/1.webp",
+    avatar: "/avatars/1.webp",
   },
   {
     id: 2,
     name: "Иванов Петр",
     text: "Прекрасная организация, все было на высшем уровне. Рекомендую всем! Прекрасная организация, все было на высшем уровне. Рекомендую всем!",
-    avatar: "/tickets_project/avatars/2.avif",
+    avatar: "/avatars/2.avif",
   },
   {
     id: 3,
     name: "Смирнова Анна",
     text: "Интересное мероприятие, но можно было бы улучшить звук. В целом впечатления положительные. Интересное мероприятие, но можно было бы улучшить звук. В целом впечатления положительные.",
-    avatar: "/tickets_project/avatars/1.webp",
+    avatar: "/avatars/1.webp",
   },
 ];
 

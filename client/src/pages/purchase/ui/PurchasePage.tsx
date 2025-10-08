@@ -22,7 +22,7 @@ export const PurchasePage = () => {
           date="12 июня в 12:00"
           short
           location="Парк 300-летия Петербурга"
-          imageUrl="/tickets_project/avatars/1.webp"
+          imageUrl="/avatars/1.webp"
           image={true}
         />
 

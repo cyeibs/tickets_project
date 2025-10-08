@@ -3,12 +3,29 @@ import { z } from "zod";
 import bcrypt from "bcryptjs";
 
 export async function authRoutes(app: FastifyInstance) {
+  const checkPhoneSchema = z.object({
+    telephone: z.string().min(5),
+  });
+
   const registerSchema = z.object({
     firstName: z.string().min(1),
     lastName: z.string().min(1),
     middleName: z.string().optional(),
     telephone: z.string().min(5),
     password: z.string().min(6),
+  });
+
+  app.post("/auth/check-phone", async (req, reply) => {
+    const parsed = checkPhoneSchema.safeParse(req.body);
+    if (!parsed.success) return reply.code(400).send(parsed.error);
+    const { telephone } = parsed.data;
+
+    const user = await app.prisma.user.findUnique({
+      where: { telephone },
+      select: { id: true },
+    });
+
+    return { exists: !!user };
   });
 
   app.post("/auth/register", async (req, reply) => {
@@ -71,6 +88,7 @@ export async function authRoutes(app: FastifyInstance) {
         role: { select: { code: true, name: true } },
         organizationId: true,
         avatarId: true,
+        avatar: { select: { storagePath: true } },
       },
     });
     return { user };

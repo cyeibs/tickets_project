@@ -1,74 +1,24 @@
 import { SubscriptionCard } from "@/shared/ui/SubscriptionCard";
 import styles from "./OrganizerPage.module.scss";
 import { StarIcon, ReviewsIcon } from "@/shared/assets/icons";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { EventCard } from "@/shared/ui";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { StoriesWidget } from "@/widgets";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { userApi } from "@/entities/user";
+import { useAuth } from "@/features/auth";
 
-const actualEvents = {
-  id: 1,
-  title: "Путешествие в Оркестрбург: знакомство с ударными",
-  date: "12 июня",
-  time: "18:00",
-  status: "В оплате",
-  imageUrl: "/tickets_project/avatars/1.webp",
-};
-
-const events = [
-  {
-    id: 1,
-    title: "Путешествие в Оркестрбург: знакомство с ударными",
-    date: "12 июня в 12:00",
-    location: "Парк 300-летия Петербурга",
-    price: "от 1500₽",
-    imageUrl: "/tickets_project/avatars/1.webp",
-  },
-  {
-    id: 2,
-    title: "Джазовый вечер в филармонии",
-    date: "15 июня в 19:00",
-    location: "Филармония им. Шостаковича",
-    price: "от 2000₽",
-    imageUrl: "/tickets_project/avatars/2.avif",
-  },
-  {
-    id: 3,
-    title: "Мастер-класс по живописи",
-    date: "18 июня в 15:00",
-    location: "Творческая студия «Палитра»",
-    price: "от 1200₽",
-  },
-  {
-    id: 4,
-    title: "Фестиваль уличной еды",
-    date: "20 июня в 12:00",
-    location: "Новая Голландия",
-    price: "Вход свободный",
-    imageUrl: "/tickets_project/avatars/2.avif",
-  },
-  {
-    id: 5,
-    title: "Выставка современного искусства",
-    date: "25 июня в 10:00",
-    location: "Эрарта",
-    price: "от 700₽",
-    imageUrl: "/tickets_project/avatars/1.webp",
-  },
-  {
-    id: 6,
-    title: "Выставка современного искусства",
-    date: "25 июня в 10:00",
-    location: "Эрарта",
-    price: "от 700₽",
-  },
-];
+const FALLBACK_IMAGE = "/avatars/1.webp";
 
 export const OrganizerPage = () => {
+  const { id: orgId } = useParams<{ id: string }>();
   const [isExpanded, setIsExpanded] = useState(false);
   const [canShowMore, setCanShowMore] = useState(false);
   const descriptionRef = useRef<HTMLSpanElement | null>(null);
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { isAuthenticated } = useAuth();
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
   };
@@ -84,22 +34,109 @@ export const OrganizerPage = () => {
     return () => window.removeEventListener("resize", checkOverflow);
   }, []);
 
+  const { data: org } = useQuery({
+    queryKey: ["organization", orgId],
+    enabled: !!orgId,
+    queryFn: () => userApi.getOrganization(orgId as string),
+  });
+
+  console.log("org", org);
+
+  const { data: orgEvents = [] } = useQuery({
+    queryKey: ["organization-events", orgId],
+    enabled: !!orgId,
+    queryFn: () => userApi.getOrganizationEvents(orgId as string),
+  });
+
+  const { data: orgStories = [] } = useQuery({
+    queryKey: ["organization-stories", orgId],
+    enabled: !!orgId,
+    queryFn: () => userApi.getOrganizationStories(orgId as string),
+  });
+
+  // My subscriptions to determine current org subscription state
+  const { data: mySubscriptions = [] } = useQuery({
+    queryKey: ["mySubscriptions"],
+    enabled: !!isAuthenticated,
+    queryFn: () => userApi.getMySubscriptions(),
+  });
+
+  const subscribeMutation = useMutation({
+    mutationFn: async (organizationId: string) =>
+      userApi.subscribe(organizationId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["mySubscriptions"] });
+    },
+  });
+
+  const unsubscribeMutation = useMutation({
+    mutationFn: async (organizationId: string) =>
+      userApi.unsubscribe(organizationId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["mySubscriptions"] });
+    },
+  });
+
+  const roundedRating = useMemo(() => {
+    if (org?.ratingAvg == null) return "—";
+    return Number(org.ratingAvg).toFixed(1).replace(".", ",");
+  }, [org?.ratingAvg]);
+
+  const isSubscribed = useMemo(() => {
+    if (!orgId) return false;
+    return mySubscriptions.some((s) => s.organization.id === orgId);
+  }, [mySubscriptions, orgId]);
+
+  const companiesStories = useMemo(
+    () =>
+      org
+        ? [
+            {
+              id: 1,
+              name: org.name,
+              avatarUrl: org.avatarUrl || FALLBACK_IMAGE,
+              stories: orgStories.map((s) => ({
+                url: org.avatarUrl || FALLBACK_IMAGE,
+                duration: 4001,
+                header: {
+                  heading: s.title,
+                  subheading: s.description || "",
+                  profileImage: org.avatarUrl || FALLBACK_IMAGE,
+                },
+              })),
+            },
+          ]
+        : [],
+    [org, orgStories]
+  );
+
   return (
     <div className={styles.container}>
       <div className={`${styles.eventContainer}`}>
         <SubscriptionCard
-          title={actualEvents.title}
-          date={actualEvents.date}
-          time={actualEvents.time}
-          imageUrl={actualEvents.imageUrl}
-          image={true}
-          isEdit
+          title={org?.name || ""}
+          imageUrl={org?.avatarUrl || FALLBACK_IMAGE}
+          image={!!org?.avatarUrl}
           onBackClick={() => {
             navigate(-1);
             console.log("back");
           }}
+          onHeartClick={() => {
+            if (!orgId) return;
+            if (!isAuthenticated) {
+              navigate("/login");
+              return;
+            }
+            if (isSubscribed) {
+              unsubscribeMutation.mutate(orgId);
+            } else {
+              subscribeMutation.mutate(orgId);
+            }
+          }}
           isEventPage
           hideContent
+          isHeart
+          isSubscribed={isSubscribed}
         />
 
         <div className={styles.contentWrapper}>
@@ -107,7 +144,7 @@ export const OrganizerPage = () => {
             <span className={styles.infoText}>Рейтинг</span>
             <div className={styles.infoWrapper}>
               <StarIcon size={16} color="#BBBAFF" />
-              <div className={styles.infoText}>4,8</div>
+              <div className={styles.infoText}>{roundedRating}</div>
             </div>
           </div>
           <button
@@ -119,67 +156,65 @@ export const OrganizerPage = () => {
             <span className={styles.infoText}>Отзывы</span>
             <div className={styles.infoWrapper}>
               <ReviewsIcon size={16} color="#BBBAFF" />
-              <div className={styles.infoText}>321</div>
+              <div className={styles.infoText}>{org?.reviewsCount ?? 0}</div>
             </div>
           </button>
         </div>
 
-        <div className={styles.description}>
-          <span className={styles.descriptionTitle}>Об организаторе</span>
-          <div className={styles.descriptionContent}>
-            <span
-              className={`${styles.descriptionText} ${
-                isExpanded ? styles.expanded : styles.collapsed
-              }`}
-              ref={descriptionRef}
-            >
-              VK Fest — это музыка от известных исполнителей, встречи с
-              блогерами, знания и лекции, спорт, мастер-классы, конкурсы и много
-              активностей для всей семьи. В сообществе ВКонтакте vk.com/fest_msk
-              (гиперссылкой) можно узнать больше о программе и других новостях.
-              Программа уникальная для всех городов. Все развлечения входят в
-              цену билета. Фестивальный мерч и еду на фудкорте можно будет
-              купить отдельно.Покупая билет, вы соглашаетесь с правилами
-              мероприятия –{" "}
-              <a href="https://vkfest.ru/rules">https://vkfest.ru/rules</a>
-            </span>
-            {(canShowMore || isExpanded) && (
-              <button
-                className={styles.showMoreButton}
-                onClick={toggleExpand}
-                type="button"
+        {org?.description && (
+          <div className={styles.description}>
+            <span className={styles.descriptionTitle}>Об организаторе</span>
+            <div className={styles.descriptionContent}>
+              <span
+                className={`${styles.descriptionText} ${
+                  isExpanded ? styles.expanded : styles.collapsed
+                }`}
+                ref={descriptionRef}
               >
-                {isExpanded ? "Скрыть" : "Показать еще"}
-              </button>
-            )}
+                {org?.description}
+              </span>
+              {(canShowMore || isExpanded) && (
+                <button
+                  className={styles.showMoreButton}
+                  onClick={toggleExpand}
+                  type="button"
+                >
+                  {isExpanded ? "Скрыть" : "Показать еще"}
+                </button>
+              )}
+            </div>
           </div>
-        </div>
+        )}
 
-        <div className={styles.storiesWrapper}>
-          <StoriesWidget />
-        </div>
-
-        <div className={styles.eventsWrapper}>
-          <div className={styles.eventsTitle}>События</div>
-
-          <div className={styles.eventsContainer}>
-            {events.map((event) => (
-              <EventCard
-                key={event.id}
-                title={event.title}
-                date={event.date}
-                location={event.location}
-                price={event.price}
-                image={!!event.imageUrl}
-                imageUrl={event.imageUrl}
-                onButtonClick={() => {
-                  navigate(`/event/1`);
-                }}
-                forSearch
-              />
-            ))}
+        {orgStories.length > 0 && (
+          <div className={styles.storiesWrapper}>
+            <StoriesWidget />
           </div>
-        </div>
+        )}
+
+        {orgEvents.length > 0 && (
+          <div className={styles.eventsWrapper}>
+            <div className={styles.eventsTitle}>События</div>
+
+            <div className={styles.eventsContainer}>
+              {orgEvents.map((event) => (
+                <EventCard
+                  key={event.id}
+                  title={event.title}
+                  date={event.date}
+                  location={event.location}
+                  price={event.price}
+                  image={!!event.imageUrl}
+                  imageUrl={event.imageUrl}
+                  onButtonClick={() => {
+                    navigate(`/event/${event.id}`);
+                  }}
+                  forSearch
+                />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

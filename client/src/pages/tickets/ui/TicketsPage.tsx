@@ -1,70 +1,77 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import styles from "./TicketsPage.module.scss";
 import { Tab, TabGroup } from "@/shared/ui";
 import { EventTicketCard } from "@/shared/ui/EventTicketCard";
 import { useNavigate } from "react-router-dom";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { userApi } from "@/entities/user";
 
 export const TicketsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<
     "favorites" | "actual" | "history"
   >("favorites");
 
-  const favoriteEvents = [
-    {
-      id: 1,
-      title: "Путешествие в Оркестрбург: знакомство с ударными",
-      date: "12 июня",
-      time: "18:00",
-      status: "Избранное",
-      imageUrl: "./avatars/1.webp",
-    },
-    {
-      id: 2,
-      title: "Джазовый вечер в филармонии",
-      date: "15 июня",
-      time: "19:30",
-      status: "Избранное",
-      imageUrl: "./avatars/2.avif",
-    },
-  ];
+  const queryClient = useQueryClient();
+  const { data: favoriteEvents = [] } = useQuery({
+    queryKey: ["favoriteEvents"],
+    queryFn: () => userApi.getFavoriteEvents(),
+  });
+  const { data: favoriteIds = [] } = useQuery({
+    queryKey: ["favorites"],
+    queryFn: () => userApi.getFavorites(),
+  });
 
-  const actualEvents = [
-    {
-      id: 3,
-      title: "Путешествие в Оркестрбург: знакомство с ударными",
-      date: "12 июня",
-      time: "18:00",
-      status: "В оплате",
-      imageUrl: "./avatars/1.webp",
-    },
-    {
-      id: 4,
-      title: "Симфонический оркестр",
-      date: "20 июня",
-      time: "20:00",
-      status: "Оплачено",
-    },
-  ];
+  const { data: myPurchases = [] } = useQuery({
+    queryKey: ["myPurchases"],
+    queryFn: () => userApi.getMyPurchases(),
+  });
 
-  const historyEvents = [
-    {
-      id: 5,
-      title: "Классическая музыка",
-      date: "5 мая",
-      time: "19:00",
-      status: "Завершено",
-      imageUrl: "./avatars/2.avif",
+  const removeFavorite = useMutation({
+    mutationFn: (eventId: string) => userApi.removeFavorite(eventId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["favoriteEvents"] });
+      queryClient.invalidateQueries({ queryKey: ["favorites"] });
     },
-    {
-      id: 6,
-      title: "Фортепианный концерт",
-      date: "1 мая",
-      time: "18:30",
-      status: "Завершено",
-    },
-  ];
+  });
 
   const navigate = useNavigate();
+
+  const { actualEvents, historyEvents } = useMemo(() => {
+    const now = new Date();
+    // Deduplicate purchases by eventId
+    const deduped = Array.from(
+      new Map(myPurchases.map((p) => [p.eventId, p])).values()
+    );
+
+    const upcoming: typeof myPurchases = [];
+    const past: typeof myPurchases = [];
+
+    for (const p of deduped) {
+      const dateObj = new Date(p.raw.eventDate);
+      const [hh, mm] = p.raw.startTime.split(":").map(Number);
+      dateObj.setHours(hh || 0, mm || 0, 0, 0);
+      if (dateObj.getTime() >= now.getTime()) {
+        upcoming.push(p);
+      } else {
+        past.push(p);
+      }
+    }
+
+    return { actualEvents: upcoming, historyEvents: past };
+  }, [myPurchases]);
+
+  const toggleFavorite = useMutation({
+    mutationFn: async (eventId: string) => {
+      const liked = favoriteIds.includes(eventId);
+      if (liked) return userApi.removeFavorite(eventId);
+      return userApi.addFavorite(eventId);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["favorites"] });
+      queryClient.invalidateQueries({ queryKey: ["favoriteEvents"] });
+      queryClient.invalidateQueries({ queryKey: ["myPurchases"] });
+    },
+  });
 
   const renderEvents = () => {
     switch (activeTab) {
@@ -75,39 +82,46 @@ export const TicketsPage: React.FC = () => {
             title={event.title}
             date={event.date}
             time={event.time}
-            // status={event.status}
+            // status="Избранное"
             onButtonClick={() => {
               navigate(`/purchase/1`);
             }}
             imageUrl={event.imageUrl}
             image={!!event.imageUrl}
             actionButton={true}
+            isHeart
+            liked
+            onIconClick={() => removeFavorite.mutate(String(event.id))}
           />
         ));
       case "actual":
         return actualEvents.map((event) => (
           <EventTicketCard
-            key={event.id}
+            key={event.eventId}
             title={event.title}
             date={event.date}
             time={event.time}
-            // status={event.status}
             imageUrl={event.imageUrl}
             image={!!event.imageUrl}
             actionButton={false}
+            isHeart
+            liked={favoriteIds.includes(event.eventId)}
+            onIconClick={() => toggleFavorite.mutate(String(event.eventId))}
           />
         ));
       case "history":
         return historyEvents.map((event) => (
           <EventTicketCard
-            key={event.id}
+            key={event.eventId}
             title={event.title}
             date={event.date}
             time={event.time}
-            // status={event.status}
             imageUrl={event.imageUrl}
             image={!!event.imageUrl}
             actionButton={false}
+            isHeart
+            liked={favoriteIds.includes(event.eventId)}
+            onIconClick={() => toggleFavorite.mutate(String(event.eventId))}
           />
         ));
       default:

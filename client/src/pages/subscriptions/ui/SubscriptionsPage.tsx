@@ -1,38 +1,45 @@
 import styles from "./SubscriptionsPage.module.scss";
 import { SubscriptionCard } from "@/shared/ui/SubscriptionCard";
-
-const actualEvents = [
-  {
-    id: 3,
-    title: "Путешествие в Оркестрбург: знакомство с ударными",
-    date: "12 июня",
-    time: "18:00",
-    status: "В оплате",
-    imageUrl: "/tickets_project/avatars/1.webp",
-  },
-  {
-    id: 4,
-    title: "Симфонический оркестр",
-    date: "20 июня",
-    time: "20:00",
-    status: "Оплачено",
-  },
-];
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { userApi } from "@/entities/user";
+import { useAuth } from "@/features/auth";
+import { useNavigate } from "react-router-dom";
 
 export const SubscriptionsPage = () => {
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const { data: subscriptions, isLoading } = useQuery({
+    queryKey: ["mySubscriptions"],
+    queryFn: () => userApi.getMySubscriptions(),
+  });
+
+  const unsubscribeMutation = useMutation({
+    mutationFn: async (organizationId: string) =>
+      userApi.unsubscribe(organizationId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["mySubscriptions"] });
+    },
+  });
+
   return (
     <div className={styles.container}>
       <div className={`${styles.subscriptionsContainer}`}>
-        {actualEvents.map((event) => (
+        {isLoading && null}
+        {subscriptions?.map((s) => (
           <SubscriptionCard
-            key={event.id}
-            title={event.title}
-            date={event.date}
-            time={event.time}
+            key={s.id}
+            title={s.organization.name}
+            imageUrl={s.organization.avatarUrl}
+            image={!!s.organization.avatarUrl}
             isHeart
-            // status={event.status}
-            imageUrl={event.imageUrl}
-            image={!!event.imageUrl}
+            isSubscribed
+            ratingAvg={s.organization.ratingAvg ?? null}
+            reviewsCount={s.organization.reviewsCount}
+            isEdit={user?.organizationId === s.organization.id}
+            onHeartClick={() => unsubscribeMutation.mutate(s.organization.id)}
+            onButtonClick={() => navigate(`/organizer/${s.organization.id}`)}
           />
         ))}
       </div>

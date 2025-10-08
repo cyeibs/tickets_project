@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Create an Axios instance with default configuration
 export const apiInstance = axios.create({
-  baseURL: "https://api.example.com", // Replace with your actual API URL
+  baseURL: "http://localhost:4001",
   headers: {
     "Content-Type": "application/json",
   },
@@ -28,6 +28,7 @@ apiInstance.interceptors.response.use(
     if (error.response && error.response.status === 401) {
       localStorage.removeItem("authToken");
       // Redirect to login page if needed
+      console.log("Redirecting to login page");
       window.location.href = "/login";
     }
     return Promise.reject(error);

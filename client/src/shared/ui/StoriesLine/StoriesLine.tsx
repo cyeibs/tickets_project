@@ -96,10 +96,6 @@ export const StoriesLine: React.FC<StoriesLineProps> = ({
               }`}
             >
               <Avatar size={avatarSize} src={story.imageUrl} />
-              {/* {story.title && <span>{story.title}</span>}
-              {story.name && (
-                <span className={styles.storyName}>{story.name}</span>
-              )} */}
             </button>
           </li>
         ))}

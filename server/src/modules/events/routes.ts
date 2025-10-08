@@ -40,17 +40,52 @@ export async function eventsRoutes(app: FastifyInstance) {
       if (q.dateFrom) where.eventDate.gte = new Date(q.dateFrom);
       if (q.dateTo) where.eventDate.lte = new Date(q.dateTo);
     }
+    if (q.q && typeof q.q === "string" && q.q.trim()) {
+      const term = q.q.trim();
+      where.OR = [
+        { name: { contains: term, mode: "insensitive" } },
+        { description: { contains: term, mode: "insensitive" } },
+        { location: { contains: term, mode: "insensitive" } },
+        {
+          organization: {
+            is: { name: { contains: term, mode: "insensitive" } },
+          },
+        },
+      ];
+    }
 
     const items = await app.prisma.event.findMany({
       where,
       orderBy: { eventDate: "asc" },
+      include: {
+        poster: { select: { storagePath: true } },
+        organization: {
+          select: {
+            id: true,
+            name: true,
+            avatar: { select: { storagePath: true } },
+          },
+        },
+      },
     });
     return { items };
   });
 
   app.get("/events/:id", async (req, reply) => {
     const id = (req.params as any).id as string;
-    const event = await app.prisma.event.findUnique({ where: { id } });
+    const event = await app.prisma.event.findUnique({
+      where: { id },
+      include: {
+        poster: { select: { storagePath: true } },
+        organization: {
+          select: {
+            id: true,
+            name: true,
+            avatar: { select: { storagePath: true } },
+          },
+        },
+      },
+    });
     if (!event) return reply.code(404).send({ error: "Not found" });
     return { event };
   });

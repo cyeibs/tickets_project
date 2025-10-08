@@ -3,9 +3,11 @@ import type { Dispatch, SetStateAction } from "react";
 import { motion, useMotionValue, useTransform } from "framer-motion";
 import { EventSwiperCard } from "@/shared/ui/EventSwiperCard";
 import styles from "./SwipeCards.module.scss";
+import { useNavigate } from "react-router-dom";
 
 export type EventCardType = {
   id: number;
+  uuid?: string; // preserve server UUID if needed by caller
   title: string;
   date: string;
   location: string;
@@ -23,6 +25,8 @@ interface SwipeCardProps {
   setCards: Dispatch<SetStateAction<EventCardType[]>>;
   cards: EventCardType[];
   onButtonClick: () => void;
+  onPositiveSwipe?: () => void;
+  onNegativeSwipe?: () => void;
 }
 
 const SwipeCard: React.FC<SwipeCardProps> = ({
@@ -35,6 +39,8 @@ const SwipeCard: React.FC<SwipeCardProps> = ({
   setCards,
   cards,
   onButtonClick,
+  onPositiveSwipe,
+  onNegativeSwipe,
 }) => {
   const x = useMotionValue(0);
   const rotateRaw = useTransform(x, [-150, 150], [-18, 18]);
@@ -48,8 +54,12 @@ const SwipeCard: React.FC<SwipeCardProps> = ({
   });
 
   const handleDragEnd = () => {
-    if (Math.abs(x.get()) > 50) {
+    const distance = x.get();
+    const isPositive = distance > 50;
+    if (Math.abs(distance) > 50) {
       setCards((pv) => pv.filter((v) => v.id !== id));
+      if (isPositive) onPositiveSwipe?.();
+      else onNegativeSwipe?.();
     }
   };
 
@@ -115,11 +125,13 @@ const SwipeCard: React.FC<SwipeCardProps> = ({
 
 export const SwipeCards: React.FC<{
   events: EventCardType[];
-  onButtonClick: () => void;
-}> = ({ events, onButtonClick }) => {
+  onPositiveSwipe?: (eventId: number, eventUuid?: string) => void;
+  onNegativeSwipe?: (eventId: number, eventUuid?: string) => void;
+}> = ({ events, onPositiveSwipe, onNegativeSwipe }) => {
   const [cards, setCards] = useState<EventCardType[]>(events);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  const navigate = useNavigate();
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
@@ -148,7 +160,11 @@ export const SwipeCards: React.FC<{
         <SwipeCard
           key={card.id}
           cards={cards}
-          onButtonClick={onButtonClick}
+          onButtonClick={() => {
+            navigate(`/event/${card.id}`);
+          }}
+          onPositiveSwipe={() => onPositiveSwipe?.(card.id, card.uuid)}
+          onNegativeSwipe={() => onNegativeSwipe?.(card.id, card.uuid)}
           setCards={setCards}
           {...card}
         />

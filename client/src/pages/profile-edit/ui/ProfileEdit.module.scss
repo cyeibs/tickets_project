@@ -1,0 +1,43 @@
+@import "@shared/styles/variables.scss";
+@import "@shared/styles/mixins.scss";
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: $space-400;
+  padding: $space-400;
+}
+
+.avatarContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: $space-400;
+}
+
+.hiddenInput {
+  display: none;
+}
+
+.uploadButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: $space-200;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.uploadButtonText {
+  @include t14;
+  color: $text-prime-white-color;
+}
+
+.buttonGroup {
+  display: flex;
+  flex-direction: column;
+  gap: $space-300;
+  margin-top: $space-600;
+}

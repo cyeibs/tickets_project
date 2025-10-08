@@ -29,9 +29,20 @@ export async function organizationsRoutes(app: FastifyInstance) {
 
   app.get("/organizations/:id", async (req, reply) => {
     const id = (req.params as any).id as string;
-    const org = await app.prisma.organization.findUnique({ where: { id } });
+    const org = await app.prisma.organization.findUnique({
+      where: { id },
+      include: { avatar: { select: { storagePath: true } } },
+    });
     if (!org) return reply.code(404).send({ error: "Not found" });
-    return { org };
+    const ratingAgg = await app.prisma.review.aggregate({
+      _avg: { rating: true },
+      where: { event: { organizationId: id } },
+    });
+    const ratingAvg = ratingAgg._avg.rating ?? null;
+    const reviewsCount = await app.prisma.review.count({
+      where: { event: { organizationId: id } },
+    });
+    return { org: { ...org, ratingAvg, reviewsCount } };
   });
 
   app.patch(
@@ -48,4 +59,16 @@ export async function organizationsRoutes(app: FastifyInstance) {
       return { id: org.id };
     }
   );
+
+  // Stories by organization
+  app.get("/organizations/:id/stories", async (req, reply) => {
+    const id = (req.params as any).id as string;
+    const org = await app.prisma.organization.findUnique({ where: { id } });
+    if (!org) return reply.code(404).send({ error: "Not found" });
+    const items = await app.prisma.organizationStory.findMany({
+      where: { organizationId: id },
+      orderBy: { createdAt: "desc" },
+    });
+    return { items };
+  });
 }

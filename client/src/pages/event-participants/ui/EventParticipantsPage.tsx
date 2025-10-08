@@ -5,7 +5,7 @@ const participants = Array(20)
   .fill(null)
   .map((_, i) => ({
     id: `participant-${i}`,
-    imageUrl: "/tickets_project/avatars/1.webp",
+    imageUrl: "/avatars/1.webp",
     name: `Участник ${i + 1}`,
   }));
 

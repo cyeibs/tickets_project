@@ -1,114 +1,554 @@
 import { apiInstance } from "@shared/api";
 import type { User } from "../model/types";
 
-// Mock user data for development
-const MOCK_USERS: User[] = [
-  {
-    id: "1",
-    phone: "79001234567",
-    name: "Test User",
-    avatar: "https://i.pravatar.cc/150?img=1",
-    isOrganizer: false,
-  },
-];
+type ServerRole = { code: string; name: string };
+type ServerUser = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  middleName?: string | null;
+  telephone: string;
+  role: ServerRole;
+  organizationId?: string | null;
+  avatarId?: string | null;
+  avatar?: { storagePath: string } | null;
+};
+
+type ServerSubscription = {
+  id: string;
+  org: {
+    id: string;
+    name: string;
+    description?: string | null;
+    avatar?: { storagePath: string } | null;
+    ratingAvg?: number | null;
+    reviewsCount?: number;
+  };
+};
+
+function mapServerUserToClient(user: ServerUser): User {
+  const fullName = [user.firstName, user.middleName, user.lastName]
+    .filter(Boolean)
+    .join(" ");
+  return {
+    id: user.id,
+    phone: user.telephone,
+    name: fullName || undefined,
+    avatar: user.avatar?.storagePath
+      ? `${apiInstance.defaults.baseURL}/uploads/${user.avatar.storagePath}`
+      : undefined,
+    isOrganizer: user.role?.code === "organizer",
+    organizationId: user.organizationId ?? null,
+  };
+}
+
+function toTelephoneFromDigits(phoneDigits: string): string {
+  // Ensure only digits, prefix with +7 for RU numbering plan
+  const digitsOnly = phoneDigits.replace(/\D/g, "");
+  return `+7${digitsOnly}`;
+}
 
 export const userApi = {
-  // Check if phone exists
-  checkPhone: async (phone: string): Promise<{ exists: boolean }> => {
-    // For development, use mock data
-    // if (process.env.NODE_ENV === "development") {
-    // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    const exists = MOCK_USERS.some((user) => user.phone === phone);
-    return { exists };
-    // }
+  // Events list
+  getEvents: async (params?: {
+    q?: string;
+    cityId?: string;
+    categoryId?: string;
+    organizationId?: string;
+    dateFrom?: string; // ISO or yyyy-mm-dd
+    dateTo?: string; // ISO or yyyy-mm-dd
+  }): Promise<
+    Array<{
+      id: string;
+      title: string;
+      date: string;
+      location: string;
+      price: string;
+      imageUrl?: string;
+      organization: { id: string };
+    }>
+  > => {
+    const response = await apiInstance.get<{
+      items: Array<{
+        id: string;
+        name: string;
+        eventDate: string;
+        startTime: string;
+        location: string;
+        price: number;
+        poster?: { storagePath: string } | null;
+        organization: {
+          id: string;
+          name: string;
+          avatar?: { storagePath: string } | null;
+        };
+      }>;
+    }>("/events", { params });
 
-    // Real API call
-    // const response = await apiInstance.post("/auth/check-phone", { phone });
-    // return response.data;
+    return response.data.items.map((e) => ({
+      id: e.id,
+      title: e.name,
+      date:
+        new Date(e.eventDate).toLocaleDateString("ru-RU", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        }) + ` в ${e.startTime}`,
+      location: e.location,
+      price: `${Number(e.price).toFixed(0)}₽`,
+      imageUrl: e.poster?.storagePath
+        ? `${apiInstance.defaults.baseURL}/uploads/${e.poster.storagePath}`
+        : undefined,
+      organization: { id: e.organization.id },
+    }));
+  },
+  // Single event by id
+  getEventById: async (
+    id: string
+  ): Promise<{
+    id: string;
+    title: string;
+    date: string; // dd.mm.yyyy
+    time: string;
+    imageUrl?: string;
+    description?: string;
+    location: string;
+    organization: { id: string; name: string; avatarUrl?: string };
+    raw: {
+      eventDate: string;
+      startTime: string;
+      organizationId: string;
+    };
+  }> => {
+    const response = await apiInstance.get<{
+      event: {
+        id: string;
+        name: string;
+        description?: string | null;
+        organizationId: string;
+        organization?: {
+          id: string;
+          name: string;
+          avatar?: { storagePath: string } | null;
+        } | null;
+        eventDate: string;
+        startTime: string;
+        location: string;
+        poster?: { storagePath: string } | null;
+      };
+    }>(`/events/${id}`);
+
+    const e = response.data.event;
+    return {
+      id: e.id,
+      title: e.name,
+      date: new Date(e.eventDate).toLocaleDateString("ru-RU", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      }),
+      time: e.startTime,
+      imageUrl: e.poster?.storagePath
+        ? `${apiInstance.defaults.baseURL}/uploads/${e.poster.storagePath}`
+        : undefined,
+      description: e.description ?? undefined,
+      location: e.location,
+      organization: {
+        id: e.organization?.id ?? e.organizationId,
+        name: e.organization?.name ?? "",
+        avatarUrl: e.organization?.avatar?.storagePath
+          ? `${apiInstance.defaults.baseURL}/uploads/${e.organization.avatar.storagePath}`
+          : undefined,
+      },
+      raw: {
+        eventDate: e.eventDate,
+        startTime: e.startTime,
+        organizationId: e.organizationId,
+      },
+    };
+  },
+
+  // Dictionaries
+  getCities: async (): Promise<Array<{ id: string; name: string }>> => {
+    const response = await apiInstance.get<{
+      items: Array<{ id: string; name: string }>;
+    }>("/dictionaries/cities");
+    return response.data.items;
+  },
+  // Check if phone exists
+  checkPhone: async (phoneDigits: string): Promise<{ exists: boolean }> => {
+    const telephone = toTelephoneFromDigits(phoneDigits);
+    const response = await apiInstance.post<{ exists: boolean }>(
+      "/auth/check-phone",
+      { telephone }
+    );
+    return response.data;
   },
 
   // Login with phone and password
   login: async (
-    phone: string,
+    phoneDigits: string,
     password: string
-  ): Promise<{ user: User; token: string }> => {
-    // For development, use mock data
-    // if (process.env.NODE_ENV === "development") {
-    // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 800));
-
-    const user = MOCK_USERS.find((user) => user.phone === phone);
-    if (!user) {
-      throw new Error("Invalid credentials");
-    }
-
-    // In a real app, we would validate the password here
-    // For mock purposes, we'll accept any password for existing users
-
-    return {
-      user,
-      token: "mock-jwt-token",
-    };
-    // }
-
-    // Real API call
-    // const response = await apiInstance.post("/auth/login", { phone, password });
-    // return response.data;
+  ): Promise<{ token: string }> => {
+    const telephone = toTelephoneFromDigits(phoneDigits);
+    const response = await apiInstance.post<{ token: string }>("/auth/login", {
+      telephone,
+      password,
+    });
+    return response.data;
   },
 
-  // Register with phone and password
+  // Register with phone, password and names
   register: async (
-    phone: string,
-    password: string
-  ): Promise<{ user: User; token: string }> => {
-    // For development, use mock data
-    // if (process.env.NODE_ENV === "development") {
-    // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 800));
-
-    const existingUser = MOCK_USERS.find((user) => user.phone === phone);
-    if (existingUser) {
-      throw new Error("User already exists");
-    }
-
-    // Create new user
-    const newUser: User = {
-      id: String(MOCK_USERS.length + 1),
-      phone,
-      isOrganizer: false,
+    phoneDigits: string,
+    password: string,
+    names: { firstName: string; lastName: string; middleName?: string }
+  ): Promise<{ token: string }> => {
+    const telephone = toTelephoneFromDigits(phoneDigits);
+    const payload: {
+      firstName: string;
+      lastName: string;
+      middleName?: string;
+      telephone: string;
+      password: string;
+    } = {
+      firstName: names.firstName || "User",
+      lastName: names.lastName || "",
+      ...(names.middleName?.trim()
+        ? { middleName: names.middleName.trim() }
+        : {}),
+      telephone,
+      password,
     };
+    const response = await apiInstance.post<{ token: string }>(
+      "/auth/register",
+      payload
+    );
+    return response.data;
+  },
 
-    // In a real app, we would store the user in a database
-    MOCK_USERS.push(newUser);
+  uploadAvatar: async (file: File): Promise<{ id: string; url: string }> => {
+    const form = new FormData();
+    form.append("file", file);
+    const response = await apiInstance.post<{ id: string; url: string }>(
+      "/uploads",
+      form,
+      { headers: { "Content-Type": "multipart/form-data" } }
+    );
+    return response.data;
+  },
 
-    return {
-      user: newUser,
-      token: "mock-jwt-token",
-    };
-    // }
-
-    // Real API call
-    // const response = await apiInstance.post("/auth/register", {
-    //   phone,
-    //   password,
-    // });
-    // return response.data;
+  updateMe: async (data: {
+    firstName?: string;
+    lastName?: string;
+    middleName?: string;
+    telephone?: string;
+    avatarId?: string | null;
+  }): Promise<{ id: string }> => {
+    const response = await apiInstance.patch<{ id: string }>("/users/me", data);
+    return response.data;
   },
 
   // Get current user
   getCurrentUser: async (): Promise<User> => {
-    // For development, use mock data
-    // if (process.env.NODE_ENV === "development") {
-    // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    const response = await apiInstance.get<{ user: ServerUser }>("/auth/me");
+    return mapServerUserToClient(response.data.user);
+  },
 
-    // In a real app, we would use the token to identify the user
-    return MOCK_USERS[0];
-    // }
+  getOrganization: async (
+    id: string
+  ): Promise<{
+    id: string;
+    name: string;
+    avatarUrl?: string;
+    description?: string;
+    ratingAvg?: number | null;
+    reviewsCount?: number;
+  }> => {
+    const response = await apiInstance.get<{
+      org: {
+        id: string;
+        name: string;
+        description?: string | null;
+        avatar?: { storagePath: string } | null;
+        ratingAvg?: number | null;
+        reviewsCount?: number;
+      };
+    }>(`/organizations/${id}`);
+    const org = response.data.org;
+    return {
+      id: org.id,
+      name: org.name,
+      description: org.description ?? undefined,
+      avatarUrl: org.avatar?.storagePath
+        ? `${apiInstance.defaults.baseURL}/uploads/${org.avatar.storagePath}`
+        : undefined,
+      ratingAvg: org.ratingAvg ?? null,
+      reviewsCount: org.reviewsCount,
+    };
+  },
 
-    // Real API call
-    // const response = await apiInstance.get("/user/me");
-    // return response.data;
+  getOrganizationEvents: async (
+    organizationId: string
+  ): Promise<
+    Array<{
+      id: string;
+      title: string;
+      date: string;
+      location: string;
+      price: string;
+      imageUrl?: string;
+    }>
+  > => {
+    const response = await apiInstance.get<{
+      items: Array<{
+        id: string;
+        name: string;
+        eventDate: string;
+        startTime: string;
+        location: string;
+        price: number;
+        poster?: { storagePath: string } | null;
+      }>;
+    }>(`/events`, { params: { organizationId } });
+
+    return response.data.items.map((e) => ({
+      id: e.id,
+      title: e.name,
+      date:
+        new Date(e.eventDate).toLocaleDateString("ru-RU", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        }) + ` в ${e.startTime}`,
+      location: e.location,
+      price: `${Number(e.price).toFixed(0)}₽`,
+      imageUrl: e.poster?.storagePath
+        ? `${apiInstance.defaults.baseURL}/uploads/${e.poster.storagePath}`
+        : undefined,
+    }));
+  },
+
+  getOrganizationStories: async (
+    organizationId: string
+  ): Promise<
+    Array<{
+      id: string;
+      title: string;
+      description?: string;
+      color: string;
+      textColor: string;
+      name: string;
+    }>
+  > => {
+    const response = await apiInstance.get<{ items: Array<any> }>(
+      `/organizations/${organizationId}/stories`
+    );
+    return response.data.items.map((s) => ({
+      id: s.id,
+      title: s.title,
+      description: s.description ?? undefined,
+      color: s.color,
+      textColor: s.textColor,
+      name: s.name,
+    }));
+  },
+
+  // My subscriptions (organizations)
+  getMySubscriptions: async (): Promise<
+    Array<{
+      id: string;
+      organization: {
+        id: string;
+        name: string;
+        avatarUrl?: string;
+        description?: string;
+        ratingAvg?: number | null;
+        reviewsCount?: number;
+      };
+    }>
+  > => {
+    const response = await apiInstance.get<{ items: ServerSubscription[] }>(
+      "/subscriptions"
+    );
+    const items = response.data.items.map((s) => ({
+      id: s.id,
+      organization: {
+        id: s.org.id,
+        name: s.org.name,
+        description: s.org.description ?? undefined,
+        avatarUrl: s.org.avatar?.storagePath
+          ? `${apiInstance.defaults.baseURL}/uploads/${s.org.avatar.storagePath}`
+          : undefined,
+        ratingAvg: s.org.ratingAvg ?? null,
+        reviewsCount: s.org.reviewsCount,
+      },
+    }));
+    return items;
+  },
+
+  // Subscribe to organization
+  subscribe: async (organizationId: string): Promise<{ id: string }> => {
+    const response = await apiInstance.post<{ id: string }>("/subscriptions", {
+      organizationId,
+    });
+    return response.data;
+  },
+
+  // Unsubscribe from organization
+  unsubscribe: async (organizationId: string): Promise<{ id: string }> => {
+    const response = await apiInstance.delete<{ id: string }>(
+      `/subscriptions/${organizationId}`
+    );
+    return response.data;
+  },
+
+  // Favorites
+  getFavorites: async (): Promise<string[]> => {
+    const response = await apiInstance.get<{
+      items: Array<{
+        id: string;
+        eventId: string;
+        event: {
+          id: string;
+          name: string;
+          eventDate: string;
+          startTime: string;
+          location: string;
+          price: number;
+          poster?: { storagePath: string } | null;
+        };
+      }>;
+    }>("/favorites");
+    return response.data.items.map((f) => f.eventId);
+  },
+
+  getFavoriteEvents: async (): Promise<
+    Array<{
+      id: string;
+      title: string;
+      date: string;
+      time: string;
+      imageUrl?: string;
+    }>
+  > => {
+    const response = await apiInstance.get<{
+      items: Array<{
+        id: string;
+        eventId: string;
+        event: {
+          id: string;
+          name: string;
+          eventDate: string;
+          startTime: string;
+          poster?: { storagePath: string } | null;
+        };
+      }>;
+    }>("/favorites");
+
+    return response.data.items.map((f) => ({
+      id: f.event.id,
+      title: f.event.name,
+      date: new Date(f.event.eventDate).toLocaleDateString("ru-RU", {
+        day: "2-digit",
+        month: "2-digit",
+      }),
+      time: f.event.startTime,
+      imageUrl: f.event.poster?.storagePath
+        ? `${apiInstance.defaults.baseURL}/uploads/${f.event.poster.storagePath}`
+        : undefined,
+    }));
+  },
+  addFavorite: async (eventId: string): Promise<{ id: string }> => {
+    const response = await apiInstance.post<{ id: string }>("/favorites", {
+      eventId,
+    });
+    return response.data;
+  },
+  removeFavorite: async (eventId: string): Promise<{ id: string }> => {
+    const response = await apiInstance.delete<{ id: string }>(
+      `/favorites/${eventId}`
+    );
+    return response.data;
+  },
+
+  // Purchases for event (e.g., participants)
+  getEventPurchases: async (
+    eventId: string,
+    statusCode: string = "paid"
+  ): Promise<
+    Array<{
+      user: { id: string; name: string; avatarUrl?: string };
+      price: number;
+      serviceTax: number;
+    }>
+  > => {
+    const response = await apiInstance.get<{
+      items: Array<{
+        id: string;
+        user: {
+          id: string;
+          firstName: string;
+          lastName: string;
+          avatar?: { storagePath: string } | null;
+        };
+        price: number;
+        serviceTax: number;
+      }>;
+    }>(`/purchases`, { params: { eventId, statusCode } });
+
+    return response.data.items.map((p) => ({
+      user: {
+        id: p.user.id,
+        name: `${p.user.firstName} ${p.user.lastName}`.trim(),
+        avatarUrl: p.user.avatar?.storagePath
+          ? `${apiInstance.defaults.baseURL}/uploads/${p.user.avatar.storagePath}`
+          : undefined,
+      },
+      price: Number(p.price),
+      serviceTax: Number(p.serviceTax),
+    }));
+  },
+
+  getMyPurchases: async (
+    statusCode: string = "paid"
+  ): Promise<
+    Array<{
+      id: string; // purchase id
+      eventId: string;
+      title: string;
+      date: string; // dd.mm or dd.mm.yyyy
+      time: string; // HH:mm
+      imageUrl?: string;
+      raw: { eventDate: string; startTime: string };
+    }>
+  > => {
+    const response = await apiInstance.get<{
+      items: Array<{
+        id: string;
+        event: {
+          id: string;
+          name: string;
+          eventDate: string; // ISO
+          startTime: string; // HH:mm
+          poster?: { storagePath: string } | null;
+        };
+      }>;
+    }>(`/purchases`, { params: { statusCode } });
+
+    return response.data.items.map((p) => ({
+      id: p.id,
+      eventId: p.event.id,
+      title: p.event.name,
+      date: new Date(p.event.eventDate).toLocaleDateString("ru-RU", {
+        day: "2-digit",
+        month: "2-digit",
+      }),
+      time: p.event.startTime,
+      imageUrl: p.event.poster?.storagePath
+        ? `${apiInstance.defaults.baseURL}/uploads/${p.event.poster.storagePath}`
+        : undefined,
+      raw: { eventDate: p.event.eventDate, startTime: p.event.startTime },
+    }));
   },
 };

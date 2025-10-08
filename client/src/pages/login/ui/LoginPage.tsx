@@ -15,7 +15,10 @@ export const LoginPage: React.FC = () => {
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [name, setName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [middleName, setMiddleName] = useState("");
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [phoneExists, setPhoneExists] = useState<boolean | null>(null);
@@ -40,9 +43,29 @@ export const LoginPage: React.FC = () => {
     setError(null);
   };
 
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setName(e.target.value);
+  const handleFirstNameChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setFirstName((e.target as HTMLInputElement).value);
     setError(null);
+  };
+
+  const handleLastNameChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setLastName((e.target as HTMLInputElement).value);
+    setError(null);
+  };
+
+  const handleMiddleNameChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setMiddleName((e.target as HTMLInputElement).value);
+    setError(null);
+  };
+
+  const handleAvatarChange = (file: File | null) => {
+    setAvatarFile(file);
   };
 
   const handleCheckPhone = async () => {
@@ -53,6 +76,7 @@ export const LoginPage: React.FC = () => {
 
     try {
       setIsLoading(true);
+
       const { exists } = await checkPhone(phone);
       setPhoneExists(exists);
       setIsLoading(false);
@@ -110,15 +134,19 @@ export const LoginPage: React.FC = () => {
   };
 
   const handleSave = async () => {
-    if (!name.trim()) {
-      setError("Пожалуйста, введите ваше имя");
+    if (!lastName.trim() || !firstName.trim()) {
+      setError("Пожалуйста, введите фамилию и имя");
       return;
     }
 
     try {
       setIsLoading(true);
-      // Register with name
-      await register(phone, password);
+      await register(
+        phone,
+        password,
+        { firstName, lastName, middleName: middleName.trim() || undefined },
+        avatarFile
+      );
       setIsLoading(false);
       navigate("/main");
     } catch (err) {
@@ -142,9 +170,12 @@ export const LoginPage: React.FC = () => {
     <div className={styles.container}>
       <Header
         pageName="Войти или создать аккаунт"
-        showLeftButton={false}
+        showLeftButton={true}
         showLogo={false}
         showRightButton={false}
+        onLeftButtonClick={() => {
+          navigate("/");
+        }}
       />
 
       <div className={styles.content}>
@@ -183,10 +214,15 @@ export const LoginPage: React.FC = () => {
 
           {step === "name" && (
             <NameStep
-              name={name}
+              firstName={firstName}
+              lastName={lastName}
+              middleName={middleName}
               error={error}
               isLoading={isLoading}
-              onNameChange={handleNameChange}
+              onFirstNameChange={handleFirstNameChange}
+              onLastNameChange={handleLastNameChange}
+              onMiddleNameChange={handleMiddleNameChange}
+              onAvatarChange={handleAvatarChange}
               onSave={handleSave}
               onCancel={handleBackToPassword}
             />

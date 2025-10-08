@@ -4,6 +4,7 @@ export interface User {
   name?: string;
   avatar?: string;
   isOrganizer: boolean;
+  organizationId?: string | null;
 }
 
 export interface AuthState {

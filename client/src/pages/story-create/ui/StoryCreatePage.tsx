@@ -1,12 +1,11 @@
-import { useState, useRef, useEffect } from "react";
-import { Button, Pills, StepperHorizontal, TextField } from "@shared/ui";
-import { showToast } from "@/shared/ui/Toast";
-import styles from "./StoryCreatePage.module.scss";
-import { useNavigate } from "react-router-dom";
+import { TickCircleIcon } from "@/shared/assets/icons";
 import { GalleryAddIcon } from "@/shared/assets/icons/gallerty-add";
-import { CrossIcon, TickCircleIcon } from "@/shared/assets/icons";
 import { StoriesCard } from "@/shared/ui/StoriesCard";
+import { Button, Pills, StepperHorizontal, TextField } from "@shared/ui";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import styles from "./StoryCreatePage.module.scss";
 
 export const StoryCreatePage = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -239,7 +238,7 @@ const Step2Content: React.FC<Step2ContentProps> = ({
 
         <StoriesCard
           title="Название"
-          imageUrl={uploadedImage || "/tickets_project/avatars/1.webp"}
+          imageUrl={uploadedImage || "/avatars/1.webp"}
           image={!!uploadedImage}
           size="large"
           description="Небольшое описание в одну строку, которое обр...Небольшое описание в одну строку, которое обр..."

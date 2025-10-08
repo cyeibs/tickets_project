@@ -42,12 +42,44 @@ export async function purchasesRoutes(app: FastifyInstance) {
 
   app.get("/purchases", { preHandler: [app.authenticate] }, async (req) => {
     const q = (req.query as any) ?? {};
+    const userId = (req as any).user.id as string;
     const where: any = {};
     if (q.eventId) where.eventId = q.eventId;
     if (q.statusCode) where.status = { code: q.statusCode };
+
+    const isEventParticipantsQuery = Boolean(q.eventId);
+    if (!isEventParticipantsQuery) {
+      // When eventId is not provided, return only current user's purchases
+      where.userId = userId;
+    }
+
     const items = await app.prisma.purchase.findMany({
       where,
       orderBy: { createdAt: "desc" },
+      include: isEventParticipantsQuery
+        ? {
+            // For participants listing by event: include purchaser user info
+            user: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                avatar: { select: { storagePath: true } },
+              },
+            },
+          }
+        : {
+            // For "my purchases": include event details to render tickets
+            event: {
+              select: {
+                id: true,
+                name: true,
+                eventDate: true,
+                startTime: true,
+                poster: { select: { storagePath: true } },
+              },
+            },
+          },
     });
     return { items };
   });

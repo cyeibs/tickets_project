@@ -1,32 +1,57 @@
 import { SubscriptionCard } from "@/shared/ui/SubscriptionCard";
 import styles from "./EventPage.module.scss";
 import { CalendarIcon, LocationIcon, TimeIcon } from "@/shared/assets/icons";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Avatar, Pills } from "@/shared/ui";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { GoToIcon } from "@/shared/assets/icons/goTo";
+import { useQuery } from "@tanstack/react-query";
+import { userApi } from "@/entities/user";
+import { useAuth } from "@/features/auth/model/useAuth";
 
-const actualEvents = {
-  id: 1,
-  title: "Путешествие в Оркестрбург: знакомство с ударными",
-  date: "12 июня",
-  time: "18:00",
-  status: "В оплате",
-  imageUrl: "/tickets_project/avatars/1.webp",
-};
-
-const participants = Array(20)
-  .fill(null)
-  .map((_, i) => ({
-    id: `participant-${i}`,
-    imageUrl: actualEvents.imageUrl,
-  }));
+// Local fallbacks to keep UI stable before data loads
+const FALLBACK_IMAGE = "/avatars/1.webp";
 
 export const EventPage = () => {
+  const { id: routeId } = useParams<{ id: string }>();
+  const eventId = routeId ?? "";
   const [isExpanded, setIsExpanded] = useState(false);
   const [canShowMore, setCanShowMore] = useState(false);
   const descriptionRef = useRef<HTMLSpanElement | null>(null);
   const navigate = useNavigate();
+  const { user, isAuthenticated } = useAuth();
+
+  const { data: event } = useQuery({
+    queryKey: ["event", eventId],
+    enabled: !!eventId,
+    queryFn: () => userApi.getEventById(eventId),
+  });
+
+  const { data: purchases = [] } = useQuery({
+    queryKey: ["event-purchases", eventId],
+    enabled:
+      !!eventId &&
+      !!event &&
+      isAuthenticated &&
+      !!user &&
+      user.isOrganizer &&
+      user.organizationId === event.raw.organizationId,
+    queryFn: () => userApi.getEventPurchases(eventId, "paid"),
+  });
+
+  const participants = useMemo(
+    () =>
+      purchases.map((p, i) => ({
+        id: p.user.id || `participant-${i}`,
+        imageUrl: p.user.avatarUrl || FALLBACK_IMAGE,
+      })),
+    [purchases]
+  );
+
+  const isOrganizerOfEvent = useMemo(() => {
+    if (!user || !user.isOrganizer || !event) return false;
+    return user.organizationId === event.raw.organizationId;
+  }, [user, event]);
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
   };
@@ -46,12 +71,12 @@ export const EventPage = () => {
     <div className={styles.container}>
       <div className={`${styles.eventContainer}`}>
         <SubscriptionCard
-          title={actualEvents.title}
-          date={actualEvents.date}
-          time={actualEvents.time}
-          imageUrl={actualEvents.imageUrl}
-          image={true}
-          isEdit
+          title={event?.title || ""}
+          date={event?.date}
+          time={event?.time}
+          imageUrl={event?.imageUrl || FALLBACK_IMAGE}
+          image={!!event?.imageUrl}
+          isEdit={isOrganizerOfEvent}
           onBackClick={() => {
             navigate(-1);
             console.log("back");
@@ -62,15 +87,17 @@ export const EventPage = () => {
         <div className={styles.eventContent}>
           <Pills
             avatar={{
-              src: actualEvents.imageUrl,
+              src: event?.organization.avatarUrl || FALLBACK_IMAGE,
               size: 32,
             }}
-            primaryText="Особняк Серебрякова"
+            primaryText={event?.organization.name || ""}
             secondaryText="Организатор"
             rightIcon={GoToIcon}
             iconColor="#AFF940"
             onClick={() => {
-              navigate(`/organizer/1`);
+              if (event?.organization.id) {
+                navigate(`/organizer/${event.organization.id}`);
+              }
             }}
           />
         </div>
@@ -78,68 +105,76 @@ export const EventPage = () => {
           <div className={styles.contentWrapper}>
             <div className={styles.content}>
               <CalendarIcon size={24} color="#BBBAFF" />
-              <span className={styles.infoText}>12.07</span>
+              <span className={styles.infoText}>{event?.date}</span>
             </div>
             <div className={styles.content}>
               <TimeIcon size={24} color="#BBBAFF" />
-              <span className={styles.infoText}>18:00</span>
+              <span className={styles.infoText}>{event?.time}</span>
             </div>
           </div>
           <div className={styles.contentWrapper}>
             <div className={styles.content}>
               <LocationIcon size={24} color="#BBBAFF" />
-              <span className={styles.infoText}>Парк 300-летия Петербурга</span>
+              <span className={styles.infoText}>{event?.location}</span>
             </div>
           </div>
         </div>
 
-        <div className={styles.statistics}>
-          <span className={styles.statisticsTitle}>Статистика</span>
-          <div className={styles.statisticsContent}>
-            <div className={styles.statisticsItem}>
-              <span className={styles.statisticsText}>Просмотров</span>
-              <span className={styles.statisticsValue}>1240</span>
-            </div>
-            <div className={styles.statisticsItem}>
-              <span className={styles.statisticsText}>Продаж</span>
-              <span className={styles.statisticsValue}>124</span>
-            </div>
-            <div className={styles.statisticsItem}>
-              <span className={styles.statisticsText}>Комиссия</span>
-              <span className={styles.statisticsValue}>1400</span>
+        {isOrganizerOfEvent && (
+          <div className={styles.statistics}>
+            <span className={styles.statisticsTitle}>Статистика</span>
+            <div className={styles.statisticsContent}>
+              <div className={styles.statisticsItem}>
+                <span className={styles.statisticsText}>Продаж</span>
+                <span className={styles.statisticsValue}>
+                  {purchases.length}
+                </span>
+              </div>
+              <div className={styles.statisticsItem}>
+                <span className={styles.statisticsText}>Комиссия</span>
+                <span className={styles.statisticsValue}>
+                  {Math.round(
+                    purchases.reduce((sum, p) => sum + (p.serviceTax || 0), 0)
+                  )}
+                </span>
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
-        <div className={styles.participants}>
-          <div className={styles.participantsWrapper}>
-            <span className={styles.participantsTitle}>Участники</span>
-            <span className={styles.participantsValue}>20</span>
-          </div>
-          <div className={styles.participantsContent}>
-            {participants.slice(0, 11).map((participant) => (
-              <Avatar
-                key={participant.id}
-                size={48}
-                src={participant.imageUrl}
-              />
-            ))}
-            {participants.length > 11 && (
-              <button
-                type="button"
-                onClick={() => {
-                  navigate(`/event/${actualEvents.id}/participants`);
-                }}
-              >
+        {isOrganizerOfEvent && (
+          <div className={styles.participants}>
+            <div className={styles.participantsWrapper}>
+              <span className={styles.participantsTitle}>Участники</span>
+              <span className={styles.participantsValue}>
+                {participants.length}
+              </span>
+            </div>
+            <div className={styles.participantsContent}>
+              {participants.slice(0, 11).map((participant) => (
                 <Avatar
+                  key={participant.id}
                   size={48}
-                  backgroundColor="#BBBAFF"
-                  count={participants.length - 11}
+                  src={participant.imageUrl}
                 />
-              </button>
-            )}
+              ))}
+              {participants.length > 11 && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    navigate(`/event/${eventId}/participants`);
+                  }}
+                >
+                  <Avatar
+                    size={48}
+                    backgroundColor="#BBBAFF"
+                    count={participants.length - 11}
+                  />
+                </button>
+              )}
+            </div>
           </div>
-        </div>
+        )}
 
         <div className={styles.description}>
           <span className={styles.descriptionTitle}>Описание</span>
@@ -150,15 +185,7 @@ export const EventPage = () => {
               }`}
               ref={descriptionRef}
             >
-              VK Fest — это музыка от известных исполнителей, встречи с
-              блогерами, знания и лекции, спорт, мастер-классы, конкурсы и много
-              активностей для всей семьи. В сообществе ВКонтакте vk.com/fest_msk
-              (гиперссылкой) можно узнать больше о программе и других новостях.
-              Программа уникальная для всех городов. Все развлечения входят в
-              цену билета. Фестивальный мерч и еду на фудкорте можно будет
-              купить отдельно.Покупая билет, вы соглашаетесь с правилами
-              мероприятия –{" "}
-              <a href="https://vkfest.ru/rules">https://vkfest.ru/rules</a>
+              {event?.description || ""}
             </span>
             {(canShowMore || isExpanded) && (
               <button

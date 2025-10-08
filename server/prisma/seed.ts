@@ -174,6 +174,26 @@ async function main() {
     },
   });
 
+  // Past event (already finished)
+  const event2 = await prisma.event.upsert({
+    where: { id: "00000000-0000-0000-0000-000000000202" },
+    update: {},
+    create: {
+      id: "00000000-0000-0000-0000-000000000202",
+      organizationId: org.id,
+      name: "Past Chamber Music Night",
+      description: "An intimate chamber performance",
+      categoryId: musicCat.id,
+      cityId: spb.id,
+      eventDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+      startTime: "18:00",
+      location: "Small Hall",
+      maxQuantity: 100,
+      price: 800.0,
+      colorId: blue.id,
+    },
+  });
+
   // Review
   await prisma.review.upsert({
     where: { eventId_authorId: { eventId: event1.id, authorId: alice.id } },
@@ -197,6 +217,35 @@ async function main() {
       serviceTax: 50.0,
       statusId: paidStatus.id,
     },
+  });
+
+  // Past purchase for Alice (so that it appears in history)
+  await prisma.purchase.create({
+    data: {
+      eventId: event2.id,
+      userId: alice.id,
+      firstName: "Alice",
+      lastName: "Doe",
+      price: 800.0,
+      serviceTax: 40.0,
+      statusId: paidStatus.id,
+    },
+  });
+
+  // Subscriptions: Alice subscribes to Demo Org
+  await prisma.subscription.upsert({
+    where: {
+      userId_organizationId: { userId: alice.id, organizationId: org.id },
+    },
+    update: {},
+    create: { userId: alice.id, organizationId: org.id },
+  });
+
+  // Favorite: Alice likes Demo Concert
+  await prisma.favorite.upsert({
+    where: { userId_eventId: { userId: alice.id, eventId: event1.id } },
+    update: {},
+    create: { userId: alice.id, eventId: event1.id },
   });
 }
 

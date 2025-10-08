@@ -36,9 +36,12 @@ export async function uploadsRoutes(app: FastifyInstance) {
             },
           });
 
+          const origin = `${(req as any).protocol}://${
+            (req.headers as any).host
+          }`;
           return reply
             .code(201)
-            .send({ id: media.id, url: `/uploads/${fileName}` });
+            .send({ id: media.id, url: `${origin}/uploads/${fileName}` });
         }
       }
       return reply.code(400).send({ error: "No file provided" });

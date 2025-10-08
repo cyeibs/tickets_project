@@ -4,19 +4,35 @@ import styles from "./LoginPage.module.scss";
 import { GalleryAddIcon } from "@/shared/assets/icons";
 
 interface NameStepProps {
-  name: string;
+  firstName: string;
+  lastName: string;
+  middleName: string;
   error: string | null;
   isLoading: boolean;
-  onNameChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onFirstNameChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
+  onLastNameChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
+  onMiddleNameChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
+  onAvatarChange: (file: File | null) => void;
   onSave: () => void;
   onCancel: () => void;
 }
 
 export const NameStep: React.FC<NameStepProps> = ({
-  name,
+  firstName,
+  lastName,
+  middleName,
   error,
   isLoading,
-  onNameChange,
+  onFirstNameChange,
+  onLastNameChange,
+  onMiddleNameChange,
+  onAvatarChange,
   onSave,
   onCancel,
 }) => {
@@ -34,11 +50,13 @@ export const NameStep: React.FC<NameStepProps> = ({
         setUploadedImage(reader.result as string);
       };
       reader.readAsDataURL(file);
+      onAvatarChange(file);
     }
   };
 
   const handleImageDelete = () => {
     setUploadedImage(null);
+    onAvatarChange(null);
   };
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -76,11 +94,26 @@ export const NameStep: React.FC<NameStepProps> = ({
         </button>
       </div>
       <TextField
-        label="ФИО"
-        placeholder="Женя Антонова"
-        value={name}
-        onChange={onNameChange}
+        label="Фамилия"
+        placeholder="Иванов"
+        value={lastName}
+        onChange={onLastNameChange}
         error={error || undefined}
+        required
+      />
+      <TextField
+        label="Имя"
+        placeholder="Иван"
+        value={firstName}
+        onChange={onFirstNameChange}
+        error={error || undefined}
+        required
+      />
+      <TextField
+        label="Отчество (необязательно)"
+        placeholder="Иванович"
+        value={middleName}
+        onChange={onMiddleNameChange}
       />
       <div className={styles.buttonGroup}>
         <Button onClick={onSave} disabled={isLoading} type="button" accent>

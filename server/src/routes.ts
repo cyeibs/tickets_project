@@ -8,6 +8,8 @@ import { reviewsRoutes } from "./modules/reviews/routes";
 import { supportRoutes } from "./modules/support/routes";
 import { purchasesRoutes } from "./modules/purchases/routes";
 import { uploadsRoutes } from "./modules/uploads/routes";
+import { subscriptionsRoutes } from "./modules/subscriptions/routes";
+import { favoritesRoutes } from "./modules/favorites/routes";
 
 export async function registerRoutes(app: FastifyInstance) {
   await authRoutes(app);
@@ -19,4 +21,6 @@ export async function registerRoutes(app: FastifyInstance) {
   await supportRoutes(app);
   await purchasesRoutes(app);
   await uploadsRoutes(app);
+  await subscriptionsRoutes(app);
+  await favoritesRoutes(app);
 }

@@ -10,7 +10,7 @@ const actualEvents = {
   time: "18:00",
   location: "Парк 300-летия Петербурга",
   status: "В оплате",
-  imageUrl: "/tickets_project/avatars/1.webp",
+  imageUrl: "/avatars/1.webp",
   ticketId: "TICKET-VK-12345678",
 };
 

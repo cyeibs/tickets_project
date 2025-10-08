@@ -7,7 +7,7 @@ const actualEvents = {
   date: "12 июня",
   time: "18:00",
   status: "В оплате",
-  imageUrl: "/tickets_project/avatars/1.webp",
+  imageUrl: "/avatars/1.webp",
 };
 
 export const LegalDocsPage = () => {

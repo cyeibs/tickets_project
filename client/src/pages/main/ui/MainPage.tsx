@@ -2,64 +2,57 @@ import { EventCard, Tab, TabGroup } from "@/shared/ui";
 import { SwipeCards } from "@/widgets/events";
 import type { EventCardType } from "@/widgets/events/ui/SwipeCards";
 import { StoriesWidget } from "@widgets/stories";
-import React, { useState } from "react";
+import { useAuth } from "@features/auth";
+import React, { useMemo, useState } from "react";
 import styles from "./MainPage.module.scss";
 import { useNavigate } from "react-router-dom";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { userApi } from "@/entities/user";
 
-const events = [
-  {
-    id: 1,
-    title: "Путешествие в Оркестрбург: знакомство с ударными",
-    date: "12 июня в 12:00",
-    location: "Парк 300-летия Петербурга",
-    price: "от 1500₽",
-    imageUrl: "./avatars/1.webp",
-  },
-  {
-    id: 2,
-    title: "Джазовый вечер в филармонии",
-    date: "15 июня в 19:00",
-    location: "Филармония им. Шостаковича",
-    price: "от 2000₽",
-    imageUrl: "./avatars/2.avif",
-  },
-  {
-    id: 3,
-    title: "Мастер-класс по живописи",
-    date: "18 июня в 15:00",
-    location: "Творческая студия «Палитра»",
-    price: "от 1200₽",
-  },
-  {
-    id: 4,
-    title: "Фестиваль уличной еды",
-    date: "20 июня в 12:00",
-    location: "Новая Голландия",
-    price: "Вход свободный",
-    imageUrl: "./avatars/2.avif",
-  },
-  {
-    id: 5,
-    title: "Выставка современного искусства",
-    date: "25 июня в 10:00",
-    location: "Эрарта",
-    price: "от 700₽",
-  },
-];
 export const MainPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"poster" | "swiper">("poster");
   const navigate = useNavigate();
-  // Sample event data (in a real app, this would come from an API)
+  const queryClient = useQueryClient();
+  const { isAuthenticated } = useAuth();
+  const { data: events } = useQuery({
+    queryKey: ["events"],
+    queryFn: () => userApi.getEvents(),
+  });
+
+  const { data: favorites = [] } = useQuery({
+    queryKey: ["favorites"],
+    queryFn: () => userApi.getFavorites(),
+    enabled: isAuthenticated,
+  });
+
+  const addFavorite = useMutation({
+    mutationFn: (eventId: string) => userApi.addFavorite(eventId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["favorites"] });
+    },
+  });
+
+  const removeFavorite = useMutation({
+    mutationFn: (eventId: string) => userApi.removeFavorite(eventId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["favorites"] });
+    },
+  });
 
   // Convert events to EventCardType for SwipeCards
-  const eventCards: EventCardType[] = events.map((event) => ({
-    id: event.id,
-    title: event.title,
-    date: event.date,
-    location: event.location,
-    price: event.price,
-    imageUrl: event.imageUrl,
-  }));
+  const eventCards: EventCardType[] = useMemo(
+    () =>
+      (events ?? []).map((event) => ({
+        id: Number.isFinite(Number(event.id)) ? Number(event.id) : Date.now(),
+        uuid: String(event.id),
+        title: event.title,
+        date: event.date,
+        location: event.location,
+        price: event.price,
+        imageUrl: event.imageUrl,
+      })),
+    [events]
+  );
 
   return (
     <div className={styles.container}>
@@ -95,8 +88,8 @@ export const MainPage: React.FC = () => {
           }`}
         >
           {activeTab === "poster" ? (
-            // Render 5 EventCard components when "poster" tab is active
-            events.map((event) => (
+            // Render EventCard components when "poster" tab is active
+            (events ?? []).map((event) => (
               <EventCard
                 key={event.id}
                 title={event.title}
@@ -105,11 +98,21 @@ export const MainPage: React.FC = () => {
                 price={event.price}
                 imageUrl={event.imageUrl}
                 image={!!event.imageUrl}
+                liked={favorites.includes(String(event.id))}
                 onIconClick={() => {
-                  navigate(`/about-company/1`);
+                  navigate(`/organizer/${event.organization.id}`);
                 }}
                 onButtonClick={() => {
-                  navigate(`/event/1`);
+                  navigate(`/event/${event.id}`);
+                }}
+                onLikeClick={() => {
+                  if (!isAuthenticated) {
+                    navigate("/login");
+                    return;
+                  }
+                  const id = String(event.id);
+                  if (favorites.includes(id)) removeFavorite.mutate(id);
+                  else addFavorite.mutate(id);
                 }}
               />
             ))
@@ -117,8 +120,19 @@ export const MainPage: React.FC = () => {
             // Render SwipeCards component when "swiper" tab is active
             <SwipeCards
               events={eventCards}
-              onButtonClick={() => {
-                navigate(`/event/1`);
+              onPositiveSwipe={(id, uuid) => {
+                if (!isAuthenticated) {
+                  navigate("/login");
+                  return;
+                }
+                addFavorite.mutate(uuid ?? String(id));
+              }}
+              onNegativeSwipe={(id, uuid) => {
+                if (!isAuthenticated) {
+                  navigate("/login");
+                  return;
+                }
+                removeFavorite.mutate(uuid ?? String(id));
               }}
             />
           )}
