@@ -12,6 +12,7 @@ export interface EventTicketCardProps {
   image?: boolean;
   onButtonClick?: () => void;
   onIconClick?: () => void;
+  onClick?: () => void;
   className?: string;
   status?: string;
   actionButton?: boolean;
@@ -30,6 +31,7 @@ export const EventTicketCard: React.FC<EventTicketCardProps> = ({
   image = true,
   onButtonClick,
   onIconClick,
+  onClick,
   className = "",
   status,
   actionButton = true,
@@ -50,7 +52,7 @@ export const EventTicketCard: React.FC<EventTicketCardProps> = ({
     .join(" ");
 
   return (
-    <div className={cardClasses}>
+    <div className={cardClasses} onClick={onClick}>
       {image && imageUrl && (
         <img src={imageUrl} alt={title} className={styles.image} />
       )}
@@ -62,7 +64,10 @@ export const EventTicketCard: React.FC<EventTicketCardProps> = ({
             <div className={styles.heartWrapper}>
               <IconButton
                 icon={Heart}
-                onClick={onIconClick}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onIconClick?.();
+                }}
                 iconColor={liked ? "#212C3A" : "#151515"}
                 variant={liked ? "accent" : "basic"}
                 iconSize={24}
@@ -97,13 +102,23 @@ export const EventTicketCard: React.FC<EventTicketCardProps> = ({
 
         {actionButton && (
           <div className={styles.actions}>
-            <Button accent onClick={onButtonClick} className={styles.button}>
+            <Button
+              accent
+              onClick={(e) => {
+                e.stopPropagation();
+                onButtonClick?.();
+              }}
+              className={styles.button}
+            >
               Купить билет
             </Button>
 
             <IconButton
               icon={ArrowExport}
-              onClick={onIconClick}
+              onClick={(e) => {
+                e.stopPropagation();
+                onIconClick?.();
+              }}
               iconColor="#151515"
               iconSize={24}
             />

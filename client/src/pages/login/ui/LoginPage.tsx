@@ -1,12 +1,13 @@
+import { CrossIcon, Logo } from "@/shared/assets/icons";
 import { useAuth } from "@features/auth";
-import { Header } from "@shared/ui";
+import { Header, Pills, Toast } from "@shared/ui";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import styles from "./LoginPage.module.scss";
-import { PhoneStep } from "./PhoneStep";
-import { PasswordStep } from "./PasswordStep";
 import { NameStep } from "./NameStep";
-import { Logo } from "@/shared/assets/icons";
+import { PasswordStep } from "./PasswordStep";
+import { PhoneStep } from "./PhoneStep";
 
 export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
@@ -70,7 +71,14 @@ export const LoginPage: React.FC = () => {
 
   const handleCheckPhone = async () => {
     if (!phone || phone.length < 10) {
-      setError("Пожалуйста, введите корректный номер телефона");
+      toast(
+        <Pills
+          icon={CrossIcon}
+          primaryText="Пожалуйста, введите корректный номер телефона"
+          secondaryText="Упс!"
+          iconColor="#AFF940"
+        />
+      );
       return;
     }
 
@@ -82,14 +90,40 @@ export const LoginPage: React.FC = () => {
       setIsLoading(false);
       setStep("password");
     } catch (err) {
-      setError("Произошла ошибка. Пожалуйста, попробуйте снова.");
+      toast(
+        <Pills
+          icon={CrossIcon}
+          primaryText="Произошла ошибка. Пожалуйста, попробуйте снова."
+          secondaryText="Упс!"
+          iconColor="#AFF940"
+        />
+      );
       setIsLoading(false);
     }
   };
 
   const handlePasswordContinue = async () => {
+    if (phoneExists === null) {
+      toast(
+        <Pills
+          icon={CrossIcon}
+          primaryText="Сначала введите номер телефона"
+          secondaryText="Упс!"
+          iconColor="#AFF940"
+        />
+      );
+      return;
+    }
+
     if (!password) {
-      setError("Пожалуйста, введите пароль");
+      toast(
+        <Pills
+          icon={CrossIcon}
+          primaryText="Пожалуйста, введите пароль"
+          secondaryText="Упс!"
+          iconColor="#AFF940"
+        />
+      );
       return;
     }
 
@@ -102,14 +136,38 @@ export const LoginPage: React.FC = () => {
         hasUppercase && hasDigit && hasSpecial && isPasswordLengthValid;
 
       if (!isPasswordFormatValid) {
-        setError(
-          "Пароль должен быть не менее 8 символов и содержать минимум одну заглавную букву, специальный символ и цифру"
+        toast(
+          <Pills
+            icon={CrossIcon}
+            primaryText="Пароль должен быть не менее 8 символов и содержать минимум одну заглавную букву, специальный символ и цифру"
+            secondaryText="Упс!"
+            iconColor="#AFF940"
+          />
+        );
+        return;
+      }
+
+      if (!confirmPassword) {
+        toast(
+          <Pills
+            icon={CrossIcon}
+            primaryText="Повторите пароль"
+            secondaryText="Упс!"
+            iconColor="#AFF940"
+          />
         );
         return;
       }
 
       if (confirmPassword !== password) {
-        setError("Пароли не совпадают");
+        toast(
+          <Pills
+            icon={CrossIcon}
+            primaryText="Пароли не совпадают"
+            secondaryText="Упс!"
+            iconColor="#AFF940"
+          />
+        );
         return;
       }
     }
@@ -117,8 +175,34 @@ export const LoginPage: React.FC = () => {
     try {
       setIsLoading(true);
 
-      if (phoneExists) {
-        // Login
+      if (phoneExists === true) {
+        // Login: also require confirm to be filled and equal
+        if (!confirmPassword) {
+          setIsLoading(false);
+          toast(
+            <Pills
+              icon={CrossIcon}
+              primaryText="Повторите пароль"
+              secondaryText="Упс!"
+              iconColor="#AFF940"
+            />
+          );
+          return;
+        }
+
+        if (confirmPassword !== password) {
+          setIsLoading(false);
+          toast(
+            <Pills
+              icon={CrossIcon}
+              primaryText="Пароли не совпадают"
+              secondaryText="Упс!"
+              iconColor="#AFF940"
+            />
+          );
+          return;
+        }
+
         await login(phone, password);
         setIsLoading(false);
         navigate("/main");
@@ -128,7 +212,14 @@ export const LoginPage: React.FC = () => {
         setStep("name");
       }
     } catch (err) {
-      setError("Произошла ошибка. Пожалуйста, попробуйте снова.");
+      toast(
+        <Pills
+          icon={CrossIcon}
+          primaryText="Неверный телефон или пароль"
+          secondaryText="Упс!"
+          iconColor="#AFF940"
+        />
+      );
       setIsLoading(false);
     }
   };
@@ -167,68 +258,71 @@ export const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className={styles.container}>
-      <Header
-        pageName="Войти или создать аккаунт"
-        showLeftButton={true}
-        showLogo={false}
-        showRightButton={false}
-        onLeftButtonClick={() => {
-          navigate("/");
-        }}
-      />
+    <>
+      <div className={styles.container}>
+        <Header
+          pageName="Войти или создать аккаунт"
+          showLeftButton={true}
+          showLogo={false}
+          showRightButton={false}
+          onLeftButtonClick={() => {
+            navigate("/");
+          }}
+        />
 
-      <div className={styles.content}>
-        <div className={styles.form}>
-          {step !== "name" && (
-            <div className={styles.logoContainer}>
-              <div className={styles.logo}>
-                <Logo width={76} height={27} />
+        <div className={styles.content}>
+          <div className={styles.form}>
+            {step !== "name" && (
+              <div className={styles.logoContainer}>
+                <div className={styles.logo}>
+                  <Logo width={76} height={27} />
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {step === "phone" && (
-            <PhoneStep
-              phone={phone}
-              error={error}
-              isLoading={isLoading}
-              onPhoneChange={handlePhoneChange}
-              onContinue={handleCheckPhone}
-            />
-          )}
+            {step === "phone" && (
+              <PhoneStep
+                phone={phone}
+                error={error}
+                isLoading={isLoading}
+                onPhoneChange={handlePhoneChange}
+                onContinue={handleCheckPhone}
+              />
+            )}
 
-          {step === "password" && (
-            <PasswordStep
-              phoneExists={phoneExists}
-              password={password}
-              confirmPassword={confirmPassword}
-              onConfirmPasswordChange={handleConfirmPasswordChange}
-              error={error}
-              isLoading={isLoading}
-              onPasswordChange={handlePasswordChange}
-              onContinue={handlePasswordContinue}
-              onBack={handleBackToPhone}
-            />
-          )}
+            {step === "password" && (
+              <PasswordStep
+                phoneExists={phoneExists}
+                password={password}
+                confirmPassword={confirmPassword}
+                onConfirmPasswordChange={handleConfirmPasswordChange}
+                error={error}
+                isLoading={isLoading}
+                onPasswordChange={handlePasswordChange}
+                onContinue={handlePasswordContinue}
+                onBack={handleBackToPhone}
+              />
+            )}
 
-          {step === "name" && (
-            <NameStep
-              firstName={firstName}
-              lastName={lastName}
-              middleName={middleName}
-              error={error}
-              isLoading={isLoading}
-              onFirstNameChange={handleFirstNameChange}
-              onLastNameChange={handleLastNameChange}
-              onMiddleNameChange={handleMiddleNameChange}
-              onAvatarChange={handleAvatarChange}
-              onSave={handleSave}
-              onCancel={handleBackToPassword}
-            />
-          )}
+            {step === "name" && (
+              <NameStep
+                firstName={firstName}
+                lastName={lastName}
+                middleName={middleName}
+                error={error}
+                isLoading={isLoading}
+                onFirstNameChange={handleFirstNameChange}
+                onLastNameChange={handleLastNameChange}
+                onMiddleNameChange={handleMiddleNameChange}
+                onAvatarChange={handleAvatarChange}
+                onSave={handleSave}
+                onCancel={handleBackToPassword}
+              />
+            )}
+          </div>
         </div>
       </div>
-    </div>
+      <Toast />
+    </>
   );
 };

@@ -1,6 +1,6 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import styles from "./MyEventsPage.module.scss";
-import { Button, Tab, TabGroup } from "@/shared/ui";
+import { Button, EmptyState, Tab, TabGroup } from "@/shared/ui";
 import { EventTicketCard } from "@/shared/ui/EventTicketCard";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/features/auth";
@@ -53,6 +53,8 @@ export const MyEventsPage: React.FC = () => {
   const renderEvents = () => {
     switch (activeTab) {
       case "moderation":
+        if (moderationEvents.length === 0)
+          return <EmptyState text="Пока ничего нет" />;
         return moderationEvents.map((event) => (
           <EventTicketCard
             key={event.id}
@@ -68,6 +70,8 @@ export const MyEventsPage: React.FC = () => {
           />
         ));
       case "actual":
+        if (publishedEvents.length === 0)
+          return <EmptyState text="Пока ничего нет" />;
         return publishedEvents.map((event) => (
           <EventTicketCard
             key={event.id}
@@ -83,6 +87,7 @@ export const MyEventsPage: React.FC = () => {
           />
         ));
       case "drafts":
+        if (drafts.length === 0) return <EmptyState text="Пока ничего нет" />;
         return drafts.map((event) => (
           <EventTicketCard
             key={event.id}
@@ -98,6 +103,8 @@ export const MyEventsPage: React.FC = () => {
           />
         ));
       case "completed":
+        if (completedEvents.length === 0)
+          return <EmptyState text="Пока ничего нет" />;
         return completedEvents.map((event) => (
           <EventTicketCard
             key={event.id}

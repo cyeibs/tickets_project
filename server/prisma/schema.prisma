@@ -80,6 +80,7 @@ model User {
   subscriptions   Subscription[]
   favorites       Favorite[]
   organizerApplications OrganizerApplication[]
+  tickets         Ticket[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -144,6 +145,7 @@ model Event {
   purchases Purchase[]
   favorites Favorite[]
   stories   OrganizationStory[]
+  tickets   Ticket[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -204,11 +206,31 @@ model Purchase {
   user       User           @relation(fields: [userId], references: [id])
   firstName  String
   lastName   String
-  price      Decimal        @db.Decimal(10, 2)
-  serviceTax Decimal        @db.Decimal(10, 2)
+  price      Decimal        @db.Decimal(10, 2) // per ticket price
+  serviceTax Decimal        @db.Decimal(10, 2) // per ticket fee
   statusId   String
   status     PurchaseStatus @relation(fields: [statusId], references: [id])
+  orderNumber String?       @unique
+  quantity    Int           @default(1)
+  tickets     Ticket[]
   createdAt  DateTime       @default(now())
+}
+
+model Ticket {
+  id         String   @id @default(uuid())
+  purchaseId String
+  purchase   Purchase @relation(fields: [purchaseId], references: [id])
+
+  eventId String
+  event   Event   @relation(fields: [eventId], references: [id])
+
+  userId String
+  user   User    @relation(fields: [userId], references: [id])
+
+  // Short human-friendly code for display (e.g., in status or UI)
+  code    String   @unique
+
+  createdAt DateTime @default(now())
 }
 
 model SupportRequest {

@@ -1,6 +1,6 @@
 import { userApi } from "@/entities/user";
 import { useAuth } from "@/features/auth";
-import { Button } from "@shared/ui";
+import { Button, EmptyState } from "@shared/ui";
 import { StoriesCard } from "@shared/ui/StoriesCard";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
@@ -20,6 +20,7 @@ export const StoriesPage = () => {
   return (
     <div className={styles.container}>
       <div className={styles.eventsContainer}>
+        {orgStories.length === 0 && <EmptyState text="Пока ничего нет" />}
         {orgStories.map((story) => (
           <StoriesCard
             key={story.id}

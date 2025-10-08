@@ -42,9 +42,13 @@ export const PasswordStep: React.FC<PasswordStepProps> = ({
     : error || undefined;
 
   const confirmError =
-    isRegistration && confirmPassword.length > 0 && confirmPassword !== password
+    confirmPassword.length === 0 && password.length > 0
+      ? "Повторите пароль"
+      : confirmPassword.length > 0 && confirmPassword !== password
       ? "Пароли не совпадают"
       : error || undefined;
+
+  // Submit is allowed; parent handler shows toast and prevents progression
   return (
     <>
       <p className={styles.phoneText}>

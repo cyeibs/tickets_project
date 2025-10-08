@@ -1,14 +1,22 @@
 import { FastifyInstance } from "fastify";
 import { z } from "zod";
 
+function generateShortCode(length = 8): string {
+  const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // exclude similar chars
+  let res = "";
+  for (let i = 0; i < length; i++) {
+    res += alphabet[Math.floor(Math.random() * alphabet.length)];
+  }
+  return res;
+}
+
 export async function purchasesRoutes(app: FastifyInstance) {
   const createSchema = z.object({
     eventId: z.string().uuid(),
     firstName: z.string().min(1),
     lastName: z.string().min(1),
-    price: z.number().nonnegative(),
-    serviceTax: z.number().nonnegative(),
-    statusCode: z.string().min(1),
+    quantity: z.number().int().positive().default(1),
+    statusCode: z.string().min(1).default("paid"),
   });
 
   app.post(
@@ -17,7 +25,7 @@ export async function purchasesRoutes(app: FastifyInstance) {
     async (req, reply) => {
       const parsed = createSchema.safeParse(req.body);
       if (!parsed.success) return reply.code(400).send(parsed.error);
-      const { eventId, firstName, lastName, price, serviceTax, statusCode } =
+      const { eventId, firstName, lastName, quantity, statusCode } =
         parsed.data;
 
       const status = await app.prisma.purchaseStatus.findUnique({
@@ -25,18 +33,56 @@ export async function purchasesRoutes(app: FastifyInstance) {
       });
       if (!status) return reply.code(400).send({ error: "Invalid status" });
 
-      const created = await app.prisma.purchase.create({
+      const event = await app.prisma.event.findUnique({
+        where: { id: eventId },
+        select: { price: true },
+      });
+      if (!event) return reply.code(404).send({ error: "Event not found" });
+
+      // Per-ticket amounts
+      const ticketPrice = Number(event.price);
+      const ticketServiceTax = Number((ticketPrice * 0.1).toFixed(2));
+
+      // Generate short order number (not guaranteed unique at DB level if nulls exist)
+      let orderNumber = generateShortCode(8);
+
+      const userId = (req as any).user.id as string;
+
+      const created = await (app.prisma.purchase as any).create({
         data: {
           eventId,
-          userId: (req as any).user.id,
+          userId,
           firstName,
           lastName,
-          price,
-          serviceTax,
+          price: ticketPrice,
+          serviceTax: ticketServiceTax,
           statusId: status.id,
-        },
+          orderNumber,
+          quantity,
+          // create tickets separately to avoid type include issues
+        } as any,
       });
-      return { id: created.id };
+
+      // Create tickets after purchase is created
+      const createdTickets = [] as string[];
+      for (let i = 0; i < quantity; i++) {
+        const t = await (app.prisma as any).ticket.create({
+          data: {
+            purchaseId: created.id,
+            userId,
+            eventId,
+            code: generateShortCode(10),
+          },
+          select: { id: true },
+        });
+        createdTickets.push(t.id);
+      }
+
+      return {
+        id: created.id,
+        orderNumber: orderNumber,
+        ticketIds: createdTickets,
+      };
     }
   );
 
@@ -69,7 +115,7 @@ export async function purchasesRoutes(app: FastifyInstance) {
             },
           }
         : {
-            // For "my purchases": include event details to render tickets
+            // For "my purchases": include event details
             event: {
               select: {
                 id: true,
@@ -81,6 +127,25 @@ export async function purchasesRoutes(app: FastifyInstance) {
             },
           },
     });
-    return { items };
+    if (isEventParticipantsQuery) return { items };
+
+    // Attach lightweight tickets info (ids only) for user's purchases
+    const purchaseIds = items.map((p) => p.id);
+    const tickets = await (app.prisma as any).ticket.findMany({
+      where: { purchaseId: { in: purchaseIds } },
+      select: { id: true, purchaseId: true },
+      orderBy: { createdAt: "asc" },
+    });
+    const byPurchase = new Map<string, Array<{ id: string }>>();
+    for (const t of tickets) {
+      const arr = byPurchase.get(t.purchaseId) || [];
+      arr.push({ id: t.id });
+      byPurchase.set(t.purchaseId, arr);
+    }
+    const enriched = items.map((p) => ({
+      ...p,
+      tickets: byPurchase.get(p.id) || [],
+    }));
+    return { items: enriched };
   });
 }

@@ -16,3 +16,4 @@ export * from "./Tab";
 export * from "./TabGroup";
 export * from "./TextField";
 export * from "./Toast";
+export * from "./EmptyState";

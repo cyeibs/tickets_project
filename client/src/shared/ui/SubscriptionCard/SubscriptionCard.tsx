@@ -19,6 +19,7 @@ export interface SubscriptionCardProps {
   onButtonClick?: () => void;
   onHeartClick?: () => void;
   onBackClick?: () => void;
+  onCardClick?: () => void;
   className?: string;
   status?: string;
   actionButton?: boolean;
@@ -39,6 +40,7 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   onButtonClick,
   onHeartClick,
   onBackClick,
+  onCardClick,
   className = "",
   actionButton = true,
   isEdit = false,
@@ -63,7 +65,7 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
     .join(" ");
 
   return (
-    <div className={cardClasses}>
+    <div className={cardClasses} onClick={onCardClick}>
       {image && imageUrl && (
         <img src={imageUrl} alt={title} className={styles.image} />
       )}
@@ -73,7 +75,10 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
           <div className={styles.backWrapper}>
             <IconButton
               icon={ArrowLeft}
-              onClick={onBackClick}
+              onClick={(e) => {
+                e.stopPropagation();
+                onBackClick?.();
+              }}
               iconColor="#212C3A"
               iconSize={24}
               fill="#212C3A"
@@ -87,7 +92,10 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
           {isHeart && (
             <IconButton
               icon={Heart}
-              onClick={onHeartClick}
+              onClick={(e) => {
+                e.stopPropagation();
+                onHeartClick?.();
+              }}
               iconColor={isSubscribed ? "#212C3A" : "#151515"}
               variant={isSubscribed ? "accent" : "basic"}
               iconSize={24}
@@ -97,7 +105,10 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
           {isEdit && (
             <IconButton
               icon={Edit}
-              onClick={onButtonClick}
+              onClick={(e) => {
+                e.stopPropagation();
+                onButtonClick?.();
+              }}
               iconColor="#212C3A"
               // variant="accent"
               iconSize={24}
@@ -131,7 +142,10 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
               <button
                 type="button"
                 className={styles.content}
-                onClick={() => navigate("/profile/about-company/reviews")}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate("/profile/about-company/reviews");
+                }}
                 aria-label="Перейти к отзывам"
               >
                 <span className={styles.infoText}>Отзывы</span>

@@ -113,6 +113,63 @@ export const userApi = {
       organization: { id: e.organization.id },
     }));
   },
+
+  // Single ticket by id
+  getTicketById: async (
+    id: string
+  ): Promise<{
+    id: string;
+    code: string;
+    orderNumber: string;
+    event: {
+      id: string;
+      title: string;
+      date: string;
+      time: string;
+      location: string;
+      imageUrl?: string;
+      price: number;
+    };
+  }> => {
+    const response = await apiInstance.get<{
+      ticket: {
+        id: string;
+        code: string;
+        orderNumber: string;
+        event: {
+          id: string;
+          name: string;
+          eventDate: string;
+          startTime: string;
+          location: string;
+          poster?: { storagePath: string } | null;
+          price: number;
+        };
+      };
+    }>(`/tickets/${id}`);
+
+    const t = response.data.ticket;
+    return {
+      id: t.id,
+      code: t.code,
+      orderNumber: t.orderNumber,
+      event: {
+        id: t.event.id,
+        title: t.event.name,
+        date: new Date(t.event.eventDate).toLocaleDateString("ru-RU", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        }),
+        time: t.event.startTime,
+        location: t.event.location,
+        imageUrl: t.event.poster?.storagePath
+          ? `${apiInstance.defaults.baseURL}/uploads/${t.event.poster.storagePath}`
+          : undefined,
+        price: Number(t.event.price),
+      },
+    };
+  },
   // Single event by id
   getEventById: async (
     id: string
@@ -178,7 +235,7 @@ export const userApi = {
         startTime: e.startTime,
         organizationId: e.organizationId,
       },
-      price: e.price,
+      price: Number(e.price),
     };
   },
 
@@ -634,6 +691,9 @@ export const userApi = {
   ): Promise<
     Array<{
       id: string; // purchase id
+      orderNumber: string;
+      ticketsCount: number;
+      firstTicketId?: string;
       eventId: string;
       title: string;
       date: string; // dd.mm or dd.mm.yyyy
@@ -645,6 +705,8 @@ export const userApi = {
     const response = await apiInstance.get<{
       items: Array<{
         id: string;
+        orderNumber: string;
+        tickets: Array<{ id: string }>;
         event: {
           id: string;
           name: string;
@@ -657,6 +719,9 @@ export const userApi = {
 
     return response.data.items.map((p) => ({
       id: p.id,
+      orderNumber: p.orderNumber,
+      ticketsCount: p.tickets?.length || 0,
+      firstTicketId: p.tickets?.[0]?.id,
       eventId: p.event.id,
       title: p.event.name,
       date: new Date(p.event.eventDate).toLocaleDateString("ru-RU", {
@@ -669,6 +734,29 @@ export const userApi = {
         : undefined,
       raw: { eventDate: p.event.eventDate, startTime: p.event.startTime },
     }));
+  },
+
+  // Create purchase (buy ticket(s))
+  createPurchase: async (data: {
+    eventId: string;
+    firstName: string;
+    lastName: string;
+    quantity: number;
+    statusCode?: string; // default: paid
+  }): Promise<{ id: string; orderNumber: string; ticketIds: string[] }> => {
+    const payload = {
+      eventId: data.eventId,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      quantity: data.quantity,
+      statusCode: data.statusCode ?? "paid",
+    };
+    const response = await apiInstance.post<{
+      id: string;
+      orderNumber: string;
+      ticketIds: string[];
+    }>("/purchases", payload);
+    return response.data;
   },
 
   // Organizer application

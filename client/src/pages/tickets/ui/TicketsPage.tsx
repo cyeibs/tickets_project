@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import styles from "./TicketsPage.module.scss";
-import { Tab, TabGroup } from "@/shared/ui";
+import { EmptyState, Tab, TabGroup } from "@/shared/ui";
 import { EventTicketCard } from "@/shared/ui/EventTicketCard";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -38,15 +38,10 @@ export const TicketsPage: React.FC = () => {
 
   const { actualEvents, historyEvents } = useMemo(() => {
     const now = new Date();
-    // Deduplicate purchases by eventId
-    const deduped = Array.from(
-      new Map(myPurchases.map((p) => [p.eventId, p])).values()
-    );
-
     const upcoming: typeof myPurchases = [];
     const past: typeof myPurchases = [];
 
-    for (const p of deduped) {
+    for (const p of myPurchases) {
       const dateObj = new Date(p.raw.eventDate);
       const [hh, mm] = p.raw.startTime.split(":").map(Number);
       dateObj.setHours(hh || 0, mm || 0, 0, 0);
@@ -76,6 +71,8 @@ export const TicketsPage: React.FC = () => {
   const renderEvents = () => {
     switch (activeTab) {
       case "favorites":
+        if (favoriteEvents.length === 0)
+          return <EmptyState text="Пока ничего нет" />;
         return favoriteEvents.map((event) => (
           <EventTicketCard
             key={event.id}
@@ -84,7 +81,7 @@ export const TicketsPage: React.FC = () => {
             time={event.time}
             // status="Избранное"
             onButtonClick={() => {
-              navigate(`/purchase/1`);
+              navigate(`/purchase/${event.id}`);
             }}
             imageUrl={event.imageUrl}
             image={!!event.imageUrl}
@@ -95,26 +92,36 @@ export const TicketsPage: React.FC = () => {
           />
         ));
       case "actual":
+        if (actualEvents.length === 0)
+          return <EmptyState text="Пока ничего нет" />;
         return actualEvents.map((event) => (
           <EventTicketCard
-            key={event.eventId}
+            key={event.id}
             title={event.title}
             date={event.date}
             time={event.time}
+            status={event.orderNumber}
             imageUrl={event.imageUrl}
             image={!!event.imageUrl}
             actionButton={false}
             isHeart
             liked={favoriteIds.includes(event.eventId)}
             onIconClick={() => toggleFavorite.mutate(String(event.eventId))}
+            onClick={() => {
+              if (event.firstTicketId)
+                navigate(`/ticket/${event.firstTicketId}`);
+            }}
           />
         ));
       case "history":
+        if (historyEvents.length === 0)
+          return <EmptyState text="Пока ничего нет" />;
         return historyEvents.map((event) => (
           <EventTicketCard
-            key={event.eventId}
+            key={event.id}
             title={event.title}
             date={event.date}
+            status={event.orderNumber}
             time={event.time}
             imageUrl={event.imageUrl}
             image={!!event.imageUrl}
@@ -122,6 +129,10 @@ export const TicketsPage: React.FC = () => {
             isHeart
             liked={favoriteIds.includes(event.eventId)}
             onIconClick={() => toggleFavorite.mutate(String(event.eventId))}
+            onClick={() => {
+              if (event.firstTicketId)
+                navigate(`/ticket/${event.firstTicketId}`);
+            }}
           />
         ));
       default:
