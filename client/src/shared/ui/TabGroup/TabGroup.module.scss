@@ -3,7 +3,7 @@
 
 .container {
   display: flex;
-  flex-direction: column;  
+  flex-direction: column;
   gap: $space-200;
 }
 
@@ -14,14 +14,21 @@
 
 .tabGroup {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
   border-radius: 99px;
   padding: $space-100;
   background-color: $prime-white-color;
-  gap: 0;
+  gap: $space-100;
   position: relative;
-  overflow: hidden;
-  
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; // Firefox hide
+  &::-webkit-scrollbar {
+    display: none;
+  } // WebKit hide
+
   /* Prevent default mobile tap highlight */
   -webkit-tap-highlight-color: transparent;
-} 
+}

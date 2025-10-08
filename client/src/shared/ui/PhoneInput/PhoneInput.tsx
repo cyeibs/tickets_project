@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Phone } from '@shared/assets/icons';
-import styles from './PhoneInput.module.scss';
+import React, { useState } from "react";
+import { Phone } from "@shared/assets/icons";
+import styles from "./PhoneInput.module.scss";
 
 interface PhoneInputProps {
   value: string;
@@ -17,7 +17,7 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // Extract only digits
-    const digits = e.target.value.replace(/\D/g, '');
+    const digits = e.target.value.replace(/\D/g, "");
 
     // Limit to 10 digits (excluding country code)
     const limitedDigits = digits.slice(0, 10);
@@ -27,25 +27,25 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
   };
 
   const formatPhoneNumber = (phoneDigits: string) => {
-    if (!phoneDigits) return '';
+    if (!phoneDigits) return "";
 
-    let formattedNumber = '';
+    let formattedNumber = "";
 
     // Format: (XXX) XXX XX XX
     if (phoneDigits.length > 0) {
-      formattedNumber += '(';
+      formattedNumber += "(";
       formattedNumber += phoneDigits.slice(0, Math.min(3, phoneDigits.length));
-      formattedNumber += phoneDigits.length > 3 ? ') ' : '';
+      formattedNumber += phoneDigits.length > 3 ? ") " : "";
     }
 
     if (phoneDigits.length > 3) {
       formattedNumber += phoneDigits.slice(3, Math.min(6, phoneDigits.length));
-      formattedNumber += phoneDigits.length > 6 ? ' ' : '';
+      formattedNumber += phoneDigits.length > 6 ? " " : "";
     }
 
     if (phoneDigits.length > 6) {
       formattedNumber += phoneDigits.slice(6, Math.min(8, phoneDigits.length));
-      formattedNumber += phoneDigits.length > 8 ? ' ' : '';
+      formattedNumber += phoneDigits.length > 8 ? " " : "";
     }
 
     if (phoneDigits.length > 8) {

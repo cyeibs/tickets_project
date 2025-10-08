@@ -1,14 +1,10 @@
-import styles from "./SubscriptionsPage.module.scss";
-import { SubscriptionCard } from "@/shared/ui/SubscriptionCard";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { userApi } from "@/entities/user";
-import { useAuth } from "@/features/auth";
-import { useNavigate } from "react-router-dom";
+import { SubscriptionCard } from "@/shared/ui/SubscriptionCard";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import styles from "./SubscriptionsPage.module.scss";
 
 export const SubscriptionsPage = () => {
   const queryClient = useQueryClient();
-  const { user } = useAuth();
-  const navigate = useNavigate();
 
   const { data: subscriptions, isLoading } = useQuery({
     queryKey: ["mySubscriptions"],
@@ -37,9 +33,7 @@ export const SubscriptionsPage = () => {
             isSubscribed
             ratingAvg={s.organization.ratingAvg ?? null}
             reviewsCount={s.organization.reviewsCount}
-            isEdit={user?.organizationId === s.organization.id}
             onHeartClick={() => unsubscribeMutation.mutate(s.organization.id)}
-            onButtonClick={() => navigate(`/organizer/${s.organization.id}`)}
           />
         ))}
       </div>

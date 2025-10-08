@@ -87,28 +87,25 @@ export const OrganizerPage = () => {
     return mySubscriptions.some((s) => s.organization.id === orgId);
   }, [mySubscriptions, orgId]);
 
-  const companiesStories = useMemo(
-    () =>
-      org
-        ? [
-            {
-              id: 1,
-              name: org.name,
-              avatarUrl: org.avatarUrl || FALLBACK_IMAGE,
-              stories: orgStories.map((s) => ({
-                url: org.avatarUrl || FALLBACK_IMAGE,
-                duration: 4001,
-                header: {
-                  heading: s.title,
-                  subheading: s.description || "",
-                  profileImage: org.avatarUrl || FALLBACK_IMAGE,
-                },
-              })),
-            },
-          ]
-        : [],
-    [org, orgStories]
-  );
+  const companiesStories = useMemo(() => {
+    if (!org) return [];
+    return orgStories.map((s, idx) => ({
+      id: idx + 1,
+      name: org.name,
+      avatarUrl: (s as any).posterUrl || org.avatarUrl || FALLBACK_IMAGE,
+      stories: [
+        {
+          url: (s as any).posterUrl || org.avatarUrl || FALLBACK_IMAGE,
+          duration: 4001,
+          header: {
+            heading: s.title,
+            subheading: s.description || "",
+            profileImage: org.avatarUrl || FALLBACK_IMAGE,
+          },
+        },
+      ],
+    }));
+  }, [org, orgStories]);
 
   return (
     <div className={styles.container}>
@@ -188,7 +185,7 @@ export const OrganizerPage = () => {
 
         {orgStories.length > 0 && (
           <div className={styles.storiesWrapper}>
-            <StoriesWidget />
+            <StoriesWidget companies={companiesStories} />
           </div>
         )}
 
@@ -201,7 +198,7 @@ export const OrganizerPage = () => {
                 <EventCard
                   key={event.id}
                   title={event.title}
-                  date={event.date}
+                  date={event.date + ` в ${event.time}`}
                   location={event.location}
                   price={event.price}
                   image={!!event.imageUrl}

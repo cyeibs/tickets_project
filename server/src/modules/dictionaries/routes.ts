@@ -20,6 +20,13 @@ export async function dictionariesRoutes(app: FastifyInstance) {
     return { items };
   });
 
+  app.get("/dictionaries/story-colors", async () => {
+    const items = await (app.prisma as any).storyColor.findMany({
+      orderBy: { name: "asc" },
+    });
+    return { items };
+  });
+
   app.get("/dictionaries/purchase-statuses", async () => {
     const items = await app.prisma.purchaseStatus.findMany({
       orderBy: { name: "asc" },

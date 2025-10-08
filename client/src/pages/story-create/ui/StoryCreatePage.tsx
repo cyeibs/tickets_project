@@ -1,19 +1,81 @@
 import { TickCircleIcon } from "@/shared/assets/icons";
 import { GalleryAddIcon } from "@/shared/assets/icons/gallerty-add";
 import { StoriesCard } from "@/shared/ui/StoriesCard";
-import { Button, Pills, StepperHorizontal, TextField } from "@shared/ui";
+import {
+  Button,
+  Pills,
+  StepperHorizontal,
+  TextField,
+  AutocompleteSelect,
+} from "@shared/ui";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import styles from "./StoryCreatePage.module.scss";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { userApi } from "@/entities/user";
+import { useAuth } from "@/features/auth";
 
 export const StoryCreatePage = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 2;
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const navigate = useNavigate();
+  const { user } = useAuth();
+
+  // Step 1 fields: select event, lock title, editable description
+  const [eventValue, setEventValue] = useState<string | null>(null);
+  const [eventInput, setEventInput] = useState<string>("");
+  const [eventError, setEventError] = useState<string | null>(null);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [datePreview, setDatePreview] = useState<string | undefined>(undefined);
+  const [timePreview, setTimePreview] = useState<string | undefined>(undefined);
+
+  // Colors
+  const { data: storyColors = [] } = useQuery({
+    queryKey: ["story-colors"],
+    queryFn: () => userApi.getStoryColors(),
+  });
+  const [selectedColorId, setSelectedColorId] = useState<string | null>(null);
+
+  // Organizer events
+  const { data: myEvents = [] } = useQuery({
+    queryKey: ["organization-events-for-stories", user?.organizationId],
+    enabled: !!user?.organizationId,
+    queryFn: () =>
+      userApi.getOrganizationEvents(user!.organizationId as string),
+  });
+
+  // Selected event details for description
+  const { data: selectedEventDetails } = useQuery({
+    queryKey: ["event", eventValue],
+    enabled: !!eventValue,
+    queryFn: () => userApi.getEventById(eventValue as string),
+  });
+
+  // When event changes, lock title, set date/time for preview
+  useEffect(() => {
+    if (!eventValue) return;
+    const ev = myEvents.find((e) => e.id === eventValue);
+    if (ev) {
+      setTitle(ev.title);
+      const dt = ev.date;
+      setDatePreview(dt);
+      setTimePreview(ev.time);
+    }
+  }, [eventValue, myEvents]);
+
+  // Prefill description from event details
+  useEffect(() => {
+    if (!eventValue) return;
+    if (selectedEventDetails) {
+      setDescription(selectedEventDetails.description || "");
+    }
+  }, [eventValue, selectedEventDetails]);
 
   const handleStepChange = (step: number) => {
     setCurrentStep(step);
@@ -30,35 +92,117 @@ export const StoryCreatePage = () => {
   const renderStepContent = () => {
     switch (currentStep) {
       case 1:
-        return <Step1Content />;
+        return (
+          <Step1Content
+            eventValue={eventValue}
+            eventInput={eventInput}
+            onEventChange={(val) => {
+              setEventValue(val);
+              setEventError(null);
+            }}
+            onEventInputChange={(val) => setEventInput(val)}
+            eventOptions={myEvents.map((e) => ({
+              label: e.title,
+              value: e.id,
+            }))}
+            eventError={eventError || undefined}
+            title={title}
+            description={description}
+            onDescriptionChange={(e) => setDescription(e.target.value)}
+          />
+        );
       case 2:
         return (
           <Step2Content
             uploadedImage={uploadedImage}
             onImageDelete={handleImageDelete}
             onAddPhotoClick={handleAddPhotoClick}
+            colors={storyColors}
+            onColorChange={(id) => setSelectedColorId(id)}
+            titlePreview={title}
+            descriptionPreview={description || undefined}
           />
         );
       default:
-        return <Step1Content />;
+        return (
+          <Step1Content
+            eventValue={eventValue}
+            eventInput={eventInput}
+            onEventChange={(val) => {
+              setEventValue(val);
+              setEventError(null);
+            }}
+            onEventInputChange={(val) => setEventInput(val)}
+            eventOptions={myEvents.map((e) => ({
+              label: e.title,
+              value: e.id,
+            }))}
+            eventError={eventError || undefined}
+            title={title}
+            description={description}
+            onDescriptionChange={(e) => setDescription(e.target.value)}
+          />
+        );
     }
   };
 
   const handleNextStep = () => {
+    if (currentStep === 1) {
+      if (!eventValue) {
+        setEventError("Выберите событие");
+        return;
+      }
+    }
+
     if (currentStep < totalSteps) {
       setCurrentStep(currentStep + 1);
     }
   };
 
+  const createStoryMutation = useMutation({
+    mutationFn: async () => {
+      if (!user?.organizationId)
+        throw new Error("Доступно только организаторам");
+      if (!eventValue) throw new Error("Выберите событие");
+      const colorId = (selectedColorId || storyColors[0]?.id) as string;
+
+      let posterId: string | undefined;
+      if (uploadedFile) {
+        const uploaded = await userApi.uploadFile(uploadedFile);
+        posterId = uploaded.id;
+      }
+
+      return await userApi.createOrganizationStory({
+        organizationId: user.organizationId,
+        eventId: eventValue,
+        description: description.trim() || undefined,
+        colorId,
+        ...(posterId ? { posterId } : {}),
+      });
+    },
+    onSuccess: () => {
+      toast(
+        <Pills
+          icon={TickCircleIcon}
+          primaryText="История успешно создана!"
+          secondaryText="Ю-ху!"
+          iconColor="#AFF940"
+        />
+      );
+      navigate(-1);
+    },
+    onError: (e: any) => {
+      toast.error(e?.message || "Ошибка при создании истории");
+    },
+  });
+
   const handleSubmit = () => {
-    toast(
-      <Pills
-        icon={TickCircleIcon}
-        primaryText="История успешно создана!"
-        secondaryText="Ю-ху!"
-        iconColor="#AFF940"
-      />
-    );
+    if (!eventValue) {
+      setEventError("Выберите событие");
+      setCurrentStep(1);
+      return;
+    }
+    createStoryMutation.mutate();
   };
 
   const handlePrevStep = () => {
@@ -70,6 +214,7 @@ export const StoryCreatePage = () => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      setUploadedFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
         setUploadedImage(reader.result as string);
@@ -130,11 +275,55 @@ export const StoryCreatePage = () => {
 };
 
 // Placeholder components for each step
-const Step1Content = () => (
+interface Step1ContentProps {
+  eventValue: string | null;
+  eventInput: string;
+  onEventChange: (val: string | null) => void;
+  onEventInputChange: (val: string) => void;
+  eventOptions: Array<{ label: string; value: string }>;
+  eventError?: string;
+  title: string;
+  description: string;
+  onDescriptionChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
+}
+
+const Step1Content: React.FC<Step1ContentProps> = ({
+  eventValue,
+  eventInput,
+  onEventChange,
+  onEventInputChange,
+  eventOptions,
+  eventError,
+  title,
+  description,
+  onDescriptionChange,
+}) => (
   <div className={styles.stepContent}>
     <span className={styles.stepTitle}>Заголовок и описание</span>
-    <TextField label="Заголовок" placeholder="Заполните поле" />
-    <TextField label="Описание" placeholder="Заполните поле" />
+    <AutocompleteSelect
+      label="Событие"
+      placeholder="Выберите событие"
+      options={eventOptions}
+      value={eventValue || undefined}
+      inputValue={eventInput}
+      onChange={onEventChange}
+      onInputChange={onEventInputChange}
+      error={eventError}
+    />
+    <TextField
+      label="Название"
+      placeholder="Название"
+      value={title}
+      onChange={() => {}}
+    />
+    <TextField
+      label="Описание"
+      placeholder="Заполните поле"
+      value={description}
+      onChange={onDescriptionChange}
+    />
   </div>
 );
 
@@ -142,12 +331,24 @@ interface Step2ContentProps {
   uploadedImage: string | null;
   onImageDelete: () => void;
   onAddPhotoClick: () => void;
+  colors: Array<{ id: string; name: string; color: string; textColor: string }>;
+  onColorChange: (id: string) => void;
+  titlePreview: string;
+  descriptionPreview?: string;
+  datePreview?: string;
+  timePreview?: string;
 }
 
 const Step2Content: React.FC<Step2ContentProps> = ({
   uploadedImage,
   onImageDelete,
   onAddPhotoClick,
+  colors,
+  onColorChange,
+  titlePreview,
+  descriptionPreview,
+  datePreview,
+  timePreview,
 }) => {
   const scrollContainerRef = useRef<HTMLUListElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -155,32 +356,11 @@ const Step2Content: React.FC<Step2ContentProps> = ({
   const [scrollLeft, setScrollLeft] = useState(0);
   const [activeIndex, setActiveIndex] = useState(0);
 
-  // Определение цветов для кружков
-  const colors = [
-    {
-      id: 1,
-      color: "#AFF940",
-      textColor: "#212C3A",
-      name: "prime-accent-color",
-    },
-    { id: 2, color: "#BBBAFF", textColor: "#212C3A", name: "alt-accent-color" },
-    { id: 3, color: "#FFBABA", textColor: "#212C3A", name: "light-pink" },
-    { id: 4, color: "#FFD3BA", textColor: "#212C3A", name: "dark-peach" },
-    { id: 5, color: "#FFD700", textColor: "#212C3A", name: "gold" },
-    { id: 6, color: "#FFFDBA", textColor: "#212C3A", name: "lemon-cream" },
-    { id: 7, color: "#C8FFBA", textColor: "#212C3A", name: "light-green" },
-    { id: 8, color: "#BAFFE9", textColor: "#212C3A", name: "pang" },
-    { id: 9, color: "#BAF5FF", textColor: "#212C3A", name: "blue-blue-frost" },
-    { id: 10, color: "#CFBAFF", textColor: "#212C3A", name: "bright-lilac" },
-    { id: 11, color: "#F9BAFF", textColor: "#212C3A", name: "pink" },
-    {
-      id: 12,
-      color: "#212C3A",
-      textColor: "#FFFFFF",
-      name: "prime-dark-color",
-    },
-    // { id: 13, color: "#393940", textColor: "#FFFFFF", name: "sec-dark-color" },
-  ];
+  useEffect(() => {
+    // notify parent about default color
+    if (colors[0]) onColorChange(colors[0].id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [colors.length]);
 
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!scrollContainerRef.current) return;
@@ -237,13 +417,13 @@ const Step2Content: React.FC<Step2ContentProps> = ({
         <span className={styles.stepTitle}>Превью</span>
 
         <StoriesCard
-          title="Название"
+          title={titlePreview || "Название"}
           imageUrl={uploadedImage || "/avatars/1.webp"}
           image={!!uploadedImage}
           size="large"
-          description="Небольшое описание в одну строку, которое обр...Небольшое описание в одну строку, которое обр..."
-          date="18 июля"
-          time="18:00"
+          date={datePreview}
+          time={timePreview}
+          description={descriptionPreview}
           backgroundColor={colors[activeIndex]?.color}
           textColor={colors[activeIndex]?.textColor}
         />
@@ -271,7 +451,10 @@ const Step2Content: React.FC<Step2ContentProps> = ({
                     transform:
                       index === activeIndex ? "scale(1.2)" : "scale(1)",
                   }}
-                  onClick={() => handleCircleClick(index)}
+                  onClick={() => {
+                    handleCircleClick(index);
+                    onColorChange(colorItem.id);
+                  }}
                   onKeyDown={(e) => handleKeyDown(e, index)}
                   aria-label={`Цвет ${colorItem.name}`}
                   tabIndex={0}

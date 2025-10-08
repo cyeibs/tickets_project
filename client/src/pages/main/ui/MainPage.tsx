@@ -2,11 +2,17 @@ import { EventCard, Tab, TabGroup } from "@/shared/ui";
 import { SwipeCards } from "@/widgets/events";
 import type { EventCardType } from "@/widgets/events/ui/SwipeCards";
 import { StoriesWidget } from "@widgets/stories";
+import type { CompanyStories } from "@widgets/stories";
 import { useAuth } from "@features/auth";
 import React, { useMemo, useState } from "react";
 import styles from "./MainPage.module.scss";
 import { useNavigate } from "react-router-dom";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  useQueries,
+} from "@tanstack/react-query";
 import { userApi } from "@/entities/user";
 
 export const MainPage: React.FC = () => {
@@ -24,6 +30,75 @@ export const MainPage: React.FC = () => {
     queryFn: () => userApi.getFavorites(),
     enabled: isAuthenticated,
   });
+
+  // Subscriptions
+  const { data: mySubscriptions = [] } = useQuery({
+    queryKey: ["mySubscriptions"],
+    enabled: isAuthenticated,
+    queryFn: () => userApi.getMySubscriptions(),
+  });
+
+  // Determine organizations to fetch stories for
+  const orgIds = useMemo(
+    () =>
+      isAuthenticated && mySubscriptions.length > 0
+        ? mySubscriptions.map((s) => s.organization.id)
+        : Array.from(new Set((events ?? []).map((e) => e.organization.id))),
+    [isAuthenticated, mySubscriptions, events]
+  );
+
+  // Fetch stories per organization
+  const storiesResults = useQueries({
+    queries: orgIds.map((orgId) => ({
+      queryKey: ["organization-stories", orgId],
+      queryFn: () => userApi.getOrganizationStories(orgId),
+      enabled: !!orgId,
+    })),
+  });
+
+  // Optionally fetch org details when not subscribed (to get name/avatar)
+  const orgDetailsResults = useQueries({
+    queries:
+      isAuthenticated && mySubscriptions.length > 0
+        ? []
+        : orgIds.map((orgId) => ({
+            queryKey: ["organization", orgId],
+            queryFn: () => userApi.getOrganization(orgId),
+            enabled: !!orgId,
+          })),
+  });
+
+  const companyStories: CompanyStories[] = useMemo(() => {
+    return orgIds.map((orgId, index) => {
+      // Resolve org meta
+      const subOrg = mySubscriptions.find(
+        (s) => s.organization.id === orgId
+      )?.organization;
+      const orgMeta = subOrg || orgDetailsResults[index]?.data;
+
+      const name = orgMeta?.name || "Организация";
+      const avatarUrl = orgMeta?.avatarUrl || "/avatars/1.webp";
+
+      // Resolve stories data
+      const stories = storiesResults[index]?.data || [];
+      const mappedStories = stories.map((s) => ({
+        url: s.posterUrl || avatarUrl,
+        duration: 4001,
+        header: {
+          heading: s.title,
+          subheading: s.description || "",
+          profileImage: avatarUrl,
+        },
+      }));
+
+      return {
+        id: index + 1,
+        name,
+        avatarUrl,
+        stories: mappedStories,
+      } as CompanyStories;
+    });
+  }, [orgIds, mySubscriptions, storiesResults, orgDetailsResults]);
 
   const addFavorite = useMutation({
     mutationFn: (eventId: string) => userApi.addFavorite(eventId),
@@ -43,7 +118,6 @@ export const MainPage: React.FC = () => {
   const eventCards: EventCardType[] = useMemo(
     () =>
       (events ?? []).map((event) => ({
-        id: Number.isFinite(Number(event.id)) ? Number(event.id) : Date.now(),
         uuid: String(event.id),
         title: event.title,
         date: event.date,
@@ -61,7 +135,7 @@ export const MainPage: React.FC = () => {
           activeTab === "poster" ? styles.visible : styles.hidden
         }`}
       >
-        <StoriesWidget />
+        <StoriesWidget companies={companyStories} />
       </div>
 
       <div className={styles.sectionBody}>

@@ -10,4 +10,5 @@ export const env = {
   jwtExpiresIn: process.env.JWT_EXPIRES_IN ?? "7d",
   uploadDir: process.env.UPLOAD_DIR ?? "uploads",
   maxFileSizeMB: Number(process.env.MAX_FILE_SIZE_MB ?? 10),
+  adminSecret: process.env.ADMIN_SECRET ?? "dev_admin_secret",
 };

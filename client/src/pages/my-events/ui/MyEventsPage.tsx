@@ -1,80 +1,65 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import styles from "./MyEventsPage.module.scss";
 import { Button, Tab, TabGroup } from "@/shared/ui";
 import { EventTicketCard } from "@/shared/ui/EventTicketCard";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/features/auth";
+import { useQuery } from "@tanstack/react-query";
+import { userApi } from "@/entities/user";
 
 export const MyEventsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<
-    "favorites" | "actual" | "history"
-  >("favorites");
+    "moderation" | "actual" | "completed" | "drafts"
+  >("moderation");
 
-  const favoriteEvents = [
-    {
-      id: 1,
-      title: "Путешествие в Оркестрбург: знакомство с ударными",
-      date: "12 июня",
-      time: "18:00",
-      status: "Избранное",
-      imageUrl: "/avatars/1.webp",
-    },
-    {
-      id: 2,
-      title: "Джазовый вечер в филармонии",
-      date: "15 июня",
-      time: "19:30",
-      status: "Избранное",
-      imageUrl: "/avatars/2.avif",
-    },
-  ];
+  const { user } = useAuth();
+  const organizationId = user?.organizationId || null;
 
-  const actualEvents = [
-    {
-      id: 3,
-      title: "Путешествие в Оркестрбург: знакомство с ударными",
-      date: "12 июня",
-      time: "18:00",
-      status: "В оплате",
-      imageUrl: "/avatars/1.webp",
-    },
-    {
-      id: 4,
-      title: "Симфонический оркестр",
-      date: "20 июня",
-      time: "20:00",
-      status: "Оплачено",
-    },
-  ];
+  const { data: moderationEvents = [] } = useQuery({
+    queryKey: ["organization-events", organizationId, "moderation"],
+    enabled: !!organizationId,
+    queryFn: () =>
+      userApi.getOrganizationEvents(organizationId as string, {
+        statusCode: "moderation",
+      }),
+  });
 
-  const historyEvents = [
-    {
-      id: 5,
-      title: "Классическая музыка",
-      date: "5 мая",
-      time: "19:00",
-      status: "Завершено",
-      imageUrl: "/avatars/2.avif",
-    },
-    {
-      id: 6,
-      title: "Фортепианный концерт",
-      date: "1 мая",
-      time: "18:30",
-      status: "Завершено",
-    },
-  ];
+  const { data: publishedEvents = [] } = useQuery({
+    queryKey: ["organization-events", organizationId, "published"],
+    enabled: !!organizationId,
+    queryFn: () =>
+      userApi.getOrganizationEvents(organizationId as string, {
+        statusCode: "published",
+      }),
+  });
+
+  const { data: completedEvents = [] } = useQuery({
+    queryKey: ["organization-events", organizationId, "completed"],
+    enabled: !!organizationId,
+    queryFn: () =>
+      userApi.getOrganizationEvents(organizationId as string, {
+        statusCode: "completed",
+      }),
+  });
+
+  const { data: drafts = [] } = useQuery({
+    queryKey: ["organization-drafts", organizationId],
+    enabled: !!organizationId,
+    queryFn: () => userApi.getOrganizationDrafts(organizationId as string),
+  });
 
   const navigate = useNavigate();
 
   const renderEvents = () => {
     switch (activeTab) {
-      case "favorites":
-        return favoriteEvents.map((event) => (
+      case "moderation":
+        return moderationEvents.map((event) => (
           <EventTicketCard
             key={event.id}
             title={event.title}
             date={event.date}
             time={event.time}
+            isEdit={true}
             imageUrl={event.imageUrl}
             image={!!event.imageUrl}
             actionButton={false}
@@ -83,10 +68,11 @@ export const MyEventsPage: React.FC = () => {
           />
         ));
       case "actual":
-        return actualEvents.map((event) => (
+        return publishedEvents.map((event) => (
           <EventTicketCard
             key={event.id}
             title={event.title}
+            isEdit={true}
             date={event.date}
             time={event.time}
             imageUrl={event.imageUrl}
@@ -96,8 +82,23 @@ export const MyEventsPage: React.FC = () => {
             isHeart={false}
           />
         ));
-      case "history":
-        return historyEvents.map((event) => (
+      case "drafts":
+        return drafts.map((event) => (
+          <EventTicketCard
+            key={event.id}
+            title={event.title}
+            date={event.date}
+            time={event.time}
+            imageUrl={event.imageUrl}
+            image={!!event.imageUrl}
+            actionButton={false}
+            isMyEvent={true}
+            isEdit={true}
+            isHeart={false}
+          />
+        ));
+      case "completed":
+        return completedEvents.map((event) => (
           <EventTicketCard
             key={event.id}
             title={event.title}
@@ -120,9 +121,9 @@ export const MyEventsPage: React.FC = () => {
       <div className={`${styles.tabsContainer}`}>
         <TabGroup>
           <Tab
-            key="favorites"
-            accent={activeTab === "favorites"}
-            onClick={() => setActiveTab("favorites")}
+            key="moderation"
+            accent={activeTab === "moderation"}
+            onClick={() => setActiveTab("moderation")}
           >
             Модерация
           </Tab>
@@ -134,9 +135,16 @@ export const MyEventsPage: React.FC = () => {
             Активные
           </Tab>
           <Tab
-            key="history"
-            accent={activeTab === "history"}
-            onClick={() => setActiveTab("history")}
+            key="completed"
+            accent={activeTab === "completed"}
+            onClick={() => setActiveTab("completed")}
+          >
+            Завершены
+          </Tab>
+          <Tab
+            key="drafts"
+            accent={activeTab === "drafts"}
+            onClick={() => setActiveTab("drafts")}
           >
             Черновики
           </Tab>

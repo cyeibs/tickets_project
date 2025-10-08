@@ -65,7 +65,7 @@
     }
 
     &[class*="noImage"] {
-      width: 100%;
+      width: calc(50% - #{calc($space-400 / 2)});
     }
   }
 

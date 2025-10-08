@@ -1,6 +1,6 @@
 import { Edit, StarIcon } from "@/shared/assets/icons";
 import { Avatar, Button, IconButton, Tab, TabGroup } from "@/shared/ui";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import styles from "./Profile.module.scss";
 import { Link } from "@/shared/ui/Link";
 import { useNavigate } from "react-router-dom";
@@ -28,6 +28,9 @@ export const ProfilePage: React.FC = () => {
   const { logout, user } = useAuth();
 
   const isOrganizer = !!user?.isOrganizer;
+  const hasOrganizerApplication =
+    user?.organizerApplicationStatus === "pending" ||
+    user?.organizerApplicationStatus === "approved";
   const displayName = user?.name ?? "";
   const avatarSrc = user?.avatar ?? undefined;
 
@@ -54,11 +57,15 @@ export const ProfilePage: React.FC = () => {
       text: "Подписки",
       onClick: () => navigate("/profile/subscriptions"),
     },
-    {
-      id: "become-organizer",
-      text: "Стать организатором",
-      onClick: () => navigate("/profile/get-rights"),
-    },
+    ...(!isOrganizer && !hasOrganizerApplication
+      ? [
+          {
+            id: "become-organizer",
+            text: "Стать организатором",
+            onClick: () => navigate("/profile/get-rights"),
+          } as const,
+        ]
+      : []),
     {
       id: "user-support",
       text: "Служба поддержки",
@@ -101,6 +108,11 @@ export const ProfilePage: React.FC = () => {
       onClick: () => setIsSupportModalOpen(true),
     },
   ];
+
+  const roundedRating = useMemo(() => {
+    if (organization?.ratingAvg == null) return "—";
+    return Number(organization.ratingAvg).toFixed(1).replace(".", ",");
+  }, [organization?.ratingAvg]);
 
   return (
     <div className={styles.container}>
@@ -159,7 +171,7 @@ export const ProfilePage: React.FC = () => {
                 <div className={styles.profileCardHeaderRight}>
                   <IconButton
                     icon={Edit}
-                    onClick={() => {}}
+                    onClick={() => navigate("/profile/about-company/edit")}
                     iconColor="#ffffff"
                     iconSize={24}
                     variant={"minimal"}
@@ -176,16 +188,7 @@ export const ProfilePage: React.FC = () => {
                 </div>
                 <div className={styles.profileInfoRight}>
                   <StarIcon size={16} color="#BBBAFF" />
-                  <div className={styles.profileRating}>
-                    {organization?.ratingAvg != null
-                      ? (
-                          Math.round((organization.ratingAvg as number) * 10) /
-                          10
-                        )
-                          .toString()
-                          .replace(".", ",")
-                      : "—"}
-                  </div>
+                  <div className={styles.profileRating}>{roundedRating}</div>
                 </div>
               </div>
             </>

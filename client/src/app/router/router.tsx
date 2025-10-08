@@ -1,12 +1,6 @@
-import React, { useEffect } from "react";
-import {
-  createBrowserRouter,
-  Navigate,
-  useNavigate,
-  useLocation,
-  Outlet,
-} from "react-router-dom";
-import { SplashPage } from "@pages/splash";
+import React from "react";
+import { createBrowserRouter, Navigate } from "react-router-dom";
+// import { SplashPage } from "@pages/splash";
 import { LoginPage } from "@pages/login";
 import { RegisterPage } from "@pages/register";
 import { MainPage } from "@pages/main";
@@ -19,7 +13,7 @@ import { AboutCompanyPage } from "@pages/about-company";
 import { LegalDocsPage } from "@pages/legal-docs";
 import { ErrorBoundary } from "@shared/ui/ErrorBoundary";
 import { MainLayout } from "./layouts";
-import { isMobileDevice, isTelegramApp, isStandaloneMode } from "@shared/lib";
+// import { isMobileDevice, isTelegramApp, isStandaloneMode } from "@shared/lib";
 import { MyEventsPage } from "@/pages/my-events";
 import { StoriesPage } from "@/pages/stories";
 import { GetRightsPage } from "@/pages/get-rights";
@@ -33,12 +27,10 @@ import { EventCreatePage } from "@/pages/event-create";
 import { TicketPage } from "@/pages/ticket";
 import { OrganizerPage } from "@/pages/organizer";
 import { ProfileEditPage } from "@/pages/profile-edit";
+import { OrganizerProfileEditPage } from "@/pages/organizer-profile-edit";
 
 // Wrapper component to handle mobile redirect logic
 const MobileRedirectWrapper = ({ children }: { children: React.ReactNode }) => {
-  const navigate = useNavigate();
-  const location = useLocation();
-
   // useEffect(() => {
   //   // Skip if we're already on the install page or the user has dismissed the redirect
   //   if (
@@ -70,7 +62,7 @@ const withMobileRedirect = (Component: React.ComponentType) => {
 };
 
 // Apply the wrapper to all route components except InstallPage
-const WrappedSplashPage = withMobileRedirect(SplashPage);
+// const WrappedSplashPage = withMobileRedirect(SplashPage);
 const WrappedLoginPage = withMobileRedirect(LoginPage);
 const WrappedRegisterPage = withMobileRedirect(RegisterPage);
 
@@ -188,6 +180,19 @@ export const router = createBrowserRouter([
             showRightButton: false,
             navigateTo: "back",
             pageName: "Об организации",
+          },
+        },
+      },
+      {
+        path: "profile/about-company/edit",
+        element: <OrganizerProfileEditPage />,
+        handle: {
+          headerProps: {
+            showLogo: false,
+            showLeftButton: true,
+            showRightButton: false,
+            navigateTo: "back",
+            pageName: "Редактирование организации",
           },
         },
       },

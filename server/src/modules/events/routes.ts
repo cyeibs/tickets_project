@@ -24,7 +24,14 @@ export async function eventsRoutes(app: FastifyInstance) {
       const parsed = baseSchema.safeParse(req.body);
       if (!parsed.success) return reply.code(400).send(parsed.error);
       const data = parsed.data as any;
-      const created = await app.prisma.event.create({ data });
+      const defaultStatus = await app.prisma.eventStatus.findUnique({
+        where: { code: "moderation" },
+      });
+      if (!defaultStatus)
+        return reply.code(500).send({ error: "Event status not configured" });
+      const created = await app.prisma.event.create({
+        data: { ...data, statusId: defaultStatus.id },
+      });
       return { id: created.id };
     }
   );
@@ -35,10 +42,22 @@ export async function eventsRoutes(app: FastifyInstance) {
     if (q.cityId) where.cityId = q.cityId;
     if (q.categoryId) where.categoryId = q.categoryId;
     if (q.organizationId) where.organizationId = q.organizationId;
+    if (q.statusCode) {
+      const status = await app.prisma.eventStatus.findUnique({
+        where: { code: String(q.statusCode) },
+        select: { id: true },
+      });
+      if (status) where.statusId = status.id;
+      else where.id = "__no_match__"; // force empty
+    }
     if (q.dateFrom || q.dateTo) {
       where.eventDate = {};
       if (q.dateFrom) where.eventDate.gte = new Date(q.dateFrom);
       if (q.dateTo) where.eventDate.lte = new Date(q.dateTo);
+    }
+    if (q.completed === "true") {
+      // completed = events in the past
+      where.eventDate = { lt: new Date() };
     }
     if (q.q && typeof q.q === "string" && q.q.trim()) {
       const term = q.q.trim();
@@ -66,6 +85,7 @@ export async function eventsRoutes(app: FastifyInstance) {
             avatar: { select: { storagePath: true } },
           },
         },
+        status: { select: { code: true, name: true } },
       },
     });
     return { items };

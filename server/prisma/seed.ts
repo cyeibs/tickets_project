@@ -44,26 +44,54 @@ async function main() {
     ]);
 
   // dictionaries
-  const [musicCat, sportCat] = await Promise.all([
-    prisma.eventCategory.upsert({
-      where: { id: "00000000-0000-0000-0000-000000000001" },
-      update: {},
-      create: {
-        id: "00000000-0000-0000-0000-000000000001",
-        name: "Music",
-        slug: "music",
-      },
-    }),
-    prisma.eventCategory.upsert({
-      where: { id: "00000000-0000-0000-0000-000000000002" },
-      update: {},
-      create: {
-        id: "00000000-0000-0000-0000-000000000002",
-        name: "Sport",
-        slug: "sport",
-      },
-    }),
-  ]);
+  const [musicCat, sportCat, movieCat, theatreCat, educationCat] =
+    await Promise.all([
+      prisma.eventCategory.upsert({
+        where: { id: "00000000-0000-0000-0000-000000000001" },
+        update: {},
+        create: {
+          id: "00000000-0000-0000-0000-000000000001",
+          name: "Music",
+          slug: "music",
+        },
+      }),
+      prisma.eventCategory.upsert({
+        where: { id: "00000000-0000-0000-0000-000000000002" },
+        update: {},
+        create: {
+          id: "00000000-0000-0000-0000-000000000002",
+          name: "Sport",
+          slug: "sport",
+        },
+      }),
+      prisma.eventCategory.upsert({
+        where: { id: "00000000-0000-0000-0000-000000000003" },
+        update: {},
+        create: {
+          id: "00000000-0000-0000-0000-000000000003",
+          name: "Movie",
+          slug: "movie",
+        },
+      }),
+      prisma.eventCategory.upsert({
+        where: { id: "00000000-0000-0000-0000-000000000004" },
+        update: {},
+        create: {
+          id: "00000000-0000-0000-0000-000000000004",
+          name: "Theatre",
+          slug: "theatre",
+        },
+      }),
+      prisma.eventCategory.upsert({
+        where: { id: "00000000-0000-0000-0000-000000000005" },
+        update: {},
+        create: {
+          id: "00000000-0000-0000-0000-000000000005",
+          name: "Education",
+          slug: "education",
+        },
+      }),
+    ]);
 
   const [moscow, spb] = await Promise.all([
     prisma.city.upsert({
@@ -86,15 +114,35 @@ async function main() {
     }),
   ]);
 
-  const [red, blue] = await Promise.all([
+  // event statuses
+  const [publishedEvtStatus, moderationEvtStatus, completedEvtStatus] =
+    await Promise.all([
+      prisma.eventStatus.upsert({
+        where: { code: "published" },
+        update: {},
+        create: { code: "published", name: "Published" },
+      }),
+      prisma.eventStatus.upsert({
+        where: { code: "moderation" },
+        update: {},
+        create: { code: "moderation", name: "On Moderation" },
+      }),
+      prisma.eventStatus.upsert({
+        where: { code: "completed" },
+        update: {},
+        create: { code: "completed", name: "Completed" },
+      }),
+    ]);
+
+  const [color1, color2] = await Promise.all([
     prisma.eventColor.upsert({
       where: { id: "00000000-0000-0000-0000-000000000021" },
       update: {},
       create: {
         id: "00000000-0000-0000-0000-000000000021",
-        name: "Red",
-        color: "#FF3B30",
-        textColor: "#FFFFFF",
+        name: "prime-accent-color",
+        color: "#AFF940",
+        textColor: "#212C3A",
       },
     }),
     prisma.eventColor.upsert({
@@ -102,8 +150,235 @@ async function main() {
       update: {},
       create: {
         id: "00000000-0000-0000-0000-000000000022",
-        name: "Blue",
-        color: "#007AFF",
+        name: "alt-accent-color",
+        color: "#BBBAFF",
+        textColor: "#212C3A",
+      },
+    }),
+  ]);
+
+  await Promise.all([
+    prisma.eventColor.upsert({
+      where: { id: "00000000-0000-0000-0000-000000000023" },
+      update: {},
+      create: {
+        id: "00000000-0000-0000-0000-000000000023",
+        name: "light-pink",
+        color: "#FFBABA",
+        textColor: "#212C3A",
+      },
+    }),
+    prisma.eventColor.upsert({
+      where: { id: "00000000-0000-0000-0000-000000000024" },
+      update: {},
+      create: {
+        id: "00000000-0000-0000-0000-000000000024",
+        name: "dark-peach",
+        color: "#FFD3BA",
+        textColor: "#212C3A",
+      },
+    }),
+    prisma.eventColor.upsert({
+      where: { id: "00000000-0000-0000-0000-000000000025" },
+      update: {},
+      create: {
+        id: "00000000-0000-0000-0000-000000000025",
+        name: "gold",
+        color: "#FFD700",
+        textColor: "#212C3A",
+      },
+    }),
+    prisma.eventColor.upsert({
+      where: { id: "00000000-0000-0000-0000-000000000026" },
+      update: {},
+      create: {
+        id: "00000000-0000-0000-0000-000000000026",
+        name: "lemon-cream",
+        color: "#FFFDBA",
+        textColor: "#212C3A",
+      },
+    }),
+    prisma.eventColor.upsert({
+      where: { id: "00000000-0000-0000-0000-000000000027" },
+      update: {},
+      create: {
+        id: "00000000-0000-0000-0000-000000000027",
+        name: "light-green",
+        color: "#C8FFBA",
+        textColor: "#212C3A",
+      },
+    }),
+    prisma.eventColor.upsert({
+      where: { id: "00000000-0000-0000-0000-000000000028" },
+      update: {},
+      create: {
+        id: "00000000-0000-0000-0000-000000000028",
+        name: "pang",
+        color: "#BAFFE9",
+        textColor: "#212C3A",
+      },
+    }),
+    prisma.eventColor.upsert({
+      where: { id: "00000000-0000-0000-0000-000000000029" },
+      update: {},
+      create: {
+        id: "00000000-0000-0000-0000-000000000029",
+        name: "blue-blue-frost",
+        color: "#BAF5FF",
+        textColor: "#212C3A",
+      },
+    }),
+    prisma.eventColor.upsert({
+      where: { id: "00000000-0000-0000-0000-000000000030" },
+      update: {},
+      create: {
+        id: "00000000-0000-0000-0000-000000000030",
+        name: "bright-lilac",
+        color: "#CFBAFF",
+        textColor: "#212C3A",
+      },
+    }),
+    prisma.eventColor.upsert({
+      where: { id: "00000000-0000-0000-0000-000000000031" },
+      update: {},
+      create: {
+        id: "00000000-0000-0000-0000-000000000031",
+        name: "pink",
+        color: "#F9BAFF",
+        textColor: "#212C3A",
+      },
+    }),
+    prisma.eventColor.upsert({
+      where: { id: "00000000-0000-0000-0000-000000000032" },
+      update: {},
+      create: {
+        id: "00000000-0000-0000-0000-000000000032",
+        name: "prime-dark-color",
+        color: "#212C3A",
+        textColor: "#FFFFFF",
+      },
+    }),
+  ]);
+
+  // story colors (mirror StoryCreatePage.tsx)
+  await Promise.all([
+    prisma.storyColor.upsert({
+      where: { id: "00000000-0000-0000-0000-000000000041" },
+      update: {},
+      create: {
+        id: "00000000-0000-0000-0000-000000000041",
+        name: "prime-accent-color",
+        color: "#AFF940",
+        textColor: "#212C3A",
+      },
+    }),
+    prisma.storyColor.upsert({
+      where: { id: "00000000-0000-0000-0000-000000000042" },
+      update: {},
+      create: {
+        id: "00000000-0000-0000-0000-000000000042",
+        name: "alt-accent-color",
+        color: "#BBBAFF",
+        textColor: "#212C3A",
+      },
+    }),
+    prisma.storyColor.upsert({
+      where: { id: "00000000-0000-0000-0000-000000000043" },
+      update: {},
+      create: {
+        id: "00000000-0000-0000-0000-000000000043",
+        name: "light-pink",
+        color: "#FFBABA",
+        textColor: "#212C3A",
+      },
+    }),
+    prisma.storyColor.upsert({
+      where: { id: "00000000-0000-0000-0000-000000000044" },
+      update: {},
+      create: {
+        id: "00000000-0000-0000-0000-000000000044",
+        name: "dark-peach",
+        color: "#FFD3BA",
+        textColor: "#212C3A",
+      },
+    }),
+    prisma.storyColor.upsert({
+      where: { id: "00000000-0000-0000-0000-000000000045" },
+      update: {},
+      create: {
+        id: "00000000-0000-0000-0000-000000000045",
+        name: "gold",
+        color: "#FFD700",
+        textColor: "#212C3A",
+      },
+    }),
+    prisma.storyColor.upsert({
+      where: { id: "00000000-0000-0000-0000-000000000046" },
+      update: {},
+      create: {
+        id: "00000000-0000-0000-0000-000000000046",
+        name: "lemon-cream",
+        color: "#FFFDBA",
+        textColor: "#212C3A",
+      },
+    }),
+    prisma.storyColor.upsert({
+      where: { id: "00000000-0000-0000-0000-000000000047" },
+      update: {},
+      create: {
+        id: "00000000-0000-0000-0000-000000000047",
+        name: "light-green",
+        color: "#C8FFBA",
+        textColor: "#212C3A",
+      },
+    }),
+    prisma.storyColor.upsert({
+      where: { id: "00000000-0000-0000-0000-000000000048" },
+      update: {},
+      create: {
+        id: "00000000-0000-0000-0000-000000000048",
+        name: "pang",
+        color: "#BAFFE9",
+        textColor: "#212C3A",
+      },
+    }),
+    prisma.storyColor.upsert({
+      where: { id: "00000000-0000-0000-0000-000000000049" },
+      update: {},
+      create: {
+        id: "00000000-0000-0000-0000-000000000049",
+        name: "blue-blue-frost",
+        color: "#BAF5FF",
+        textColor: "#212C3A",
+      },
+    }),
+    prisma.storyColor.upsert({
+      where: { id: "00000000-0000-0000-0000-000000000050" },
+      update: {},
+      create: {
+        id: "00000000-0000-0000-0000-000000000050",
+        name: "bright-lilac",
+        color: "#CFBAFF",
+        textColor: "#212C3A",
+      },
+    }),
+    prisma.storyColor.upsert({
+      where: { id: "00000000-0000-0000-0000-000000000051" },
+      update: {},
+      create: {
+        id: "00000000-0000-0000-0000-000000000051",
+        name: "pink",
+        color: "#F9BAFF",
+        textColor: "#212C3A",
+      },
+    }),
+    prisma.storyColor.upsert({
+      where: { id: "00000000-0000-0000-0000-000000000052" },
+      update: {},
+      create: {
+        id: "00000000-0000-0000-0000-000000000052",
+        name: "prime-dark-color",
+        color: "#212C3A",
         textColor: "#FFFFFF",
       },
     }),
@@ -170,7 +445,8 @@ async function main() {
       location: "Main Hall",
       maxQuantity: 200,
       price: 1000.0,
-      colorId: red.id,
+      colorId: color1.id,
+      statusId: publishedEvtStatus.id,
     },
   });
 
@@ -190,7 +466,41 @@ async function main() {
       location: "Small Hall",
       maxQuantity: 100,
       price: 800.0,
-      colorId: blue.id,
+      colorId: color2.id,
+      statusId: completedEvtStatus.id,
+    },
+  });
+
+  // On moderation event
+  await prisma.event.upsert({
+    where: { id: "00000000-0000-0000-0000-000000000203" },
+    update: {},
+    create: {
+      id: "00000000-0000-0000-0000-000000000203",
+      organizationId: org.id,
+      name: "Jazz Evening",
+      description: "Awaiting moderation",
+      categoryId: musicCat.id,
+      cityId: moscow.id,
+      eventDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
+      startTime: "20:00",
+      location: "Jazz Club",
+      maxQuantity: 120,
+      price: 1200.0,
+      colorId: color1.id,
+      statusId: moderationEvtStatus.id,
+    },
+  });
+
+  // Draft example
+  await prisma.eventDraft.upsert({
+    where: { id: "00000000-0000-0000-0000-000000000301" },
+    update: {},
+    create: {
+      id: "00000000-0000-0000-0000-000000000301",
+      organizationId: org.id,
+      name: "Draft: New Year Party",
+      description: "Not ready yet",
     },
   });
 

@@ -15,23 +15,15 @@ const defaultMockCompanies: CompanyStories[] = [
         url: "/avatars/1.webp",
         duration: 4001,
       },
-      {
-        url: "./avatars/2.avif",
-        duration: 4001,
-      },
     ],
   },
   {
     id: 2,
-    name: "Company 2",
+    name: "Company 1",
     avatarUrl: "/avatars/2.avif",
     stories: [
       {
         url: "/avatars/1.webp",
-        duration: 4001,
-      },
-      {
-        url: "/avatars/2.avif",
         duration: 4001,
       },
     ],

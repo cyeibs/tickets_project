@@ -88,7 +88,7 @@ export const MainLayout: React.FC = () => {
     navigate({ pathname: location.pathname, search: params.toString() });
   };
 
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
 
   return (
     <div className={styles.layout}>
@@ -112,7 +112,7 @@ export const MainLayout: React.FC = () => {
 
       {showSnackbar && (
         <div className={styles.snackbarContainer}>
-          <Snackbar>
+          <Snackbar hasAdd={!!user?.isOrganizer}>
             <SnackbarItem
               type="main"
               isActive={activeNavItem === "main"}
@@ -125,18 +125,20 @@ export const MainLayout: React.FC = () => {
               activeItem={activeNavItem}
               onClick={() => handleNavItemClick("search")}
             />
-            <SnackbarItem
-              type="event-create"
-              isActive={activeNavItem === "event-create"}
-              activeItem={activeNavItem}
-              onClick={() => {
-                if (isAuthenticated) {
-                  handleNavItemClick("event-create");
-                } else {
-                  navigate("/login");
-                }
-              }}
-            />
+            {user?.isOrganizer && (
+              <SnackbarItem
+                type="event-create"
+                isActive={activeNavItem === "event-create"}
+                activeItem={activeNavItem}
+                onClick={() => {
+                  if (isAuthenticated) {
+                    handleNavItemClick("event-create");
+                  } else {
+                    navigate("/login");
+                  }
+                }}
+              />
+            )}
             <SnackbarItem
               type="ticket"
               isActive={activeNavItem === "ticket"}

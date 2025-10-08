@@ -2,7 +2,7 @@ import { SubscriptionCard } from "@/shared/ui/SubscriptionCard";
 import styles from "./EventPage.module.scss";
 import { CalendarIcon, LocationIcon, TimeIcon } from "@/shared/assets/icons";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Avatar, Pills } from "@/shared/ui";
+import { Avatar, Button, Pills } from "@/shared/ui";
 import { useNavigate, useParams } from "react-router-dom";
 import { GoToIcon } from "@/shared/assets/icons/goTo";
 import { useQuery } from "@tanstack/react-query";
@@ -197,6 +197,22 @@ export const EventPage = () => {
               </button>
             )}
           </div>
+        </div>
+      </div>
+      <div className={styles.actionsContainer}>
+        <div className={styles.actions}>
+          <div>
+            <Pills primaryText={`${event?.price} ₽`} className={styles.price} />
+          </div>
+          <Button
+            accent
+            onClick={() => {
+              navigate(`/purchase/${eventId}`);
+            }}
+            className={styles.button}
+          >
+            Купить билет
+          </Button>
         </div>
       </div>
     </div>

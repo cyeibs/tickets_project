@@ -6,8 +6,7 @@ import styles from "./SwipeCards.module.scss";
 import { useNavigate } from "react-router-dom";
 
 export type EventCardType = {
-  id: number;
-  uuid?: string; // preserve server UUID if needed by caller
+  uuid: string;
   title: string;
   date: string;
   location: string;
@@ -16,7 +15,7 @@ export type EventCardType = {
 };
 
 interface SwipeCardProps {
-  id: number;
+  uuid: string;
   title: string;
   date: string;
   location: string;
@@ -30,7 +29,7 @@ interface SwipeCardProps {
 }
 
 const SwipeCard: React.FC<SwipeCardProps> = ({
-  id,
+  uuid,
   title,
   date,
   location,
@@ -47,7 +46,7 @@ const SwipeCard: React.FC<SwipeCardProps> = ({
   const opacity = useTransform(x, [-150, 0, 150], [0, 1, 0]);
   const cardRef = useRef<HTMLDivElement>(null);
 
-  const isFront = id === cards[cards.length - 1].id;
+  const isFront = uuid === cards[cards.length - 1].uuid;
 
   const rotate = useTransform(() => {
     return `${rotateRaw.get()}deg`;
@@ -57,7 +56,7 @@ const SwipeCard: React.FC<SwipeCardProps> = ({
     const distance = x.get();
     const isPositive = distance > 50;
     if (Math.abs(distance) > 50) {
-      setCards((pv) => pv.filter((v) => v.id !== id));
+      setCards((pv) => pv.filter((v) => v.uuid !== uuid));
       if (isPositive) onPositiveSwipe?.();
       else onNegativeSwipe?.();
     }
@@ -88,6 +87,7 @@ const SwipeCard: React.FC<SwipeCardProps> = ({
 
   return (
     <motion.div
+      key={uuid}
       ref={cardRef}
       className={styles.cardWrapper}
       style={{
@@ -125,8 +125,8 @@ const SwipeCard: React.FC<SwipeCardProps> = ({
 
 export const SwipeCards: React.FC<{
   events: EventCardType[];
-  onPositiveSwipe?: (eventId: number, eventUuid?: string) => void;
-  onNegativeSwipe?: (eventId: number, eventUuid?: string) => void;
+  onPositiveSwipe?: (eventId: string, eventUuid?: string) => void;
+  onNegativeSwipe?: (eventId: string, eventUuid?: string) => void;
 }> = ({ events, onPositiveSwipe, onNegativeSwipe }) => {
   const [cards, setCards] = useState<EventCardType[]>(events);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -150,6 +150,7 @@ export const SwipeCards: React.FC<{
     };
   }, []);
 
+  console.log(cards);
   return (
     <div
       ref={containerRef}
@@ -158,13 +159,13 @@ export const SwipeCards: React.FC<{
     >
       {cards.map((card) => (
         <SwipeCard
-          key={card.id}
+          key={card.uuid}
           cards={cards}
           onButtonClick={() => {
-            navigate(`/event/${card.id}`);
+            navigate(`/event/${card.uuid}`);
           }}
-          onPositiveSwipe={() => onPositiveSwipe?.(card.id, card.uuid)}
-          onNegativeSwipe={() => onNegativeSwipe?.(card.id, card.uuid)}
+          onPositiveSwipe={() => onPositiveSwipe?.(card.uuid, card.uuid)}
+          onNegativeSwipe={() => onNegativeSwipe?.(card.uuid, card.uuid)}
           setCards={setCards}
           {...card}
         />

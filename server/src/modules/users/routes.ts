@@ -13,9 +13,23 @@ export async function usersRoutes(app: FastifyInstance) {
         middleName: true,
         telephone: true,
         avatarId: true,
-        role: true,
+        avatar: { select: { storagePath: true } },
+        role: { select: { code: true, name: true } },
         organizationId: true,
-      },
+        organization: {
+          select: {
+            id: true,
+            name: true,
+            description: true,
+            avatar: { select: { storagePath: true } },
+          },
+        },
+        organizerApplications: {
+          orderBy: { createdAt: "desc" },
+          take: 1,
+          select: { id: true, status: true, createdAt: true },
+        },
+      } as any,
     });
     if (!user) return reply.code(404).send({ error: "Not found" });
     return { user };

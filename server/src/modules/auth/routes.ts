@@ -87,8 +87,21 @@ export async function authRoutes(app: FastifyInstance) {
         telephone: true,
         role: { select: { code: true, name: true } },
         organizationId: true,
+        organization: {
+          select: {
+            id: true,
+            name: true,
+            description: true,
+            avatar: { select: { storagePath: true } },
+          },
+        },
         avatarId: true,
         avatar: { select: { storagePath: true } },
+        organizerApplications: {
+          orderBy: { createdAt: "desc" },
+          take: 1,
+          select: { id: true, status: true, createdAt: true },
+        },
       },
     });
     return { user };

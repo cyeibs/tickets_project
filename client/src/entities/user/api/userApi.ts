@@ -10,8 +10,18 @@ type ServerUser = {
   telephone: string;
   role: ServerRole;
   organizationId?: string | null;
+  organization?: {
+    id: string;
+    name: string;
+    avatar?: { storagePath: string } | null;
+  } | null;
   avatarId?: string | null;
   avatar?: { storagePath: string } | null;
+  organizerApplications?: Array<{
+    id: string;
+    status: "pending" | "approved" | "rejected";
+    createdAt: string;
+  }>;
 };
 
 type ServerSubscription = {
@@ -38,7 +48,8 @@ function mapServerUserToClient(user: ServerUser): User {
       ? `${apiInstance.defaults.baseURL}/uploads/${user.avatar.storagePath}`
       : undefined,
     isOrganizer: user.role?.code === "organizer",
-    organizationId: user.organizationId ?? null,
+    organizationId: user.organizationId ?? user.organization?.id ?? null,
+    organizerApplicationStatus: user.organizerApplications?.[0]?.status ?? null,
   };
 }
 
@@ -119,6 +130,7 @@ export const userApi = {
       startTime: string;
       organizationId: string;
     };
+    price: number;
   }> => {
     const response = await apiInstance.get<{
       event: {
@@ -135,6 +147,7 @@ export const userApi = {
         startTime: string;
         location: string;
         poster?: { storagePath: string } | null;
+        price: number;
       };
     }>(`/events/${id}`);
 
@@ -165,6 +178,7 @@ export const userApi = {
         startTime: e.startTime,
         organizationId: e.organizationId,
       },
+      price: e.price,
     };
   },
 
@@ -173,6 +187,38 @@ export const userApi = {
     const response = await apiInstance.get<{
       items: Array<{ id: string; name: string }>;
     }>("/dictionaries/cities");
+    return response.data.items;
+  },
+  getCategories: async (): Promise<Array<{ id: string; name: string }>> => {
+    const response = await apiInstance.get<{
+      items: Array<{ id: string; name: string }>;
+    }>("/dictionaries/categories");
+    return response.data.items;
+  },
+  getColors: async (): Promise<
+    Array<{ id: string; name: string; color: string; textColor: string }>
+  > => {
+    const response = await apiInstance.get<{
+      items: Array<{
+        id: string;
+        name: string;
+        color: string;
+        textColor: string;
+      }>;
+    }>("/dictionaries/colors");
+    return response.data.items;
+  },
+  getStoryColors: async (): Promise<
+    Array<{ id: string; name: string; color: string; textColor: string }>
+  > => {
+    const response = await apiInstance.get<{
+      items: Array<{
+        id: string;
+        name: string;
+        color: string;
+        textColor: string;
+      }>;
+    }>("/dictionaries/story-colors");
     return response.data.items;
   },
   // Check if phone exists
@@ -237,6 +283,16 @@ export const userApi = {
     );
     return response.data;
   },
+  uploadFile: async (file: File): Promise<{ id: string; url: string }> => {
+    const form = new FormData();
+    form.append("file", file);
+    const response = await apiInstance.post<{ id: string; url: string }>(
+      "/uploads",
+      form,
+      { headers: { "Content-Type": "multipart/form-data" } }
+    );
+    return response.data;
+  },
 
   updateMe: async (data: {
     firstName?: string;
@@ -264,6 +320,12 @@ export const userApi = {
     description?: string;
     ratingAvg?: number | null;
     reviewsCount?: number;
+    telephone?: string;
+    socialUrl?: string;
+    inn?: string;
+    ogrn?: string;
+    kpp?: string;
+    licence?: string;
   }> => {
     const response = await apiInstance.get<{
       org: {
@@ -273,6 +335,12 @@ export const userApi = {
         avatar?: { storagePath: string } | null;
         ratingAvg?: number | null;
         reviewsCount?: number;
+        telephone?: string | null;
+        socialUrl?: string | null;
+        inn?: string | null;
+        ogrn?: string | null;
+        kpp?: string | null;
+        licence?: string | null;
       };
     }>(`/organizations/${id}`);
     const org = response.data.org;
@@ -285,11 +353,18 @@ export const userApi = {
         : undefined,
       ratingAvg: org.ratingAvg ?? null,
       reviewsCount: org.reviewsCount,
+      telephone: org.telephone ?? undefined,
+      socialUrl: org.socialUrl ?? undefined,
+      inn: org.inn ?? undefined,
+      ogrn: org.ogrn ?? undefined,
+      kpp: org.kpp ?? undefined,
+      licence: org.licence ?? undefined,
     };
   },
 
   getOrganizationEvents: async (
-    organizationId: string
+    organizationId: string,
+    params?: { statusCode?: "published" | "moderation" | "completed" }
   ): Promise<
     Array<{
       id: string;
@@ -298,6 +373,7 @@ export const userApi = {
       location: string;
       price: string;
       imageUrl?: string;
+      time: string;
     }>
   > => {
     const response = await apiInstance.get<{
@@ -310,21 +386,60 @@ export const userApi = {
         price: number;
         poster?: { storagePath: string } | null;
       }>;
-    }>(`/events`, { params: { organizationId } });
+    }>(`/events`, { params: { organizationId, ...(params || {}) } });
 
     return response.data.items.map((e) => ({
       id: e.id,
       title: e.name,
-      date:
-        new Date(e.eventDate).toLocaleDateString("ru-RU", {
-          day: "2-digit",
-          month: "2-digit",
-          year: "numeric",
-        }) + ` в ${e.startTime}`,
+      date: new Date(e.eventDate).toLocaleDateString("ru-RU", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      }),
       location: e.location,
       price: `${Number(e.price).toFixed(0)}₽`,
       imageUrl: e.poster?.storagePath
         ? `${apiInstance.defaults.baseURL}/uploads/${e.poster.storagePath}`
+        : undefined,
+      time: e.startTime,
+    }));
+  },
+
+  getOrganizationDrafts: async (
+    organizationId: string
+  ): Promise<
+    Array<{
+      id: string;
+      title: string;
+      date?: string;
+      time?: string;
+      imageUrl?: string;
+    }>
+  > => {
+    const response = await apiInstance.get<{
+      items: Array<{
+        id: string;
+        name: string;
+        description?: string | null;
+        eventDate?: string | null;
+        startTime?: string | null;
+        poster?: { storagePath: string } | null;
+      }>;
+    }>(`/organizations/${organizationId}/drafts`);
+
+    return response.data.items.map((d) => ({
+      id: d.id,
+      title: d.name,
+      date: d.eventDate
+        ? new Date(d.eventDate).toLocaleDateString("ru-RU", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+          })
+        : undefined,
+      time: d.startTime ?? undefined,
+      imageUrl: d.poster?.storagePath
+        ? `${apiInstance.defaults.baseURL}/uploads/${d.poster.storagePath}`
         : undefined,
     }));
   },
@@ -339,6 +454,7 @@ export const userApi = {
       color: string;
       textColor: string;
       name: string;
+      posterUrl?: string;
     }>
   > => {
     const response = await apiInstance.get<{ items: Array<any> }>(
@@ -351,6 +467,9 @@ export const userApi = {
       color: s.color,
       textColor: s.textColor,
       name: s.name,
+      posterUrl: s.poster?.storagePath
+        ? `${apiInstance.defaults.baseURL}/uploads/${s.poster.storagePath}`
+        : undefined,
     }));
   },
 
@@ -550,5 +669,114 @@ export const userApi = {
         : undefined,
       raw: { eventDate: p.event.eventDate, startTime: p.event.startTime },
     }));
+  },
+
+  // Organizer application
+  submitOrganizerApplication: async (data: {
+    name: string;
+    description: string;
+    phoneDigits: string; // 10 digits
+    socialUrl: string;
+    inn: string;
+    ogrn: string;
+    kpp: string;
+    licence: string;
+    avatarId?: string | null;
+  }): Promise<{ id: string }> => {
+    const telephone = toTelephoneFromDigits(data.phoneDigits);
+    const payload = {
+      name: data.name,
+      description: data.description,
+      telephone,
+      socialUrl: data.socialUrl,
+      inn: data.inn,
+      ogrn: data.ogrn,
+      kpp: data.kpp,
+      licence: data.licence,
+      ...(data.avatarId ? { avatarId: data.avatarId } : {}),
+    };
+    const response = await apiInstance.post<{ id: string }>(
+      "/organizer-applications",
+      payload
+    );
+    return response.data;
+  },
+
+  // Organizer update application (existing organization)
+  submitOrganizationUpdateApplication: async (data: {
+    organizationId: string;
+    name: string;
+    description: string;
+    phoneDigits: string; // 10 digits
+    socialUrl: string;
+    inn: string;
+    ogrn: string;
+    kpp: string;
+    licence: string;
+    avatarId?: string | null;
+  }): Promise<{ id: string }> => {
+    const telephone = toTelephoneFromDigits(data.phoneDigits);
+    const payload = {
+      organizationId: data.organizationId,
+      name: data.name,
+      description: data.description,
+      telephone,
+      socialUrl: data.socialUrl,
+      inn: data.inn,
+      ogrn: data.ogrn,
+      kpp: data.kpp,
+      licence: data.licence,
+      ...(data.avatarId ? { avatarId: data.avatarId } : {}),
+    };
+    const response = await apiInstance.post<{ id: string }>(
+      "/organizer-applications",
+      payload
+    );
+    return response.data;
+  },
+
+  // Update organization avatar immediately
+  updateOrganizationAvatar: async (
+    organizationId: string,
+    avatarId: string | null
+  ): Promise<{ id: string }> => {
+    const response = await apiInstance.patch<{ id: string }>(
+      `/organizations/${organizationId}`,
+      { avatarId }
+    );
+    return response.data;
+  },
+
+  createEvent: async (data: {
+    organizationId: string;
+    name: string;
+    description?: string;
+    categoryId: string;
+    cityId: string;
+    eventDate: string; // yyyy-mm-dd
+    startTime: string; // HH:mm
+    location: string;
+    maxQuantity: number;
+    price: number;
+    colorId: string;
+    posterId?: string | null;
+  }): Promise<{ id: string }> => {
+    const response = await apiInstance.post<{ id: string }>("/events", data);
+    return response.data;
+  },
+
+  createOrganizationStory: async (data: {
+    organizationId: string;
+    eventId: string;
+    description?: string;
+    colorId: string;
+    posterId?: string | null;
+  }): Promise<{ id: string }> => {
+    const { organizationId, ...payload } = data;
+    const response = await apiInstance.post<{ id: string }>(
+      `/organizations/${organizationId}/stories`,
+      payload
+    );
+    return response.data;
   },
 };

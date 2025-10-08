@@ -5,6 +5,7 @@ export interface User {
   avatar?: string;
   isOrganizer: boolean;
   organizationId?: string | null;
+  organizerApplicationStatus?: "pending" | "approved" | "rejected" | null;
 }
 
 export interface AuthState {

@@ -36,22 +36,24 @@ export const Pills: React.FC<PillsProps> = ({
   const content = (
     <>
       <div className={styles.leftContainer}>
-        <div className={styles.iconContainer}>
-          {Icon && (
-            <Icon
-              size={primaryText && secondaryText ? 32 : 24}
-              color="#FFFFFF"
-            />
-          )}
-          {avatar && (
-            <Avatar
-              src={avatar.src}
-              size={avatar.size || 24}
-              count={avatar.count}
-              backgroundColor={avatar.backgroundColor}
-            />
-          )}
-        </div>
+        {(Icon || avatar) && (
+          <div className={styles.iconContainer}>
+            {Icon && (
+              <Icon
+                size={primaryText && secondaryText ? 32 : 24}
+                color="#FFFFFF"
+              />
+            )}
+            {avatar && (
+              <Avatar
+                src={avatar.src}
+                size={avatar.size || 24}
+                count={avatar.count}
+                backgroundColor={avatar.backgroundColor}
+              />
+            )}
+          </div>
+        )}
 
         {(primaryText || secondaryText) && (
           <div className={styles.content}>

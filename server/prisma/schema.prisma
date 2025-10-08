@@ -27,6 +27,9 @@ model Media {
   users          User[]         @relation("UserAvatar")
   organizations  Organization[] @relation("OrganizationAvatar")
   events         Event[]        @relation("EventPoster")
+  organizerApplications OrganizerApplication[] @relation("OrganizerApplicationAvatar")
+  eventDrafts    EventDraft[]   @relation("EventDraftPoster")
+  organizationStories OrganizationStory[] @relation("OrganizationStoryPoster")
 }
 
 model Organization {
@@ -47,6 +50,8 @@ model Organization {
   events        Event[]
   subscriptions Subscription[]
   stories       OrganizationStory[]
+  drafts        EventDraft[]
+  organizerApplications OrganizerApplication[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -74,6 +79,7 @@ model User {
   supportRequests SupportRequest[]
   subscriptions   Subscription[]
   favorites       Favorite[]
+  organizerApplications OrganizerApplication[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -101,6 +107,14 @@ model EventColor {
   events    Event[]
 }
 
+// Separate dictionary for Story colors (structure similar to EventColor)
+model StoryColor {
+  id        String @id @default(uuid())
+  name      String
+  color     String
+  textColor String
+}
+
 model Event {
   id             String       @id @default(uuid())
   organizationId String
@@ -123,9 +137,39 @@ model Event {
   colorId     String
   color       EventColor   @relation(fields: [colorId], references: [id])
 
+  statusId String
+  status   EventStatus @relation(fields: [statusId], references: [id])
+
   reviews   Review[]
   purchases Purchase[]
   favorites Favorite[]
+  stories   OrganizationStory[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model EventStatus {
+  id     String  @id @default(uuid())
+  code   String  @unique
+  name   String
+  events Event[]
+}
+
+// Draft events for organizers before publishing
+model EventDraft {
+  id             String        @id @default(uuid())
+  organizationId String
+  organization   Organization  @relation(fields: [organizationId], references: [id])
+
+  posterId String?
+  poster   Media?       @relation("EventDraftPoster", fields: [posterId], references: [id])
+
+  name        String
+  description String?
+  eventDate   DateTime?
+  startTime   String?
+  location    String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -203,12 +247,53 @@ model OrganizationStory {
   organizationId String
   organization   Organization  @relation(fields: [organizationId], references: [id])
 
+  eventId String
+  event   Event       @relation(fields: [eventId], references: [id])
+
   title       String
   description String?
   color       String
   textColor   String
   name        String
   createdAt   DateTime    @default(now())
+
+  // Optional poster image for the story
+  posterId String?
+  poster   Media?       @relation("OrganizationStoryPoster", fields: [posterId], references: [id])
 }
 
+
+// Organizer application flow: users submit applications to become organizers.
+enum OrganizerApplicationStatus {
+  pending
+  approved
+  rejected
+}
+
+model OrganizerApplication {
+  id          String                      @id @default(uuid())
+  userId      String
+  user        User                        @relation(fields: [userId], references: [id])
+
+  // Optional link to existing organization when it's an update request
+  organizationId String?
+  organization   Organization?             @relation(fields: [organizationId], references: [id])
+
+  name        String                      // Organization name
+  description String                      // Organization description
+  telephone   String                      // Contact telephone, with +7...
+  socialUrl   String                      // Social network link
+  inn         String                      // INN
+  ogrn        String                      // OGRN
+  kpp         String                      // KPP
+  licence     String                      // License number or text
+
+  avatarId    String?
+  avatar      Media?                      @relation("OrganizerApplicationAvatar", fields: [avatarId], references: [id])
+
+  status      OrganizerApplicationStatus  @default(pending)
+
+  createdAt   DateTime                    @default(now())
+  updatedAt   DateTime                    @updatedAt
+}
 

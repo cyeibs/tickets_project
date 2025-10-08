@@ -1,4 +1,4 @@
-import { ArrowExport, Heart } from "@/shared/assets/icons";
+import { ArrowExport, Edit, Heart } from "@/shared/assets/icons";
 import { Button } from "@shared/ui/Button";
 import { IconButton } from "@shared/ui/IconButton";
 import React from "react";
@@ -18,6 +18,8 @@ export interface EventTicketCardProps {
   isHeart?: boolean;
   isMyEvent?: boolean;
   liked?: boolean;
+  isEdit?: boolean;
+  onEditClick?: () => void;
 }
 
 export const EventTicketCard: React.FC<EventTicketCardProps> = ({
@@ -34,6 +36,8 @@ export const EventTicketCard: React.FC<EventTicketCardProps> = ({
   isHeart = true,
   isMyEvent = false,
   liked = true,
+  isEdit = false,
+  onEditClick,
 }) => {
   const cardClasses = [
     styles.eventTicketCard,
@@ -63,6 +67,19 @@ export const EventTicketCard: React.FC<EventTicketCardProps> = ({
                 variant={liked ? "accent" : "basic"}
                 iconSize={24}
                 fill={liked ? "#212C3A" : "none"}
+              />
+            </div>
+          )}
+
+          {isEdit && (
+            <div className={styles.editWrapper}>
+              <IconButton
+                icon={Edit}
+                onClick={onEditClick}
+                iconColor="#212C3A"
+                // variant="accent"
+                iconSize={24}
+                fill="#212C3A"
               />
             </div>
           )}

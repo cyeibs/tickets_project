@@ -127,3 +127,9 @@
   @include t14;
   width: 100%;
 }
+
+.editWrapper {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}

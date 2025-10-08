@@ -18,6 +18,7 @@
   &.noImage {
     .content {
       height: 100%;
+      width: 100%;
     }
   }
 }
@@ -41,6 +42,10 @@
 
   &.small {
     min-height: 35%;
+  }
+
+  &.content {
+    width: 100%;
   }
 }
 

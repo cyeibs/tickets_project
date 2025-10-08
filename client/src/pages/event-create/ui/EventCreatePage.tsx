@@ -21,12 +21,18 @@ import {
   isValidTimeFormat,
   formatDateInput,
   formatTimeInput,
+  parseDate,
 } from "@shared/lib";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { userApi } from "@/entities/user";
+import { useAuth } from "@/features/auth";
 
 export const EventCreatePage = () => {
+  const { user } = useAuth();
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 3;
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Step 1 fields
@@ -40,10 +46,35 @@ export const EventCreatePage = () => {
   const [timeStart, setTimeStart] = useState("");
   const [categoryValue, setCategoryValue] = useState<string | null>(null);
   const [categoryInput, setCategoryInput] = useState<string>("");
+  const [cityValue, setCityValue] = useState<string | null>(null);
+  const [cityInput, setCityInput] = useState<string>("");
+  const [location, setLocation] = useState("");
+  const [maxQuantity, setMaxQuantity] = useState<string>("");
+  const [price, setPrice] = useState<string>("");
   const [dateError, setDateError] = useState<string | null>(null);
   const [timeError, setTimeError] = useState<string | null>(null);
+  const [quantityError, setQuantityError] = useState<string | null>(null);
+  const [priceError, setPriceError] = useState<string | null>(null);
+  const [categoryError, setCategoryError] = useState<string | null>(null);
+  const [cityError, setCityError] = useState<string | null>(null);
+  const [locationError, setLocationError] = useState<string | null>(null);
 
   const navigate = useNavigate();
+  // Dictionaries
+  const { data: categories = [] } = useQuery({
+    queryKey: ["categories"],
+    queryFn: () => userApi.getCategories(),
+  });
+  const { data: cities = [] } = useQuery({
+    queryKey: ["cities"],
+    queryFn: () => userApi.getCities(),
+  });
+  const { data: colorsDict = [] } = useQuery({
+    queryKey: ["colors"],
+    queryFn: () => userApi.getColors(),
+  });
+
+  const [selectedColorId, setSelectedColorId] = useState<string | null>(null);
 
   // Validators
   const getTitleError = (value: string) => {
@@ -122,8 +153,52 @@ export const EventCreatePage = () => {
             }}
             categoryValue={categoryValue}
             categoryInput={categoryInput}
-            onCategoryChange={(val) => setCategoryValue(val)}
+            onCategoryChange={(val) => {
+              setCategoryValue(val);
+              setCategoryError(null);
+            }}
             onCategoryInputChange={(val) => setCategoryInput(val)}
+            categoryOptions={categories.map((c) => ({
+              label: c.name,
+              value: c.id,
+            }))}
+            categoryError={categoryError || undefined}
+            cityValue={cityValue}
+            cityInput={cityInput}
+            onCityChange={(val) => {
+              setCityValue(val);
+              setCityError(null);
+            }}
+            onCityInputChange={(val) => setCityInput(val)}
+            cityOptions={cities.map((c) => ({ label: c.name, value: c.id }))}
+            cityError={cityError || undefined}
+            locationValue={location}
+            onLocationChange={(e) => {
+              setLocation(e.target.value);
+              setLocationError(null);
+            }}
+            locationError={locationError || undefined}
+            maxQuantity={maxQuantity}
+            onMaxQuantityChange={(e) => {
+              const digits = e.target.value.replace(/\D/g, "");
+              setMaxQuantity(digits);
+              const num = Number(digits);
+              setQuantityError(
+                !digits || num <= 0 ? "Укажите кол-во мест (>0)" : null
+              );
+            }}
+            maxQuantityError={quantityError || undefined}
+            price={price}
+            onPriceChange={(e) => {
+              const digits = e.target.value.replace(/[^\d.]/g, "");
+              const normalized = digits.replace(/\.(?=.*\.)/g, "");
+              setPrice(normalized);
+              const num = Number(normalized);
+              setPriceError(
+                !normalized || num <= 0 ? "Укажите стоимость (>0)" : null
+              );
+            }}
+            priceError={priceError || undefined}
           />
         );
       case 3:
@@ -132,6 +207,19 @@ export const EventCreatePage = () => {
             uploadedImage={uploadedImage}
             onImageDelete={handleImageDelete}
             onAddPhotoClick={handleAddPhotoClick}
+            colors={colorsDict}
+            onColorChange={(id) => setSelectedColorId(id)}
+            titlePreview={title}
+            datePreview={(() => {
+              const d = parseDate(dateStart);
+              if (!d || !timeStart) return undefined;
+              const dd = String(d.getDate()).padStart(2, "0");
+              const mm = String(d.getMonth() + 1).padStart(2, "0");
+              const yyyy = d.getFullYear();
+              return `${dd}.${mm}.${yyyy} в ${timeStart}`;
+            })()}
+            pricePreview={price ? `${Number(price).toFixed(0)}₽` : undefined}
+            locationPreview={location || undefined}
           />
         );
       default:
@@ -196,6 +284,7 @@ export const EventCreatePage = () => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      setUploadedFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
         setUploadedImage(reader.result as string);
@@ -208,15 +297,91 @@ export const EventCreatePage = () => {
     fileInputRef.current?.click();
   };
 
+  const createEventMutation = useMutation({
+    mutationFn: async () => {
+      if (!user?.organizationId) {
+        throw new Error("Доступно только организаторам");
+      }
+
+      let posterId: string | undefined;
+      if (uploadedFile) {
+        const uploaded = await userApi.uploadFile(uploadedFile);
+        posterId = uploaded.id;
+      }
+
+      const d = parseDate(dateStart);
+      if (!d) throw new Error("Некорректная дата");
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, "0");
+      const dd = String(d.getDate()).padStart(2, "0");
+      const eventDate = `${yyyy}-${mm}-${dd}`;
+
+      const payload = {
+        organizationId: user.organizationId,
+        ...(posterId ? { posterId } : {}),
+        name: title.trim(),
+        description: description.trim() || undefined,
+        categoryId: categoryValue as string,
+        cityId: cityValue as string,
+        eventDate,
+        startTime: timeStart,
+        location: location.trim(),
+        maxQuantity: Number(maxQuantity),
+        price: Number(price),
+        colorId: (selectedColorId || colorsDict[0]?.id) as string,
+      };
+
+      return await userApi.createEvent(payload);
+    },
+    onSuccess: () => {
+      toast(
+        <Pills
+          icon={TickCircleIcon}
+          primaryText="Ивент успешно создан!"
+          secondaryText="Ю-ху!"
+          iconColor="#AFF940"
+        />
+      );
+      navigate(-1);
+    },
+    onError: (e: any) => {
+      toast.error(e?.message || "Ошибка при создании ивента");
+    },
+  });
+
   const handleSubmit = () => {
-    toast(
-      <Pills
-        icon={TickCircleIcon}
-        primaryText="Ивент успешно создан!"
-        secondaryText="Ю-ху!"
-        iconColor="#AFF940"
-      />
-    );
+    // final guard validations
+    if (!title.trim()) {
+      setTitleError("Заполните название");
+      setCurrentStep(1);
+      return;
+    }
+    if (!categoryValue) {
+      setCategoryError("Выберите категорию");
+      setCurrentStep(2);
+      return;
+    }
+    if (!cityValue) {
+      setCityError("Выберите город");
+      setCurrentStep(2);
+      return;
+    }
+    if (!location.trim()) {
+      setLocationError("Укажите локацию");
+      setCurrentStep(2);
+      return;
+    }
+    if (!maxQuantity || Number(maxQuantity) <= 0) {
+      setQuantityError("Укажите кол-во мест (>0)");
+      setCurrentStep(2);
+      return;
+    }
+    if (!price || Number(price) <= 0) {
+      setPriceError("Укажите стоимость (>0)");
+      setCurrentStep(2);
+      return;
+    }
+    createEventMutation.mutate();
   };
 
   return (
@@ -322,6 +487,29 @@ interface Step2ContentProps {
   categoryInput: string;
   onCategoryChange: (val: string | null) => void;
   onCategoryInputChange: (val: string) => void;
+  categoryOptions: Array<{ label: string; value: string }>;
+  categoryError?: string;
+  cityValue: string | null;
+  cityInput: string;
+  onCityChange: (val: string | null) => void;
+  onCityInputChange: (val: string) => void;
+  cityOptions: Array<{ label: string; value: string }>;
+  cityError?: string;
+  locationValue: string;
+  onLocationChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
+  locationError?: string;
+  maxQuantity: string;
+  onMaxQuantityChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
+  maxQuantityError?: string;
+  price: string;
+  onPriceChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
+  priceError?: string;
 }
 
 const Step2Content: React.FC<Step2ContentProps> = ({
@@ -335,23 +523,45 @@ const Step2Content: React.FC<Step2ContentProps> = ({
   categoryInput,
   onCategoryChange,
   onCategoryInputChange,
+  categoryOptions,
+  categoryError,
+  cityValue,
+  cityInput,
+  onCityChange,
+  onCityInputChange,
+  cityOptions,
+  cityError,
+  locationValue,
+  onLocationChange,
+  locationError,
+  maxQuantity,
+  onMaxQuantityChange,
+  maxQuantityError,
+  price,
+  onPriceChange,
+  priceError,
 }) => (
   <div className={styles.stepContent}>
     <span className={styles.stepTitle}>Заголовок и описание</span>
     <AutocompleteSelect
       label="Категория"
       placeholder="Заполните поле"
-      options={[
-        { label: "Музыка", value: "music" },
-        { label: "Спорт", value: "sport" },
-        { label: "Кино", value: "movie" },
-        { label: "Театр", value: "theatre" },
-        { label: "Образование", value: "education" },
-      ]}
+      options={categoryOptions}
       value={categoryValue || undefined}
       inputValue={categoryInput}
       onChange={onCategoryChange}
       onInputChange={onCategoryInputChange}
+      error={categoryError}
+    />
+    <AutocompleteSelect
+      label="Город"
+      placeholder="Заполните поле"
+      options={cityOptions}
+      value={cityValue || undefined}
+      inputValue={cityInput}
+      onChange={onCityChange}
+      onInputChange={onCityInputChange}
+      error={cityError}
     />
     <TextField
       label="Дата начала"
@@ -369,9 +579,29 @@ const Step2Content: React.FC<Step2ContentProps> = ({
       error={timeError}
       inputMode="numeric"
     />
-    <TextField label="Локация" placeholder="Заполните поле" />
-    <TextField label="Количество мест" placeholder="Заполните поле" />
-    <TextField label="Стоимость" placeholder="Заполните поле" />
+    <TextField
+      label="Локация"
+      placeholder="Заполните поле"
+      value={locationValue}
+      onChange={onLocationChange}
+      error={locationError}
+    />
+    <TextField
+      label="Количество мест"
+      placeholder="Заполните поле"
+      value={maxQuantity}
+      onChange={onMaxQuantityChange}
+      error={maxQuantityError}
+      inputMode="numeric"
+    />
+    <TextField
+      label="Стоимость"
+      placeholder="Заполните поле"
+      value={price}
+      onChange={onPriceChange}
+      error={priceError}
+      inputMode="decimal"
+    />
   </div>
 );
 
@@ -379,12 +609,24 @@ interface Step3ContentProps {
   uploadedImage: string | null;
   onImageDelete: () => void;
   onAddPhotoClick: () => void;
+  colors: Array<{ id: string; name: string; color: string; textColor: string }>;
+  onColorChange: (id: string) => void;
+  titlePreview: string;
+  datePreview?: string;
+  pricePreview?: string;
+  locationPreview?: string;
 }
 
 const Step3Content: React.FC<Step3ContentProps> = ({
   uploadedImage,
   onImageDelete,
   onAddPhotoClick,
+  colors,
+  onColorChange,
+  titlePreview,
+  datePreview,
+  pricePreview,
+  locationPreview,
 }) => {
   const scrollContainerRef = useRef<HTMLUListElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -393,32 +635,8 @@ const Step3Content: React.FC<Step3ContentProps> = ({
   const [activeIndex, setActiveIndex] = useState(0);
   const [activeTab, setActiveTab] = useState<"poster" | "swiper">("poster");
 
-  // Определение цветов для кружков
-  const colors = [
-    {
-      id: 1,
-      color: "#AFF940",
-      textColor: "#212C3A",
-      name: "prime-accent-color",
-    },
-    { id: 2, color: "#BBBAFF", textColor: "#212C3A", name: "alt-accent-color" },
-    { id: 3, color: "#FFBABA", textColor: "#212C3A", name: "light-pink" },
-    { id: 4, color: "#FFD3BA", textColor: "#212C3A", name: "dark-peach" },
-    { id: 5, color: "#FFD700", textColor: "#212C3A", name: "gold" },
-    { id: 6, color: "#FFFDBA", textColor: "#212C3A", name: "lemon-cream" },
-    { id: 7, color: "#C8FFBA", textColor: "#212C3A", name: "light-green" },
-    { id: 8, color: "#BAFFE9", textColor: "#212C3A", name: "pang" },
-    { id: 9, color: "#BAF5FF", textColor: "#212C3A", name: "blue-blue-frost" },
-    { id: 10, color: "#CFBAFF", textColor: "#212C3A", name: "bright-lilac" },
-    { id: 11, color: "#F9BAFF", textColor: "#212C3A", name: "pink" },
-    {
-      id: 12,
-      color: "#212C3A",
-      textColor: "#FFFFFF",
-      name: "prime-dark-color",
-    },
-    // { id: 13, color: "#393940", textColor: "#FFFFFF", name: "sec-dark-color" },
-  ];
+  // compute active color id (mapping by index)
+  const activeColor = colors[activeIndex];
 
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!scrollContainerRef.current) return;
@@ -448,6 +666,8 @@ const Step3Content: React.FC<Step3ContentProps> = ({
   const handleCircleClick = (index: number) => {
     if (!isDragging) {
       setActiveIndex(index);
+      const color = colors[index];
+      if (color) onColorChange(color.id);
     }
   };
 
@@ -496,14 +716,14 @@ const Step3Content: React.FC<Step3ContentProps> = ({
             key={`${activeTab}-${activeIndex}-${
               uploadedImage ? "img" : "noimg"
             }`}
-            title="Название"
-            date="18 июля"
-            price="100"
-            location="Москва"
+            title={titlePreview || "Название"}
+            date={datePreview}
+            price={pricePreview}
+            location={locationPreview}
             imageUrl={uploadedImage || "/avatars/1.webp"}
             image={!!uploadedImage}
-            backgroundColor={colors[activeIndex]?.color}
-            textColor={colors[activeIndex]?.textColor}
+            backgroundColor={activeColor?.color}
+            textColor={activeColor?.textColor}
           />
         )}
         {activeTab === "swiper" && (
@@ -511,14 +731,14 @@ const Step3Content: React.FC<Step3ContentProps> = ({
             key={`${activeTab}-${activeIndex}-${
               uploadedImage ? "img" : "noimg"
             }`}
-            title="Название"
-            date="18 июля"
-            price="100"
-            location="Москва"
+            title={titlePreview || "Название"}
+            date={datePreview}
+            price={pricePreview}
+            location={locationPreview}
             imageUrl={uploadedImage || "/avatars/1.webp"}
             image={!!uploadedImage}
-            backgroundColor={colors[activeIndex]?.color}
-            textColor={colors[activeIndex]?.textColor}
+            backgroundColor={activeColor?.color}
+            textColor={activeColor?.textColor}
           />
         )}
       </div>
