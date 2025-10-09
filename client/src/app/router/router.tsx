@@ -24,6 +24,7 @@ import { PurchasePage } from "@/pages/purchase";
 import { ReviewsPage } from "@/pages/reviews";
 import { StoryCreatePage } from "@/pages/story-create";
 import { EventCreatePage } from "@/pages/event-create";
+import { EventEditPage } from "@/pages/event-edit";
 import { TicketPage } from "@/pages/ticket";
 import { OrganizerPage } from "@/pages/organizer";
 import { ProfileEditPage } from "@/pages/profile-edit";
@@ -355,6 +356,19 @@ export const router = createBrowserRouter([
             showRightButton: false,
             navigateTo: "back",
             pageName: "Создание события",
+          },
+        },
+      },
+      {
+        path: "event/:id/edit",
+        element: <EventEditPage />,
+        handle: {
+          headerProps: {
+            showLogo: false,
+            showLeftButton: true,
+            showRightButton: false,
+            navigateTo: "back",
+            pageName: "Редактирование события",
           },
         },
       },

@@ -62,6 +62,7 @@ export const MyEventsPage: React.FC = () => {
             date={event.date}
             time={event.time}
             isEdit={true}
+            onEditClick={() => navigate(`/event/${event.id}/edit`)}
             imageUrl={event.imageUrl}
             image={!!event.imageUrl}
             actionButton={false}
@@ -77,6 +78,7 @@ export const MyEventsPage: React.FC = () => {
             key={event.id}
             title={event.title}
             isEdit={true}
+            onEditClick={() => navigate(`/event/${event.id}/edit`)}
             date={event.date}
             time={event.time}
             imageUrl={event.imageUrl}
@@ -99,6 +101,7 @@ export const MyEventsPage: React.FC = () => {
             actionButton={false}
             isMyEvent={true}
             isEdit={true}
+            onEditClick={() => navigate(`/event/${event.id}/edit`)}
             isHeart={false}
           />
         ));

@@ -186,6 +186,11 @@ export const userApi = {
       eventDate: string;
       startTime: string;
       organizationId: string;
+      categoryId: string;
+      cityId: string;
+      colorId: string;
+      maxQuantity: number;
+      posterId?: string | null;
     };
     price: number;
   }> => {
@@ -234,6 +239,11 @@ export const userApi = {
         eventDate: e.eventDate,
         startTime: e.startTime,
         organizationId: e.organizationId,
+        categoryId: (e as any).categoryId,
+        cityId: (e as any).cityId,
+        colorId: (e as any).colorId,
+        maxQuantity: (e as any).maxQuantity,
+        posterId: (e as any).posterId ?? null,
       },
       price: Number(e.price),
     };
@@ -850,6 +860,30 @@ export const userApi = {
     posterId?: string | null;
   }): Promise<{ id: string }> => {
     const response = await apiInstance.post<{ id: string }>("/events", data);
+    return response.data;
+  },
+
+  updateEvent: async (
+    id: string,
+    data: {
+      name?: string;
+      description?: string;
+      categoryId?: string;
+      cityId?: string;
+      eventDate?: string; // yyyy-mm-dd
+      startTime?: string; // HH:mm
+      location?: string;
+      maxQuantity?: number;
+      price?: number;
+      colorId?: string;
+      posterId?: string | null;
+      organizationId?: string;
+    }
+  ): Promise<{ id: string }> => {
+    const response = await apiInstance.patch<{ id: string }>(
+      `/events/${id}`,
+      data
+    );
     return response.data;
   },
 

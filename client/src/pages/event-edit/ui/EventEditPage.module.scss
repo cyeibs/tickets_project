@@ -1,0 +1,176 @@
+@use "sass:color";
+@import "@shared/styles/variables.scss";
+@import "@shared/styles/mixins.scss";
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  padding: $space-600 0;
+  background-color: $prime-dark-color;
+  gap: $space-400;
+}
+
+.stepperContainer {
+  width: 100%;
+  position: relative;
+  padding: 0 80px;
+}
+
+.profileCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: 0 auto;
+  gap: $space-800;
+
+  border-radius: 16px;
+  background-color: #393940;
+}
+
+.profileCardContent {
+  display: flex;
+  flex-direction: column;
+  gap: $space-800;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  justify-content: space-between;
+  border-radius: $space-800;
+  gap: $space-200;
+  padding: $space-200;
+  backdrop-filter: blur($blur-card-main);
+  box-shadow: 0px 1px 4px 0px rgba(255, 255, 255, 0.25) inset,
+    0px 4px 12px 0px rgba(0, 0, 0, 0.25);
+}
+
+.button {
+  @include t14;
+  width: 100%;
+}
+
+.hiddenInput {
+  display: none;
+}
+
+.stepTitle {
+  @include t16;
+  align-self: center;
+  color: $text-prime-white-color;
+}
+
+.stepContent {
+  display: flex;
+  flex-direction: column;
+  gap: $space-400;
+  padding: $space-600;
+}
+
+.stepContent3 {
+  display: flex;
+  flex-direction: column;
+  gap: $space-400;
+}
+
+.stepContent3Item {
+  padding: $space-600 $space-600 0 $space-600;
+  display: flex;
+  flex-direction: column;
+  gap: $space-400;
+}
+
+.swiperContainer {
+  width: 100%;
+  overflow: hidden;
+}
+
+.swiperTitle {
+  @include r14;
+  color: $text-prime-white-color;
+  padding-left: $space-600;
+  margin-bottom: $space-200;
+}
+
+.scrollContainer {
+  display: flex;
+  gap: $space-400;
+  overflow-x: auto;
+  padding: $space-200 $space-600;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  cursor: grab;
+  list-style: none;
+  margin: 0;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  &:active {
+    cursor: grabbing;
+  }
+
+  li {
+    padding: 0;
+    margin: 0;
+  }
+}
+
+.circle {
+  min-width: 40px;
+  min-height: 40px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  padding: 0;
+  border: none;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.tickIconWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.step3Buttom {
+  padding-bottom: $space-400;
+  display: flex;
+  flex-direction: column;
+  gap: $space-300;
+}
+
+.uploadButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: $space-100;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.uploadButtonText {
+  @include t14;
+  color: $text-prime-white-color;
+}

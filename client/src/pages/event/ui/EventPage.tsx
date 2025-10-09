@@ -77,6 +77,9 @@ export const EventPage = () => {
           imageUrl={event?.imageUrl || FALLBACK_IMAGE}
           image={!!event?.imageUrl}
           isEdit={isOrganizerOfEvent}
+          onButtonClick={() => {
+            if (eventId) navigate(`/event/${eventId}/edit`);
+          }}
           onBackClick={() => {
             navigate(-1);
             console.log("back");
