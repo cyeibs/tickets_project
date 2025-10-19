@@ -59,10 +59,17 @@ export const withTelegram = (component: () => React.ReactNode) => () => {
       return fromQuery ?? undefined;
     };
 
-    const isUuid = (value: string): boolean => {
-      const uuidV4Regex =
+    const isUuidStrict = (value: string): boolean => {
+      const uuidV1toV5Regex =
         /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-      return uuidV4Regex.test(value);
+      return uuidV1toV5Regex.test(value);
+    };
+
+    const isUuidLoose = (value: string): boolean => {
+      // Accept any UUID-like value (36 chars with hyphens and hex), without enforcing version/variant.
+      return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+        value
+      );
     };
 
     const tryBase64Json = (
@@ -120,8 +127,8 @@ export const withTelegram = (component: () => React.ReactNode) => () => {
         if (byKey) return byKey;
       }
 
-      // Fallback: assume raw is the UUID itself
-      if (isUuid(trimmed)) {
+      // Fallback: assume raw is the UUID itself (loose check to allow any uuid-like id)
+      if (isUuidLoose(trimmed) || isUuidStrict(trimmed)) {
         return trimmed;
       }
 
@@ -131,7 +138,8 @@ export const withTelegram = (component: () => React.ReactNode) => () => {
     const startParam = getStartParam();
     if (startParam) {
       const eventId = parseEventId(startParam);
-      if (eventId && isUuid(eventId)) {
+      // Navigate if we extracted some plausible event id. Server-side will validate existence.
+      if (eventId && isUuidLoose(eventId)) {
         const currentPath = window.location.pathname;
         const targetPath = `/event/${eventId}`;
         if (currentPath !== targetPath) {
