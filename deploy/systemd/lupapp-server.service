@@ -1,0 +1,19 @@
+[Unit]
+Description=Lupapp Fastify Server
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/lupapp/server
+Environment=NODE_ENV=production
+EnvironmentFile=/opt/lupapp/server/.env
+ExecStart=/usr/bin/node /opt/lupapp/server/dist/index.js
+Restart=always
+RestartSec=5
+User=lupapp
+Group=lupapp
+
+[Install]
+WantedBy=multi-user.target
+
+

@@ -2,7 +2,9 @@ import axios from "axios";
 
 // Create an Axios instance with default configuration
 export const apiInstance = axios.create({
-  baseURL: "http://localhost:4001",
+  baseURL:
+    (typeof window !== "undefined" && (window as any).__API_URL__) ||
+    (process.env.NODE_ENV === "production" ? "/api" : "http://localhost:4001"),
   headers: {
     "Content-Type": "application/json",
   },

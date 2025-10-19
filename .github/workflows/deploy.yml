@@ -1,3 +1,84 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch: {}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Build client
+        working-directory: client
+        run: |
+          corepack enable || true
+          yarn install --frozen-lockfile
+          yarn build
+          cp dist/index.html dist/404.html
+
+      - name: Copy deploy files to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          source: |
+            deploy/**
+          target: /opt/lupapp
+
+      - name: Copy server code to /opt/lupapp/server (without node_modules)
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          strip_components: 1
+          source: server/**
+          target: /opt/lupapp/server
+          rm: true
+          overwrite: true
+          exclude: |
+            server/node_modules/**
+            server/dist/**
+            server/uploads/**
+
+      - name: Copy built client to /var/www/lupapp
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          strip_components: 2
+          source: client/dist/**
+          target: /var/www/lupapp
+          rm: true
+          overwrite: true
+
+      - name: Run setup (idempotent) and deploy on server
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          script: |
+            chmod +x /opt/lupapp/deploy/scripts/*.sh || true
+            bash /opt/lupapp/deploy/scripts/setup-server.sh || true
+            bash /opt/lupapp/deploy/scripts/deploy.sh
+
 name: Deploy to GitHub Pages
 
 on:
