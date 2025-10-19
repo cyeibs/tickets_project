@@ -41,22 +41,18 @@ export const PurchasePage = () => {
     lastName.trim().length > 0 &&
     ticketCount >= 1;
 
-  const createPurchase = useMutation({
+  const createPayment = useMutation({
     mutationFn: async () => {
-      return userApi.createPurchase({
+      return userApi.createPayment({
         eventId,
         firstName: firstName.trim(),
         lastName: lastName.trim(),
         quantity: ticketCount,
-        statusCode: "paid",
       });
     },
     onSuccess: async (res) => {
-      await queryClient.invalidateQueries({ queryKey: ["myPurchases"] });
-      if (res && Array.isArray(res.ticketIds) && res.ticketIds[0]) {
-        navigate(`/ticket/${res.ticketIds[0]}`);
-      } else {
-        navigate("/ticket");
+      if (res?.confirmationUrl) {
+        window.location.href = res.confirmationUrl;
       }
     },
   });
@@ -84,8 +80,8 @@ export const PurchasePage = () => {
       setFirstNameError(undefined);
     }
     if (hasError) return;
-    if (!createPurchase.isPending) createPurchase.mutate();
-  }, [lastName, firstName, createPurchase]);
+    if (!createPayment.isPending) createPayment.mutate();
+  }, [lastName, firstName, createPayment]);
 
   return (
     <div className={styles.container}>
@@ -175,10 +171,10 @@ export const PurchasePage = () => {
           <Button
             accent
             className={styles.button}
-            disabled={!event || createPurchase.isPending}
+            disabled={!event || createPayment.isPending}
             onClick={handlePayClick}
           >
-            {createPurchase.isPending ? "Оплата..." : "Оплатить"}
+            {createPayment.isPending ? "Оплата..." : "Оплатить"}
           </Button>
 
           <span className={styles.detailsText}>

@@ -12,3 +12,10 @@ DATABASE_URL=postgresql://postgres:postgres@localhost:5432/lupapp?schema=public
 # Uploads
 UPLOAD_DIR=uploads
 MAX_FILE_SIZE_MB=10
+
+# YooKassa (test creds)
+YOOKASSA_SHOP_ID=1189752
+YOOKASSA_SECRET_KEY=test_*gvH0AbFJZxRVsZNdokYL_QoMd06tHOw3RcJLsLVtgkSg
+
+# Client base URL for payment return (e.g., http://localhost:3000)
+CLIENT_BASE_URL=https://loop-app.ru

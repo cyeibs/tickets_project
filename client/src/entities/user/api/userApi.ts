@@ -769,6 +769,44 @@ export const userApi = {
     return response.data;
   },
 
+  // Create YooKassa payment and get confirmation URL
+  createPayment: async (data: {
+    eventId: string;
+    firstName: string;
+    lastName: string;
+    quantity: number;
+  }): Promise<{ purchaseId: string; confirmationUrl: string }> => {
+    const payload = {
+      eventId: data.eventId,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      quantity: data.quantity,
+    };
+    const response = await apiInstance.post<{
+      purchaseId: string;
+      confirmationUrl: string;
+    }>("/payments", payload);
+    return response.data;
+  },
+
+  // Poll purchase by id
+  getPurchaseById: async (
+    id: string
+  ): Promise<{
+    id: string;
+    statusCode: string;
+    orderNumber?: string;
+    ticketIds: string[];
+  }> => {
+    const response = await apiInstance.get<{
+      id: string;
+      statusCode: string;
+      orderNumber?: string;
+      ticketIds: string[];
+    }>(`/purchases/${id}`);
+    return response.data;
+  },
+
   // Organizer application
   submitOrganizerApplication: async (data: {
     name: string;

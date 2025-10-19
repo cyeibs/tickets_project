@@ -29,6 +29,7 @@ import { TicketPage } from "@/pages/ticket";
 import { OrganizerPage } from "@/pages/organizer";
 import { ProfileEditPage } from "@/pages/profile-edit";
 import { OrganizerProfileEditPage } from "@/pages/organizer-profile-edit";
+import { PaymentSuccessPage } from "@/pages/payment-waiting";
 
 // Wrapper component to handle mobile redirect logic
 const MobileRedirectWrapper = ({ children }: { children: React.ReactNode }) => {
@@ -307,6 +308,18 @@ export const router = createBrowserRouter([
         },
       },
 
+      {
+        path: "payment/success",
+        element: <PaymentSuccessPage />,
+        handle: {
+          headerProps: {
+            showLogo: false,
+            showLeftButton: false,
+            showRightButton: false,
+            pageName: "Оплата",
+          },
+        },
+      },
       {
         path: "ticket/:id",
         element: <TicketPage />,

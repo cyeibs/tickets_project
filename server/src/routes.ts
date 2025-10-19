@@ -11,6 +11,7 @@ import { uploadsRoutes } from "./modules/uploads/routes";
 import { ticketsRoutes } from "./modules/tickets/routes";
 import { subscriptionsRoutes } from "./modules/subscriptions/routes";
 import { favoritesRoutes } from "./modules/favorites/routes";
+import { paymentsRoutes } from "./modules/payments/routes";
 
 export async function registerRoutes(app: FastifyInstance) {
   await authRoutes(app);
@@ -25,4 +26,5 @@ export async function registerRoutes(app: FastifyInstance) {
   await ticketsRoutes(app);
   await subscriptionsRoutes(app);
   await favoritesRoutes(app);
+  await paymentsRoutes(app);
 }

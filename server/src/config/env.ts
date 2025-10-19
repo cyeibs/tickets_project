@@ -11,4 +11,9 @@ export const env = {
   uploadDir: process.env.UPLOAD_DIR ?? "uploads",
   maxFileSizeMB: Number(process.env.MAX_FILE_SIZE_MB ?? 10),
   adminSecret: process.env.ADMIN_SECRET ?? "dev_admin_secret",
+  yookassa: {
+    shopId: process.env.YOOKASSA_SHOP_ID ?? "",
+    secretKey: process.env.YOOKASSA_SECRET_KEY ?? "",
+  },
+  clientBaseUrl: process.env.CLIENT_BASE_URL ?? "https://loop-app.ru",
 };

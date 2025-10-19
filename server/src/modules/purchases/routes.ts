@@ -86,6 +86,33 @@ export async function purchasesRoutes(app: FastifyInstance) {
     }
   );
 
+  // Single purchase by id (for polling after redirect)
+  app.get(
+    "/purchases/:id",
+    { preHandler: [app.authenticate] },
+    async (req, reply) => {
+      const id = (req.params as any).id as string;
+      const userId = (req as any).user.id as string;
+      const purchase = await app.prisma.purchase.findUnique({
+        where: { id },
+        include: {
+          status: { select: { code: true, name: true } },
+          tickets: { select: { id: true } },
+        },
+      });
+      if (!purchase) return reply.code(404).send({ error: "Not found" });
+      if (purchase.userId !== userId)
+        return reply.code(403).send({ error: "Forbidden" });
+
+      return {
+        id: purchase.id,
+        statusCode: purchase.status.code,
+        orderNumber: purchase.orderNumber,
+        ticketIds: purchase.tickets.map((t) => t.id),
+      };
+    }
+  );
+
   app.get("/purchases", { preHandler: [app.authenticate] }, async (req) => {
     const q = (req.query as any) ?? {};
     const userId = (req as any).user.id as string;
