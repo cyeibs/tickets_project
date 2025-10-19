@@ -1,13 +1,19 @@
 import { SubscriptionCard } from "@/shared/ui/SubscriptionCard";
 import styles from "./EventPage.module.scss";
-import { CalendarIcon, LocationIcon, TimeIcon } from "@/shared/assets/icons";
+import {
+  CalendarIcon,
+  LocationIcon,
+  TickCircleIcon,
+  TimeIcon,
+} from "@/shared/assets/icons";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Avatar, Button, Pills } from "@/shared/ui";
 import { useNavigate, useParams } from "react-router-dom";
 import { GoToIcon } from "@/shared/assets/icons/goTo";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { userApi } from "@/entities/user";
 import { useAuth } from "@/features/auth/model/useAuth";
+import { toast } from "react-toastify";
 
 // Local fallbacks to keep UI stable before data loads
 const FALLBACK_IMAGE = "/avatars/1.webp";
@@ -25,6 +31,11 @@ export const EventPage = () => {
     queryKey: ["event", eventId],
     enabled: !!eventId,
     queryFn: () => userApi.getEventById(eventId),
+  });
+
+  const { data: favoriteIds = [] } = useQuery({
+    queryKey: ["favorites"],
+    queryFn: () => userApi.getFavorites(),
   });
 
   const { data: purchases = [] } = useQuery({
@@ -67,6 +78,21 @@ export const EventPage = () => {
     return () => window.removeEventListener("resize", checkOverflow);
   }, []);
 
+  const queryClient = useQueryClient();
+
+  const toggleFavorite = useMutation({
+    mutationFn: async (eventId: string) => {
+      const liked = favoriteIds.includes(eventId);
+      if (liked) return userApi.removeFavorite(eventId);
+      return userApi.addFavorite(eventId);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["favorites"] });
+      queryClient.invalidateQueries({ queryKey: ["favoriteEvents"] });
+      queryClient.invalidateQueries({ queryKey: ["myPurchases"] });
+    },
+  });
+
   return (
     <div className={styles.container}>
       <div className={`${styles.eventContainer}`}>
@@ -86,6 +112,54 @@ export const EventPage = () => {
           }}
           isEventPage
           hideContent
+          isHeart
+          isLiked={favoriteIds.includes(eventId)}
+          onHeartClick={() => toggleFavorite.mutate(String(eventId))}
+          isExport
+          onExportClick={() => {
+            if (!eventId) return;
+            const url = `https://t.me/ticketzhenyabot?startapp=${eventId}`;
+            const doToast = () =>
+              toast(
+                <Pills
+                  icon={TickCircleIcon}
+                  primaryText="Ссылка на ивент скопирована"
+                  iconColor="#AFF940"
+                />
+              );
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard
+                .writeText(url)
+                .then(() => doToast())
+                .catch(() => {
+                  try {
+                    const textArea = document.createElement("textarea");
+                    textArea.value = url;
+                    textArea.style.position = "fixed";
+                    textArea.style.opacity = "0";
+                    document.body.appendChild(textArea);
+                    textArea.focus();
+                    textArea.select();
+                    document.execCommand("copy");
+                    document.body.removeChild(textArea);
+                    doToast();
+                  } catch {}
+                });
+            } else {
+              try {
+                const textArea = document.createElement("textarea");
+                textArea.value = url;
+                textArea.style.position = "fixed";
+                textArea.style.opacity = "0";
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                document.execCommand("copy");
+                document.body.removeChild(textArea);
+                doToast();
+              } catch {}
+            }
+          }}
         />
         <div className={styles.eventContent}>
           <Pills

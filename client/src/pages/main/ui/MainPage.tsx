@@ -187,7 +187,7 @@ export const MainPage: React.FC = () => {
                     toast(
                       <Pills
                         icon={TickCircleIcon}
-                        primaryText="ссылка на ивент скопирована"
+                        primaryText="Ссылка на ивент скопирована"
                         iconColor="#AFF940"
                       />
                     );

@@ -1,4 +1,5 @@
 import {
+  ArrowExport,
   ArrowLeft,
   Edit,
   Heart,
@@ -31,6 +32,9 @@ export interface SubscriptionCardProps {
   reviewsCount?: number;
   isEventPage?: boolean;
   hideReviews?: boolean;
+  isExport?: boolean;
+  isLiked?: boolean;
+  onExportClick?: () => void;
 }
 
 export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
@@ -51,6 +55,9 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   hideReviews = false,
   ratingAvg = null,
   reviewsCount,
+  isExport = false,
+  onExportClick,
+  isLiked = false,
 }) => {
   const navigate = useNavigate();
   const cardClasses = [
@@ -88,21 +95,38 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
       )}
 
       <div className={styles.statusesWrapper}>
-        <div className={styles.heartWrapper}>
-          {isHeart && (
+        {isHeart && (
+          <div className={styles.heartWrapper}>
             <IconButton
               icon={Heart}
               onClick={(e) => {
                 e.stopPropagation();
                 onHeartClick?.();
               }}
-              iconColor={isSubscribed ? "#212C3A" : "#151515"}
-              variant={isSubscribed ? "accent" : "basic"}
+              iconColor={isSubscribed || isLiked ? "#212C3A" : "#151515"}
+              variant={isSubscribed || isLiked ? "accent" : "basic"}
               iconSize={24}
-              fill={isSubscribed ? "#212C3A" : "none"}
+              fill={isSubscribed || isLiked ? "#212C3A" : "none"}
             />
-          )}
-          {isEdit && (
+          </div>
+        )}
+        {isExport && (
+          <div className={styles.exportWrapper}>
+            <IconButton
+              icon={ArrowExport}
+              onClick={(e) => {
+                e.stopPropagation();
+                onExportClick?.();
+              }}
+              iconColor="#212C3A"
+              // variant="accent"
+              iconSize={24}
+              fill="#212C3A"
+            />
+          </div>
+        )}
+        {isEdit && (
+          <div className={styles.editWrapper}>
             <IconButton
               icon={Edit}
               onClick={(e) => {
@@ -114,8 +138,8 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
               iconSize={24}
               fill="#212C3A"
             />
-          )}
-        </div>
+          </div>
+        )}
       </div>
 
       <div className={styles.actionsWrapper}>

@@ -81,8 +81,10 @@
   justify-content: flex-start;
 }
 
-.heartWrapper {
-  flex: 1;
+.heartWrapper,
+.exportWrapper,
+.editWrapper {
+  // flex: 1;
   display: flex;
   justify-content: flex-end;
 }

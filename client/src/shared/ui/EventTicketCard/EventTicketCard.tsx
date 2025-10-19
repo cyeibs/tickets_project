@@ -132,7 +132,7 @@ export const EventTicketCard: React.FC<EventTicketCardProps> = ({
                   toast(
                     <Pills
                       icon={TickCircleIcon}
-                      primaryText="ссылка на ивент скопирована"
+                      primaryText="Ссылка на ивент скопирована"
                       iconColor="#AFF940"
                     />
                   );

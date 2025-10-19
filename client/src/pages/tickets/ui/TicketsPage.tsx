@@ -91,6 +91,10 @@ export const TicketsPage: React.FC = () => {
             liked
             onIconClick={() => removeFavorite.mutate(String(event.id))}
             eventId={String(event.id)}
+            onClick={() => {
+              // if (event.firstTicketId)
+              navigate(`/event/${event.id}`);
+            }}
           />
         ));
       case "actual":
