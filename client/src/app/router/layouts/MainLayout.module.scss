@@ -6,7 +6,7 @@
 
 .content {
   flex: 1;
-  padding-bottom: 60px; /* Space for the snackbar */
+  padding-bottom: 60px;
 }
 
 .snackbarContainer {
@@ -17,4 +17,10 @@
   display: flex;
   justify-content: center;
   z-index: 100;
+}
+
+@media all and (display-mode: standalone) {
+  .content {
+    padding-bottom: 0;
+  }
 }
