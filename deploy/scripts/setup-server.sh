@@ -47,12 +47,16 @@ if [ -f "$APP_DIR/deploy/nginx/lupapp.conf" ]; then
   nginx -t && systemctl restart nginx
 fi
 
-# systemd service
-if [ -f "$APP_DIR/deploy/systemd/lupapp-server.service" ]; then
-  echo "[setup] Installing systemd service..."
-  install -m 0644 "$APP_DIR/deploy/systemd/lupapp-server.service" /etc/systemd/system/lupapp-server.service
-  systemctl daemon-reload
-  systemctl enable lupapp-server
+# systemd service (if available)
+if command -v systemctl >/dev/null 2>&1; then
+  if [ -f "$APP_DIR/deploy/systemd/lupapp-server.service" ]; then
+    echo "[setup] Installing systemd service..."
+    install -m 0644 "$APP_DIR/deploy/systemd/lupapp-server.service" /etc/systemd/system/lupapp-server.service
+    systemctl daemon-reload
+    systemctl enable lupapp-server || true
+  fi
+else
+  echo "[setup] systemd not available; will use PM2 in deploy script."
 fi
 
 # PostgreSQL: ensure database exists; set a password for 'postgres' role (change in production!)

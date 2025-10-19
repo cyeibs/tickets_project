@@ -72,9 +72,13 @@ In production, the client uses `/api` automatically. In dev it uses `http://loca
 Useful commands (server)
 
 ```bash
-# Service status / logs
-systemctl status lupapp-server
-journalctl -u lupapp-server -f
+# With systemd
+systemctl status lupapp-server || true
+journalctl -u lupapp-server -f || true
+
+# Without systemd (PM2)
+pm2 status
+pm2 logs lupapp --lines 200
 
 # Nginx
 nginx -t && systemctl reload nginx
