@@ -31,9 +31,7 @@ jobs:
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          passphrase: ${{ secrets.SSH_PASSPHRASE }}
-          port: ${{ secrets.SSH_PORT || 22 }}
+          password: ${{ secrets.SSH_PASSWORD }}
           source: |
             deploy/**
           target: /opt/lupapp
@@ -43,9 +41,7 @@ jobs:
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          passphrase: ${{ secrets.SSH_PASSPHRASE }}
-          port: ${{ secrets.SSH_PORT || 22 }}
+          password: ${{ secrets.SSH_PASSWORD }}
           strip_components: 1
           source: server/**
           target: /opt/lupapp/server
@@ -61,9 +57,7 @@ jobs:
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          passphrase: ${{ secrets.SSH_PASSPHRASE }}
-          port: ${{ secrets.SSH_PORT || 22 }}
+          password: ${{ secrets.SSH_PASSWORD }}
           strip_components: 2
           source: client/dist/**
           target: /var/www/lupapp
@@ -75,9 +69,7 @@ jobs:
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          passphrase: ${{ secrets.SSH_PASSPHRASE }}
-          port: ${{ secrets.SSH_PORT || 22 }}
+          password: ${{ secrets.SSH_PASSWORD }}
           script: |
             chmod +x /opt/lupapp/deploy/scripts/*.sh || true
             bash /opt/lupapp/deploy/scripts/setup-server.sh || true

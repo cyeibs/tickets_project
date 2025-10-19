@@ -24,6 +24,7 @@ Set these in the repo Settings → Secrets and variables → Actions:
 - `SSH_PRIVATE_KEY`: contents of your private key (PEM), e.g. `~/.ssh/lupapp-prod_rsa`
 - `SSH_PORT` (optional): default 22
 - `SSH_PASSPHRASE` (if your private key is passphrase-protected)
+- `SSH_PASSWORD` (optional: if using password authentication)
 
 One-time server bootstrap
 The workflow uploads `deploy/**` and runs the setup script automatically, but you need to create the server env file once before successful deploy:
