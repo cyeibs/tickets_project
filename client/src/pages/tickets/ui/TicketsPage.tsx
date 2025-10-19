@@ -5,6 +5,7 @@ import { EventTicketCard } from "@/shared/ui/EventTicketCard";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { userApi } from "@/entities/user";
+// no toast here; EventTicketCard handles copy+toast internally when ArrowExport clicked
 
 export const TicketsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<
@@ -89,6 +90,7 @@ export const TicketsPage: React.FC = () => {
             isHeart
             liked
             onIconClick={() => removeFavorite.mutate(String(event.id))}
+            eventId={String(event.id)}
           />
         ));
       case "actual":
@@ -107,6 +109,7 @@ export const TicketsPage: React.FC = () => {
             isHeart
             liked={favoriteIds.includes(event.eventId)}
             onIconClick={() => toggleFavorite.mutate(String(event.eventId))}
+            eventId={String(event.eventId)}
             onClick={() => {
               if (event.firstTicketId)
                 navigate(`/ticket/${event.firstTicketId}`);
@@ -129,6 +132,7 @@ export const TicketsPage: React.FC = () => {
             isHeart
             liked={favoriteIds.includes(event.eventId)}
             onIconClick={() => toggleFavorite.mutate(String(event.eventId))}
+            eventId={String(event.eventId)}
             onClick={() => {
               if (event.firstTicketId)
                 navigate(`/ticket/${event.firstTicketId}`);

@@ -21,6 +21,7 @@ export interface EventCardProps {
   onButtonClick?: () => void;
   onLikeClick?: () => void;
   onIconClick?: () => void;
+  onExportClick?: () => void; // optional dedicated handler for ArrowExport
   className?: string;
   price?: string;
   backgroundColor?: string;
@@ -38,6 +39,7 @@ export const EventCard: React.FC<EventCardProps> = ({
   forSearch = false,
   onButtonClick,
   onIconClick,
+  onExportClick,
   onLikeClick,
   className = "",
   price,
@@ -138,7 +140,7 @@ export const EventCard: React.FC<EventCardProps> = ({
             {!forSearch && (
               <IconButton
                 icon={ArrowExport}
-                onClick={onIconClick}
+                onClick={onExportClick ?? onIconClick}
                 iconColor="#151515"
                 iconSize={24}
               />

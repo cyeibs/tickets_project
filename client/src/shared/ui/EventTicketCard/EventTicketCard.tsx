@@ -1,6 +1,9 @@
 import { ArrowExport, Edit, Heart } from "@/shared/assets/icons";
 import { Button } from "@shared/ui/Button";
 import { IconButton } from "@shared/ui/IconButton";
+import { Pills } from "@shared/ui/Pills";
+import { TickCircleIcon } from "@shared/assets/icons";
+import { toast } from "react-toastify";
 import React from "react";
 import styles from "./EventTicketCard.module.scss";
 
@@ -21,6 +24,7 @@ export interface EventTicketCardProps {
   liked?: boolean;
   isEdit?: boolean;
   onEditClick?: () => void;
+  eventId?: string; // used to build export link
 }
 
 export const EventTicketCard: React.FC<EventTicketCardProps> = ({
@@ -40,6 +44,7 @@ export const EventTicketCard: React.FC<EventTicketCardProps> = ({
   liked = true,
   isEdit = false,
   onEditClick,
+  eventId,
 }) => {
   const cardClasses = [
     styles.eventTicketCard,
@@ -117,7 +122,52 @@ export const EventTicketCard: React.FC<EventTicketCardProps> = ({
               icon={ArrowExport}
               onClick={(e) => {
                 e.stopPropagation();
-                onIconClick?.();
+                const id = eventId;
+                if (!id) {
+                  onIconClick?.();
+                  return;
+                }
+                const url = `https://t.me/ticketzhenyabot?startapp=${id}`;
+                const doToast = () =>
+                  toast(
+                    <Pills
+                      icon={TickCircleIcon}
+                      primaryText="ссылка на ивент скопирована"
+                      iconColor="#AFF940"
+                    />
+                  );
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                  navigator.clipboard
+                    .writeText(url)
+                    .then(() => doToast())
+                    .catch(() => {
+                      try {
+                        const textArea = document.createElement("textarea");
+                        textArea.value = url;
+                        textArea.style.position = "fixed";
+                        textArea.style.opacity = "0";
+                        document.body.appendChild(textArea);
+                        textArea.focus();
+                        textArea.select();
+                        document.execCommand("copy");
+                        document.body.removeChild(textArea);
+                        doToast();
+                      } catch {}
+                    });
+                } else {
+                  try {
+                    const textArea = document.createElement("textarea");
+                    textArea.value = url;
+                    textArea.style.position = "fixed";
+                    textArea.style.opacity = "0";
+                    document.body.appendChild(textArea);
+                    textArea.focus();
+                    textArea.select();
+                    document.execCommand("copy");
+                    document.body.removeChild(textArea);
+                    doToast();
+                  } catch {}
+                }
               }}
               iconColor="#151515"
               iconSize={24}

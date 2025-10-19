@@ -1,4 +1,4 @@
-import { EventCard, Tab, TabGroup } from "@/shared/ui";
+import { EventCard, Tab, TabGroup, Pills } from "@/shared/ui";
 import { SwipeCards } from "@/widgets/events";
 import type { EventCardType } from "@/widgets/events/ui/SwipeCards";
 import { StoriesWidget } from "@widgets/stories";
@@ -14,6 +14,8 @@ import {
   useQueries,
 } from "@tanstack/react-query";
 import { userApi } from "@/entities/user";
+import { toast } from "react-toastify";
+import { TickCircleIcon } from "@/shared/assets/icons";
 
 export const MainPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"poster" | "swiper">("poster");
@@ -178,6 +180,49 @@ export const MainPage: React.FC = () => {
                 }}
                 onButtonClick={() => {
                   navigate(`/event/${event.id}`);
+                }}
+                onExportClick={() => {
+                  const url = `https://t.me/ticketzhenyabot?startapp=${event.id}`;
+                  const doToast = () =>
+                    toast(
+                      <Pills
+                        icon={TickCircleIcon}
+                        primaryText="ссылка на ивент скопирована"
+                        iconColor="#AFF940"
+                      />
+                    );
+                  if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard
+                      .writeText(url)
+                      .then(() => doToast())
+                      .catch(() => {
+                        try {
+                          const textArea = document.createElement("textarea");
+                          textArea.value = url;
+                          textArea.style.position = "fixed";
+                          textArea.style.opacity = "0";
+                          document.body.appendChild(textArea);
+                          textArea.focus();
+                          textArea.select();
+                          document.execCommand("copy");
+                          document.body.removeChild(textArea);
+                          doToast();
+                        } catch {}
+                      });
+                  } else {
+                    try {
+                      const textArea = document.createElement("textarea");
+                      textArea.value = url;
+                      textArea.style.position = "fixed";
+                      textArea.style.opacity = "0";
+                      document.body.appendChild(textArea);
+                      textArea.focus();
+                      textArea.select();
+                      document.execCommand("copy");
+                      document.body.removeChild(textArea);
+                      doToast();
+                    } catch {}
+                  }
                 }}
                 onLikeClick={() => {
                   if (!isAuthenticated) {
