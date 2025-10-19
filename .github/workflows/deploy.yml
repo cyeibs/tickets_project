@@ -43,14 +43,16 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
           strip_components: 1
-          source: server/**
+          source: |
+            server/package.json
+            server/yarn.lock
+            server/tsconfig.json
+            server/tsconfig.build.json
+            server/prisma/**
+            server/src/**
           target: /opt/lupapp/server
           rm: true
           overwrite: true
-          exclude: |
-            server/node_modules/**
-            server/dist/**
-            server/uploads/**
 
       - name: Copy built client to /var/www/lupapp
         uses: appleboy/scp-action@v0.1.7
