@@ -43,13 +43,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
           strip_components: 1
-          source: |
-            server/package.json
-            server/yarn.lock
-            server/tsconfig.json
-            server/tsconfig.build.json
-            server/prisma/**
-            server/src/**
+          source: server/**
           target: /opt/lupapp/server
           rm: true
           overwrite: true
