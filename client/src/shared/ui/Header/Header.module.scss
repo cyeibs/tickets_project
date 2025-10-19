@@ -101,9 +101,3 @@
   color: $prime-dark-color;
   text-align: center;
 }
-
-@media all and (display-mode: standalone) {
-  .header {
-    padding-top: $space-800;
-  }
-}

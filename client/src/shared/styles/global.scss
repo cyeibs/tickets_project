@@ -22,20 +22,7 @@ body {
   bottom: 0;
   overflow-x: hidden;
   overflow-y: auto;
-  height: calc(100% + 1px); // This extra pixel makes the content scrollable
-}
-
-// PWA (standalone) safe-area handling
-@media (display-mode: standalone) {
-  body {
-    // Neutralize inline padding applied in index.html to avoid shrinking the absolute #root
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
-  }
-  #root {
-    padding-top: env(safe-area-inset-top);
-    padding-bottom: env(safe-area-inset-bottom);
-  }
+  height: calc(100% + 1px);
 }
 
 body {
