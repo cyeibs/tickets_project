@@ -13,7 +13,7 @@ WEB_ROOT="/var/www/lupapp"
 
 echo "[setup] Updating apt and installing base packages..."
 apt-get update -y
-DEBIAN_FRONTEND=noninteractive apt-get install -y curl ca-certificates gnupg build-essential nginx postgresql postgresql-contrib
+DEBIAN_FRONTEND=noninteractive apt-get install -y curl ca-certificates gnupg build-essential nginx postgresql postgresql-contrib certbot python3-certbot-nginx
 
 if ! command -v node >/dev/null 2>&1; then
   echo "[setup] Installing Node.js 22..."
@@ -33,6 +33,10 @@ fi
 echo "[setup] Creating directories..."
 mkdir -p "$SERVER_DIR" "$WEB_ROOT" "$APP_DIR/deploy"
 chown -R "$APP_USER:$APP_USER" "$APP_DIR" "$WEB_ROOT"
+
+# ACME challenge webroot
+mkdir -p /var/www/certbot
+chown -R www-data:www-data /var/www/certbot
 
 # Nginx site
 if [ -f "$APP_DIR/deploy/nginx/lupapp.conf" ]; then

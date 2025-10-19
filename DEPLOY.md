@@ -88,3 +88,28 @@ Troubleshooting
 - 502 from `/api`: check `systemctl status lupapp-server` and the `.env` `DATABASE_URL`.
 - 404 on deep links: ensure Nginx `try_files` in `deploy/nginx/lupapp.conf` is installed and active.
 - Permission errors for uploads: ensure `/opt/lupapp/server` is owned by `lupapp:lupapp` (deploy script does this).
+
+SSL for loop-app.ru
+
+1. DNS: create A record `loop-app.ru` and `www.loop-app.ru` → `83.166.246.58`.
+2. Deploy once so nginx config is installed (`deploy/nginx/lupapp.conf`).
+3. SSH to the server and run the SSL setup script:
+
+```bash
+ssh root@83.166.246.58
+bash /opt/lupapp/deploy/scripts/setup-ssl.sh loop-app.ru your@email
+```
+
+This installs certbot, obtains certificates for `loop-app.ru` and `www.loop-app.ru`, enables auto-renewal, and reloads nginx. The nginx site already references the cert paths:
+
+- `/etc/letsencrypt/live/loop-app.ru/fullchain.pem`
+- `/etc/letsencrypt/live/loop-app.ru/privkey.pem`
+
+Renewal
+
+Certbot installs a systemd timer automatically; to check renewal:
+
+```bash
+systemctl status certbot.timer
+sudo certbot renew --dry-run
+```
