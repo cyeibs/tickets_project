@@ -30,6 +30,7 @@ import { OrganizerPage } from "@/pages/organizer";
 import { ProfileEditPage } from "@/pages/profile-edit";
 import { OrganizerProfileEditPage } from "@/pages/organizer-profile-edit";
 import { PaymentSuccessPage } from "@/pages/payment-waiting";
+import { PrivacyPage } from "@/pages/privacy";
 
 // Wrapper component to handle mobile redirect logic
 const MobileRedirectWrapper = ({ children }: { children: React.ReactNode }) => {
@@ -88,6 +89,9 @@ export const router = createBrowserRouter([
       {
         path: "main",
         element: <MainPage />,
+        handle: {
+          showFooter: true,
+        },
       },
       {
         path: "search",
@@ -400,6 +404,11 @@ export const router = createBrowserRouter([
   {
     path: "/install",
     element: <InstallPage />,
+    errorElement: <ErrorBoundary />,
+  },
+  {
+    path: "/privacy",
+    element: <PrivacyPage />,
     errorElement: <ErrorBoundary />,
   },
   {

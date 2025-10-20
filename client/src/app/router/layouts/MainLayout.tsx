@@ -15,6 +15,7 @@ export interface RouteHandle {
     pageName?: string;
     navigateTo?: string;
   };
+  showFooter?: boolean;
   showHeader?: boolean;
   showSnackbar?: boolean;
 }
@@ -43,6 +44,7 @@ export const MainLayout: React.FC = () => {
 
   const showHeader = routeHandle?.showHeader !== false;
   const showSnackbar = routeHandle?.showSnackbar !== false;
+  const showFooter = routeHandle?.showFooter !== false;
 
   useEffect(() => {
     const path = location.pathname.substring(1) || "main";
@@ -164,6 +166,27 @@ export const MainLayout: React.FC = () => {
               }}
             />
           </Snackbar>
+        </div>
+      )}
+
+      {showFooter && (
+        <div className={styles.footer}>
+          <div>
+            <span className={styles.infoTextBold}>ИНН: </span>
+            <span className={styles.infoText}> 773421651470</span>
+          </div>
+          <div>
+            <span className={styles.infoTextBold}>ОГРНИП: </span>
+            <span className={styles.infoText}> 325774600476750</span>
+          </div>
+          <div>
+            <span className={styles.infoTextBold}>ИП: </span>
+            <span className={styles.infoText}>Лапшакова Евгения Сергеевна</span>
+          </div>
+          <div>
+            <span className={styles.infoTextBold}>Почта: </span>
+            <span className={styles.infoText}>jnsak@bk.ru</span>
+          </div>
         </div>
       )}
       <Toast />

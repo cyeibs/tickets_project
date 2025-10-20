@@ -22,3 +22,18 @@
   z-index: 100;
   bottom: calc(env(safe-area-inset-bottom) + 24px);
 }
+
+.footer {
+  padding-left: 10px;
+  padding-bottom: 10px;
+}
+
+.infoTextBold {
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.infoText {
+  font-size: 10px;
+  font-weight: 400;
+}

@@ -1,0 +1,80 @@
+@import "@shared/styles/variables.scss";
+@import "@shared/styles/mixins.scss";
+
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content {
+  flex: 1;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.section {
+  margin-bottom: 24px;
+}
+
+.subtitle {
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+
+.steps {
+  padding-left: 20px;
+  margin-bottom: 16px;
+
+  li {
+    margin-bottom: 8px;
+    line-height: 1.5;
+  }
+}
+
+.note {
+  background-color: rgba($prime-accent-color, 0.1);
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-top: 8px;
+}
+
+.icon {
+  display: inline-block;
+  margin: 0 4px;
+}
+
+.buttonsContainer {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.continueButton {
+  width: 100%;
+}
+
+.backButton {
+  width: 100%;
+  background-color: transparent;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.infoTextBold {
+  font-weight: 600;
+}
+
+.infoText {
+  font-weight: 400;
+}
