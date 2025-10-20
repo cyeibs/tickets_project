@@ -44,7 +44,7 @@ export const MainLayout: React.FC = () => {
 
   const showHeader = routeHandle?.showHeader !== false;
   const showSnackbar = routeHandle?.showSnackbar !== false;
-  const showFooter = routeHandle?.showFooter !== false;
+  const showFooter = routeHandle?.showFooter ? true : false;
 
   useEffect(() => {
     const path = location.pathname.substring(1) || "main";
